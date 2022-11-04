@@ -37,7 +37,10 @@ def main(corpus_id: str, source: str = "remote"):
 
     # update paper info
     paper.title = inspire_content["titles"][0]["title"]
-    paper.authors = [i["ids"][0]["value"][:-2] for i in inspire_content["authors"][:10]]
+    if "collaborations" in inspire_content:
+        paper.authors = [inspire_content["collaborations"][0]["value"] + " Collaboration"]
+    else:
+        paper.authors = [i["ids"][0]["value"][:-2] for i in inspire_content["authors"][:10]]
     if "publication_info" in inspire_content:
         paper.journal = inspire_content["publication_info"][0]["journal_title"]
     paper.citations = inspire_content["citation_count"]

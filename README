@@ -1,0 +1,11 @@
+# Issues
+
+[Fixed] issue #1 
+Paper 251018640 is not fetched correctly from Inspire HEP.
+- Authors have no id but uuid. They belongs to Majorana Collaboration.
+- Get collaboration name instead of single author's.
+
+paper 248571843 authors have id but no collaboration.
+paper 251018640 authors have uuid and collaboration.
+uuid<-> collaboration? yes, check with paper 246210416 CMS.
+
