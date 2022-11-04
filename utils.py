@@ -108,4 +108,4 @@ class Paper:
     task: str = ""
 
     # update ways
-    update: str = "auto"
+    update: str = "Automatically"
