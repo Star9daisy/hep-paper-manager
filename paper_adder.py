@@ -42,7 +42,7 @@ def main(corpus_id: str, source: str = "remote"):
     else:
         paper.authors = [i["ids"][0]["value"][:-2] for i in inspire_content["authors"][:10]]
     if "publication_info" in inspire_content:
-        paper.journal = inspire_content["publication_info"][0]["journal_title"]
+        paper.journal = inspire_content["publication_info"][0].get("journal_title", "Conference")
     paper.citations = inspire_content["citation_count"]
     paper.inspire_id = str(inspire_content["control_number"])
     paper.inspire_link = f"https://inspirehep.net/literature/{paper.inspire_id}"
@@ -57,7 +57,7 @@ def main(corpus_id: str, source: str = "remote"):
         # base info
         "Title": to_property("title", paper.title),
         "Authors": to_relation(paper.authors, professors_database_id, token, source),
-        "TLDR": to_property("rich_text", paper.tldr),
+        # "TLDR": to_property("rich_text", paper.tldr),
         "Journal": to_property("select", paper.journal),
         "Citations": to_property("number", paper.citations),
         # identification
