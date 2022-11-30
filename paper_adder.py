@@ -49,7 +49,7 @@ def main(corpus_id: str, source: str = "remote"):
 
     # notion
     # ---------------------------------------------------------------------------- #
-    paper_library_database_id = "0a03b33cb0c54436bcc3cdba6500c1a3"
+    paper_library_database_id = "841535b763e249579001f81df2a72369"
     professors_database_id = "320a2bf0760340f3889806f8b4910481"
     token = "secret_wXJ2PM5Ff2xAx6vpoxTMGOBfiCzjraD3Oco0qhzuMcY"
 
