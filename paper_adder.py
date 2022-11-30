@@ -55,7 +55,7 @@ def main(corpus_id: str, source: str = "remote"):
 
     properties = {
         # base info
-        "Title": to_property("title", paper.title),
+        "Title": to_property("title", f"[{paper.arxiv_id}] {paper.title}"),
         "Authors": to_relation(paper.authors, professors_database_id, token, source),
         # "TLDR": to_property("rich_text", paper.tldr),
         "Journal": to_property("select", paper.journal),
