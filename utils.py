@@ -43,6 +43,7 @@ def to_property(property, value):
             return {property: [{"text": {"content": value}}]}
 
         case "number" | "url":
+
             return {property: value}
 
         case "select" | "status":
@@ -85,27 +86,16 @@ class Paper:
     # base information
     title: str = ""
     authors: list[str] = field(default_factory=list)
-    tldr: str = ""
-    journal: str = "Unpublished"
     citations: int = 0
+    published: str = ""
+    tldr: str = ""
+    source: str = ""
 
-    # identification
+    # ids & links
     corpus_id: str = ""
     arxiv_id: str = ""
-    inspire_id: str = ""
-
-    # related links
     semantic_link: str = ""
     inspire_link: str = ""
-    github_link: str = ""
 
-    # to be decided by the user
-    status: str = "Inbox"
-    type: str = "Normal"
-    field: str = "HEP"
-    method_type: str = ""
-    method_name: str = ""
-    task: str = ""
-
-    # update ways
-    update: str = "Automatically"
+    # other
+    bibtex: str = ""

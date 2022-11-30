@@ -15,73 +15,80 @@ def main(corpus_id: str, source: str = "remote"):
     # semantic engine
     # ---------------------------------------------------------------------------- #
     semantic_url = "https://api.semanticscholar.org/graph/v1/paper"
-    fields = "externalIds,title,tldr,url"
+    fields = "title,authors,citationCount,journal,tldr,externalIds,url"
     semantic_url = f"{semantic_url}/CorpusID:{corpus_id}?fields={fields}"
     semantic_response = requests.get(semantic_url)
     semantic_content = json.loads(semantic_response.text)
 
-    # update paper info
+    # add paper info
     paper.title = semantic_content["title"]
-    if semantic_content["tldr"]:
-        paper.tldr = semantic_content["tldr"]["text"]
-    paper.corpus_id = str(semantic_content["externalIds"].get("CorpusId"))
-    paper.arxiv_id = semantic_content["externalIds"].get("ArXiv")
+    paper.authors = [i["name"] for i in semantic_content["authors"][:10]]
+    paper.citations = semantic_content["citationCount"]
+    paper.published = (
+        semantic_content["journal"]["name"] if semantic_content["journal"] else "Unpublished"
+    )
+    paper.tldr = semantic_content["tldr"]["text"] if semantic_content["tldr"] else "No tldr yet"
+    paper.source = "Semantic"
+    paper.corpus_id = str(semantic_content["externalIds"]["CorpusId"])
+    paper.arxiv_id = semantic_content["externalIds"].get("ArXiv", "None")
     paper.semantic_link = semantic_content["url"]
 
-    # inspire engine
+    # inspire
     # ---------------------------------------------------------------------------- #
     inspire_url = "https://inspirehep.net/api"
     inspire_url = f"{inspire_url}/arxiv/{paper.arxiv_id}"
     inspire_response = requests.get(inspire_url)
-    inspire_content = json.loads(inspire_response.text).get("metadata")
 
-    # update paper info
-    paper.title = inspire_content["titles"][0]["title"]
-    if "collaborations" in inspire_content:
-        paper.authors = [inspire_content["collaborations"][0]["value"] + " Collaboration"]
+    if inspire_response.status_code != 404:
+        inspire_content = json.loads(inspire_response.text).get("metadata")
+
+        # update paper info
+        paper.title = inspire_content["titles"][0]["title"]
+        if "collaborations" in inspire_content:
+            paper.authors = [inspire_content["collaborations"][0]["value"] + " Collaboration"]
+        else:
+            paper.authors = []
+            for author in inspire_content["authors"][:10]:
+                for i in author["ids"]:
+                    if i["schema"] == "INSPIRE BAI":
+                        paper.authors.append(i["value"][:-2])
+
+        paper.citations = inspire_content["citation_count"]
+        if "publication_info" in inspire_content:
+            paper.published = inspire_content["publication_info"][0].get("journal_title", "Conference")
+        paper.source = "Inspire"
+        paper.inspire_link = f"https://inspirehep.net/literature/{inspire_content['control_number']}"
+
+        bibtex_url = f"{inspire_url}?format=bibtex"
+        bibtex_response = requests.get(bibtex_url)
+        paper.bibtex = bibtex_response.text[:-1]  # remove the final \n
     else:
-        paper.authors = [i["ids"][0]["value"][:-2] for i in inspire_content["authors"][:10]]
-    if "publication_info" in inspire_content:
-        paper.journal = inspire_content["publication_info"][0].get("journal_title", "Conference")
-    paper.citations = inspire_content["citation_count"]
-    paper.inspire_id = str(inspire_content["control_number"])
-    paper.inspire_link = f"https://inspirehep.net/literature/{paper.inspire_id}"
+        print(f"! Couldn't find paper {paper.corpus_id} arxiv_id on Inspire HEP")
+        print(f"! Use Semantic source insead")
 
     # notion
     # ---------------------------------------------------------------------------- #
     paper_library_database_id = "841535b763e249579001f81df2a72369"
-    professors_database_id = "320a2bf0760340f3889806f8b4910481"
+    professors_database_id = "70c49e69591c4cae8dee77c55b5237b2"
     token = "secret_wXJ2PM5Ff2xAx6vpoxTMGOBfiCzjraD3Oco0qhzuMcY"
 
     properties = {
         # base info
-        "Title": to_property("title", f"[{paper.arxiv_id}] {paper.title}"),
+        "Title": to_property("title", paper.title),
         "Authors": to_relation(paper.authors, professors_database_id, token, source),
-        # "TLDR": to_property("rich_text", paper.tldr),
-        "Journal": to_property("select", paper.journal),
         "Citations": to_property("number", paper.citations),
-
-        # identification
+        "Published": to_property("select", paper.published),
+        "TLDR": to_property("rich_text", paper.tldr),
+        "Source": to_property("select", paper.source),
         "Corpus ID": to_property("rich_text", paper.corpus_id),
-        "Arxiv ID": to_property("rich_text", paper.arxiv_id),
-        "Inspire ID": to_property("rich_text", paper.inspire_id),
-
-        # related links
         "Semantic Link": to_property("url", paper.semantic_link),
-        "Inspire Link": to_property("url", paper.inspire_link),
-        # "Github Link": to_property("url", paper.github_link),
-
-        # to be decided by the user
-        "Status": to_property("status", paper.status),
-        "Type": to_property("select", paper.type),
-        "Field": to_property("select", paper.field),
-        # "Method Type": get_property("select", self.method_type),
-        # "Method Name": get_property("select", self.method_name),
-        # "Task": get_property("select", self.task),
-
-        # update channel
-        "Update": to_property("select", paper.update),
     }
+    if inspire_response.status_code != 404:
+        properties.update({
+            "Arxiv ID": to_property("rich_text", paper.arxiv_id),
+            "Inspire Link": to_property("url", paper.inspire_link),
+            "Bibtex": to_property("rich_text", paper.bibtex),
+        })
 
     notion_url = "https://api.notion.com/v1/pages"
     payload = {
@@ -107,6 +114,7 @@ def main(corpus_id: str, source: str = "remote"):
         case _:
             print(f"✘ Something wrong with paper {paper.corpus_id}")
             print(notion_response.text)
+
 
 
 if __name__ == "__main__":
