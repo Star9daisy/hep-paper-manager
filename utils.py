@@ -99,3 +99,4 @@ class Paper:
 
     # other
     bibtex: str = ""
+    topic: str = ""
