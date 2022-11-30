@@ -60,14 +60,17 @@ def main(corpus_id: str, source: str = "remote"):
         # "TLDR": to_property("rich_text", paper.tldr),
         "Journal": to_property("select", paper.journal),
         "Citations": to_property("number", paper.citations),
+
         # identification
         "Corpus ID": to_property("rich_text", paper.corpus_id),
         "Arxiv ID": to_property("rich_text", paper.arxiv_id),
         "Inspire ID": to_property("rich_text", paper.inspire_id),
+
         # related links
         "Semantic Link": to_property("url", paper.semantic_link),
         "Inspire Link": to_property("url", paper.inspire_link),
         # "Github Link": to_property("url", paper.github_link),
+
         # to be decided by the user
         "Status": to_property("status", paper.status),
         "Type": to_property("select", paper.type),
@@ -75,6 +78,8 @@ def main(corpus_id: str, source: str = "remote"):
         # "Method Type": get_property("select", self.method_type),
         # "Method Name": get_property("select", self.method_name),
         # "Task": get_property("select", self.task),
+
+        # update channel
         "Update": to_property("select", paper.update),
     }
 
