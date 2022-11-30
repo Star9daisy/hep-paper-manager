@@ -7,7 +7,13 @@ from utils import Paper, to_property, to_relation
 import typer
 
 
-def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
+def main(
+    corpus_id: str,
+    topic: str = "Unkonwn",
+    review: bool = False,
+    source: str = "remote",
+    dry_run: bool = False,
+):
     # interface
     # ---------------------------------------------------------------------------- #
     paper = Paper()
@@ -21,16 +27,17 @@ def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
     semantic_content = json.loads(semantic_response.text)
 
     # add paper info
-    paper.title = semantic_content["title"]
+    paper.title = semantic_content["title"] if not review else f"✧ {semantic_content['title']}"
     paper.authors = [i["name"] for i in semantic_content["authors"][:10]]
     paper.citations = semantic_content["citationCount"]
     if semantic_content["journal"]:
         paper.published = semantic_content["journal"]["name"]
         if paper.published == "":
             paper.published = "Unpublished"
-        
+
     paper.tldr = semantic_content["tldr"]["text"] if semantic_content["tldr"] else "No tldr yet"
     paper.source = "Semantic"
+    paper.topic = topic
     paper.corpus_id = str(semantic_content["externalIds"]["CorpusId"])
     paper.arxiv_id = semantic_content["externalIds"].get("ArXiv", "None")
     paper.semantic_link = semantic_content["url"]
@@ -46,6 +53,7 @@ def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
 
         # update paper info
         paper.title = inspire_content["titles"][0]["title"]
+        paper.title = paper.title if not review else f"✧ {paper.title}"
         if "collaborations" in inspire_content:
             paper.authors = [inspire_content["collaborations"][0]["value"] + " Collaboration"]
         else:
@@ -57,7 +65,7 @@ def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
 
         paper.citations = inspire_content["citation_count"]
 
-        match inspire_content['document_type'][0]:
+        match inspire_content["document_type"][0]:
             case "article":
                 if "publication_info" in inspire_content:
                     paper.published = inspire_content["publication_info"][0]["journal_title"]
@@ -69,14 +77,18 @@ def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
                         if "cnum" in i:
                             conference_url = i["conference_record"]["$ref"]
                             conference_response = requests.get(conference_url)
-                            paper.published = json.loads(conference_response.text)["metadata"]["acronyms"][0]
+                            paper.published = json.loads(conference_response.text)["metadata"][
+                                "acronyms"
+                            ][0]
                 else:
                     paper.published = "Unpublished"
             case _:
                 paper.published = "Unknown"
 
         paper.source = "Inspire"
-        paper.inspire_link = f"https://inspirehep.net/literature/{inspire_content['control_number']}"
+        paper.inspire_link = (
+            f"https://inspirehep.net/literature/{inspire_content['control_number']}"
+        )
 
         bibtex_url = f"{inspire_url}?format=bibtex"
         bibtex_response = requests.get(bibtex_url)
@@ -84,7 +96,7 @@ def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
     else:
         print(f"! Couldn't find paper {paper.corpus_id} arxiv_id on Inspire HEP")
         print(f"! Use Semantic source insead")
-    
+
     if dry_run:
         print(paper)
     else:
@@ -103,15 +115,18 @@ def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
             "Published": to_property("select", paper.published),
             "TLDR": to_property("rich_text", paper.tldr),
             "Source": to_property("select", paper.source),
+            "Topic": to_property("select", paper.topic),
             "Corpus ID": to_property("rich_text", paper.corpus_id),
             "Semantic Link": to_property("url", paper.semantic_link),
         }
         if inspire_response.status_code != 404:
-            properties.update({
-                "Arxiv ID": to_property("rich_text", paper.arxiv_id),
-                "Inspire Link": to_property("url", paper.inspire_link),
-                "Bibtex": to_property("rich_text", paper.bibtex),
-            })
+            properties.update(
+                {
+                    "Arxiv ID": to_property("rich_text", paper.arxiv_id),
+                    "Inspire Link": to_property("url", paper.inspire_link),
+                    "Bibtex": to_property("rich_text", paper.bibtex),
+                }
+            )
 
         notion_url = "https://api.notion.com/v1/pages"
         payload = {
@@ -137,7 +152,6 @@ def main(corpus_id: str, source: str = "remote", dry_run: bool = False):
             case _:
                 print(f"✘ Something wrong with paper {paper.corpus_id}")
                 print(notion_response.text)
-
 
 
 if __name__ == "__main__":
