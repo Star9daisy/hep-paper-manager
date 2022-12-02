@@ -68,7 +68,7 @@ def main(
         match inspire_content["document_type"][0]:
             case "article":
                 if "publication_info" in inspire_content:
-                    paper.published = inspire_content["publication_info"][0]["journal_title"]
+                    paper.published = inspire_content["publication_info"][0].get("journal_title", "Unpublished")
                 else:
                     paper.published = "Unpublished"
             case "conference paper":
