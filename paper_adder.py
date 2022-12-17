@@ -21,7 +21,10 @@ def main(
     # semantic engine
     # ---------------------------------------------------------------------------- #
     semantic_url = "https://api.semanticscholar.org/graph/v1/paper"
-    fields = "title,authors,citationCount,journal,tldr,externalIds,url"
+    # ! tldr service may have Internet Server Error in some cases
+    # check it with corpus_id 254636328
+    # so I remove it temporarily
+    fields = "title,authors,citationCount,journal,externalIds,url"
     semantic_url = f"{semantic_url}/CorpusID:{corpus_id}?fields={fields}"
     semantic_response = requests.get(semantic_url)
     semantic_content = json.loads(semantic_response.text)
@@ -35,7 +38,7 @@ def main(
         if paper.published == "":
             paper.published = "Unpublished"
 
-    paper.tldr = semantic_content["tldr"]["text"] if semantic_content["tldr"] else "No tldr yet"
+    # paper.tldr = semantic_content["tldr"]["text"] if semantic_content["tldr"] else "No tldr yet"
     paper.source = "Semantic"
     paper.topic = topic
     paper.corpus_id = str(semantic_content["externalIds"]["CorpusId"])
@@ -113,7 +116,7 @@ def main(
             "Authors": to_relation(paper.authors, professors_database_id, token, source),
             "Citations": to_property("number", paper.citations),
             "Published": to_property("select", paper.published),
-            "TLDR": to_property("rich_text", paper.tldr),
+            # "TLDR": to_property("rich_text", paper.tldr),
             "Source": to_property("select", paper.source),
             "Topic": to_property("select", paper.topic),
             "Corpus ID": to_property("rich_text", paper.corpus_id),
