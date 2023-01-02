@@ -1,4 +1,4 @@
-import typer
+# import typer
 from rich import print
 from utils import search_in_semantic, search_in_inspire, add_to_notion
 import subprocess, shlex
@@ -10,10 +10,10 @@ import subprocess, shlex
 # 254591719: conference paper
 # 67855972: regular paper
 
-app = typer.Typer()
+# app = typer.Typer()
 
 
-@app.command()
+# @app.command()
 def main():
     corpus_id = subprocess.run(
         shlex.split("gum input --placeholder 'Enter a corpus ID'"),
@@ -60,6 +60,16 @@ def main():
     print(f"> Add paper({topic}) to Notion...")
     add_to_notion(inspire_paper, topic)
 
+while True:
+    main()
+    print()
+    is_next = subprocess.run(
+        shlex.split("gum input --placeholder 'Add another one? (press q to exit)'"),
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    if is_next.stdout.strip() == "q":
+        break
 
-if __name__ == "__main__":
-    app()
+# if __name__ == "__main__":
+#     app()
