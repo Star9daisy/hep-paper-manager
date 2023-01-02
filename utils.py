@@ -76,13 +76,16 @@ def search_in_inspire(arxiv_id: str):
             "journal_title", "Unpublished"
         )
     elif metadata["document_type"][0] == "conference paper":
-        for i in metadata["publication_info"]:
-            if "cnum" in i:
-                conference_url = i["conference_record"]["$ref"]
-                conference_response = requests.get(conference_url)
-                paper.published = json.loads(conference_response.text)["metadata"]["acronyms"][0]
+        if "publication_info" in metadata:
+            for i in metadata["publication_info"]:
+                if "cnum" in i:
+                    conference_url = i["conference_record"]["$ref"]
+                    conference_response = requests.get(conference_url)
+                    paper.published = json.loads(conference_response.text)["metadata"]["acronyms"][0]
+        else:
+            paper.published = "Unpublished"
     else:
-        paper.published = "Unknown"
+        paper.published = "Unpublished"
     # citations
     paper.citations = metadata["citation_count"]
     # link
