@@ -1,6 +1,6 @@
 import shutil
 from pathlib import Path
-from time import perf_counter
+from time import perf_counter, sleep
 
 import rich
 import typer
@@ -90,37 +90,54 @@ def add(corpus_id: str):
     print("Requesting Semantic Scholar...", end="", flush=True)
     _start = perf_counter()
     sem_paper = SemanticPaper.from_response(get_paper_by_corpus_id(corpus_id))
+    sleep(3)
     _end = perf_counter()
     print(f"OK in {_end-_start:.2f}s")
 
     # Second send a request to inspire to get the paper by arxiv id.
-    print("Requesting Inspire...", end="", flush=True)
-    _start = perf_counter()
-    ins_paper = InspirePaper.from_response(get_paper_by_arxiv_id(sem_paper.arxiv_id))
-    _end = perf_counter()
-    print(f"OK in {_end-_start:.2f}s")
+    # if no arxiv_id is found, then NotionPaper only use Semantic Scholar data.
+    if sem_paper.arxiv_id != '':
+        print("Requesting Inspire...", end="", flush=True)
+        _start = perf_counter()
+        ins_paper = InspirePaper.from_response(get_paper_by_arxiv_id(sem_paper.arxiv_id))
+        _end = perf_counter()
+        print(f"OK in {_end-_start:.2f}s")
 
-    # Transform the authors to relation ids.
-    print("Finding authors...", end="", flush=True)
-    _start = perf_counter()
-    authors = ins_paper.authors
-    ids = find_relation_ids(token, professors_db, authors)
-    _end = perf_counter()
-    print(f"OK in {_end-_start:.2f}s")
+        # Transform the authors to relation ids.
+        print("Finding authors...", end="", flush=True)
+        _start = perf_counter()
+        authors = ins_paper.authors
+        ids = find_relation_ids(token, professors_db, authors)
+        _end = perf_counter()
+        print(f"OK in {_end-_start:.2f}s")
 
-    # Then fill the NotionPaper that represents one page in the Papers database.
-    # Note: You need to modify the NotionPaper class to fulfill your needs.
-    paper = NotionPaper(
-        Title=Title(content=sem_paper.title),
-        Published=Select(name=ins_paper.published),
-        Authors=Relation(ids=ids),
-        Citations=Number(number=ins_paper.citations),
-        ArxivID=RichText(content=ins_paper.arxiv_id),
-        CorpusID=RichText(content=sem_paper.corpus_id),
-        SemanticURL=URL(url=sem_paper.url),
-        InspireURL=URL(url=ins_paper.url),
-        Bibtex=RichText(content=ins_paper.bibtex),
-    )
+        # Then fill the NotionPaper that represents one page in the Papers database.
+        # Note: You need to modify the NotionPaper class to fulfill your needs.
+        paper = NotionPaper(
+            Title=Title(content=sem_paper.title),
+            Published=Select(name=ins_paper.published),
+            Authors=Relation(ids=ids),
+            Citations=Number(number=ins_paper.citations),
+            ArxivID=RichText(content=ins_paper.arxiv_id),
+            CorpusID=RichText(content=sem_paper.corpus_id),
+            SemanticURL=URL(url=sem_paper.url),
+            InspireURL=URL(url=ins_paper.url),
+            Bibtex=RichText(content=ins_paper.bibtex),
+        )
+    
+    else:
+        print(sem_paper)
+        paper = NotionPaper(
+            Title=Title(content=sem_paper.title),
+            Published=Select(name=sem_paper.published),
+            Authors=Relation(ids=[]),
+            Citations=Number(number=sem_paper.citations),
+            ArxivID=RichText(content=sem_paper.arxiv_id),
+            CorpusID=RichText(content=sem_paper.corpus_id),
+            SemanticURL=URL(url=sem_paper.url),
+            InspireURL=URL(url=None),
+            Bibtex=RichText(content=""),
+        )
 
     # Finally, create the page in the Papers database.
     print("Adding to Notion...", end="", flush=True)
@@ -137,3 +154,35 @@ def add(corpus_id: str):
         rich.print(paper)
     else:
         rich.print(response.text)
+
+
+@app.command()
+def add_from_file(input_file: Path):
+    with open(input_file, "r") as f:
+        for i, line in enumerate(f):
+            print(f"Adding paper {i}...", flush=True)
+            corpus_id = line.strip()
+            add(corpus_id)
+
+
+@app.command()
+def update(db_id: str):
+    if not config_file.exists():
+        print("Please use `auth` to set the token first.")
+        raise typer.Exit(1)
+
+    cp.read(config_file)
+    if not cp.has_section("databases"):
+        print("Please use `config` to set the databases first.")
+        raise typer.Exit(1)
+
+    token = cp.get("auth", "token")
+
+    from .notion.database import query_database
+
+    response = query_database(token, db_id)
+
+    results = response.json()["results"]
+    for result in results:
+        properties = result["properties"]
+        print(properties["CorpusID"]["rich_text"][0]["plain_text"], flush=True)

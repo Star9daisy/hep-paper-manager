@@ -26,6 +26,8 @@ class SemanticPaper:
         cls.title = meta["title"]
         cls.authors = [a["name"].replace(" ", "") for a in meta["authors"][:10]]
         cls.published = meta["journal"]["name"] if meta["journal"] else "Unpublished"
+        if cls.published == "":
+            cls.published = "Unpublished"
         cls.citations = meta["citationCount"]
         cls.corpus_id = str(meta["externalIds"].get("CorpusId", ""))
         cls.arxiv_id = meta["externalIds"].get("ArXiv", "")
