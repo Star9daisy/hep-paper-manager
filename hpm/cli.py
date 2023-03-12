@@ -1,8 +1,9 @@
 import shutil
 from pathlib import Path
-
 from time import perf_counter
+
 import rich
+import typer
 
 from .engines.inspire import get_paper_by_arxiv_id
 from .engines.semantic import get_paper_by_corpus_id
@@ -10,7 +11,6 @@ from .notion.page import create_page
 from .notion.types import URL, Number, Relation, RichText, Select, Title
 from .papers import InspirePaper, NotionPaper, SemanticPaper
 from .utils import find_relation_ids
-import typer
 
 app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
@@ -85,17 +85,6 @@ def add(corpus_id: str):
     token = cp.get("auth", "token")
     papers_db = cp.get("databases", "papers")
     professors_db = cp.get("databases", "professors")
-
-
-
-# corpus_id = "252683473"
-# token = "secret_wXJ2PM5Ff2xAx6vpoxTMGOBfiCzjraD3Oco0qhzuMcY"
-# papers_db = "16a0e94107334f06a08f87369ec734e9"
-
-# # From the Papers database created online, Authors are a relation property.
-# # Retrieve the Papers database, we can get the related database id.
-# response = retrieve_database(token, papers_db)
-# related_db_id = response.json()["properties"]["Authors"]["relation"]["database_id"]
 
     # First send a request to semantic scholar to get the paper by corpus id.
     print("Requesting Semantic Scholar...", end="", flush=True)
