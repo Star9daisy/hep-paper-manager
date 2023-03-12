@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "hpm"
+version = "0.1.0"
+description = ""
+authors = ["Star9daisy <star9daisy@outlook.com>"]
+license = "MIT"
+readme = "README"
+packages = [{include = "hpm"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "^2.28.2"
+typer = {extras = ["all"], version = "^0.7.0"}
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

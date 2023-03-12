@@ -6,8 +6,8 @@ from engines.semantic import get_paper_by_corpus_id
 from notion.database import retrieve_database
 from notion.page import create_page
 from notion.types import URL, Number, Relation, RichText, Select, Title
-from papers import InspirePaper, NotionPaper, SemanticPaper
-from utils import find_relation_ids
+from hpm.papers import InspirePaper, NotionPaper, SemanticPaper
+from hpm.utils import find_relation_ids
 
 
 # ---------------------------------------------------------------------------- #
