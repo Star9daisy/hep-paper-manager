@@ -7,6 +7,9 @@ license = "MIT"
 readme = "README"
 packages = [{include = "hpm"}]
 
+[tool.poetry.scripts]
+hpm = "hpm.cli:app"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 requests = "^2.28.2"
