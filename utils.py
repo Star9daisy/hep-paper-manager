@@ -191,3 +191,23 @@ def add_to_notion(paper: Paper, topic: str = "Unknown"):
     }
 
     create_a_page(properties, literatures_database_id, token)
+
+
+# find page ids for names
+def find_relation_ids(token, database_id, names):
+    database = query_a_database(
+        token=token,
+        database_id=database_id,
+    )
+
+    ids = []
+    for result in database["results"]:
+        _id = result["id"]
+        _title = ""
+        for content in result["properties"].values():
+            if content["type"] == "title":
+                _title = content["title"][0]["text"]["content"]
+                break
+        if _title in names:
+            ids.append(_id)
+    return ids
