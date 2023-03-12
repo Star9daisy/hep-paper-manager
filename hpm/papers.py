@@ -77,7 +77,7 @@ class InspirePaper:
 
         # published
         if meta["document_type"][0] == "article" and "publication_info" in meta:
-            cls.published = meta.get("journal_title", "Unpublished")
+            cls.published = meta["publication_info"][0].get("journal_title", "Unpublished")
 
         if meta["document_type"][0] == "conference paper" and "publication_info" in meta:
             for info in meta["publication_info"]:
