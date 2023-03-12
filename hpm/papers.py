@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import requests
 
-from notion.types import URL, Number, Relation, RichText, Select, Title
+from .notion.types import URL, Number, Relation, RichText, Select, Title
 
 
 # ---------------------------------------------------------------------------- #
