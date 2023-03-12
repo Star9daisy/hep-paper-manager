@@ -7,7 +7,8 @@ import typer
 
 from .engines.inspire import get_paper_by_arxiv_id
 from .engines.semantic import get_paper_by_corpus_id
-from .notion.page import create_page
+from .notion.database import query_database
+from .notion.page import create_page, update_page
 from .notion.types import URL, Number, Relation, RichText, Select, Title
 from .papers import InspirePaper, NotionPaper, SemanticPaper
 from .utils import find_relation_ids
@@ -72,7 +73,7 @@ def config(papers: str, professors: str):
 
 
 @app.command()
-def add(corpus_id: str):
+def add(corpus_id: str, update: bool = False, page_id: str = ""):
     if not config_file.exists():
         print("Please use `auth` to set the token first.")
         raise typer.Exit(1)
@@ -96,7 +97,7 @@ def add(corpus_id: str):
 
     # Second send a request to inspire to get the paper by arxiv id.
     # if no arxiv_id is found, then NotionPaper only use Semantic Scholar data.
-    if sem_paper.arxiv_id != '':
+    if sem_paper.arxiv_id != "":
         print("Requesting Inspire...", end="", flush=True)
         _start = perf_counter()
         ins_paper = InspirePaper.from_response(get_paper_by_arxiv_id(sem_paper.arxiv_id))
@@ -124,7 +125,7 @@ def add(corpus_id: str):
             InspireURL=URL(url=ins_paper.url),
             Bibtex=RichText(content=ins_paper.bibtex),
         )
-    
+
     else:
         print(sem_paper)
         paper = NotionPaper(
@@ -140,13 +141,21 @@ def add(corpus_id: str):
         )
 
     # Finally, create the page in the Papers database.
-    print("Adding to Notion...", end="", flush=True)
     _start = perf_counter()
-    response = create_page(
-        token,
-        {"type": "database_id", "database_id": papers_db},
-        paper.to_properties(),
-    )
+    if not update:
+        print("Adding to Notion...", end="", flush=True)
+        response = create_page(
+            token,
+            {"type": "database_id", "database_id": papers_db},
+            paper.to_properties(),
+        )
+    else:
+        print("Updating in Notion...", end="", flush=True)
+        response = update_page(
+            token,
+            page_id,
+            paper.to_properties(),
+        )
     _end = perf_counter()
     print(f"OK in {_end-_start:.2f}s")
 
@@ -166,7 +175,7 @@ def add_from_file(input_file: Path):
 
 
 @app.command()
-def update(db_id: str):
+def update():
     if not config_file.exists():
         print("Please use `auth` to set the token first.")
         raise typer.Exit(1)
@@ -176,13 +185,21 @@ def update(db_id: str):
         print("Please use `config` to set the databases first.")
         raise typer.Exit(1)
 
+    # First get the corpus ids of all the papers in the database.
     token = cp.get("auth", "token")
-
-    from .notion.database import query_database
-
-    response = query_database(token, db_id)
-
+    papers_db = cp.get("databases", "papers")
+    response = query_database(
+        token, papers_db, sorts=[{"property": "ArxivID", "direction": "ascending"}]
+    )
     results = response.json()["results"]
+
+    pages = []
     for result in results:
-        properties = result["properties"]
-        print(properties["CorpusID"]["rich_text"][0]["plain_text"], flush=True)
+        _id = result["id"]
+        _corpus_id = result["properties"]["CorpusID"]["rich_text"][0]["plain_text"]
+        pages.append({"id": _id, "corpus_id": _corpus_id})
+
+    # Then call the `add` command to update the database.
+    for i, page in enumerate(pages, start=1):
+        print(f"Updating paper #{i}({page['corpus_id']})...")
+        add(page["corpus_id"], update=True, page_id=page["id"])
