@@ -119,6 +119,7 @@ def add(corpus_id: str):
         CorpusID=RichText(content=sem_paper.corpus_id),
         SemanticURL=URL(url=sem_paper.url),
         InspireURL=URL(url=ins_paper.url),
+        Bibtex=RichText(content=ins_paper.bibtex),
     )
 
     # Finally, create the page in the Papers database.

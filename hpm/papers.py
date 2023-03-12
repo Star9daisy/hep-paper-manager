@@ -110,6 +110,7 @@ class NotionPaper:
     CorpusID: RichText
     SemanticURL: URL
     InspireURL: URL
+    Bibtex: RichText
 
     def to_properties(self):
         return {k: v.to_property() for k, v in self.__dict__.items()}
