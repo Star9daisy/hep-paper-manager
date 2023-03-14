@@ -3,12 +3,27 @@ from __future__ import annotations
 import requests
 
 from .objects.page import Page
+from .objects.database import Database
 
 
 # ---------------------------------------------------------------------------- #
 class Client:
     def __init__(self, token: str) -> None:
         self.token = token
+
+    def retrieve_database(self, database_id: str) -> Database:
+        url = f"https://api.notion.com/v1/databases/{database_id}"
+        headers = {
+            "accept": "application/json",
+            "Notion-Version": "2022-06-28",
+            "content-type": "application/json",
+            "authorization": f"Bearer {self.token}",
+        }
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            raise Exception(response.text)
+        else:
+            return Database.from_json(response.json())
 
     def query_a_database(self, database_id: str) -> list[Page]:
         url = f"https://api.notion.com/v1/databases/{database_id}/query"
