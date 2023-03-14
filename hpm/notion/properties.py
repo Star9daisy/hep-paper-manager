@@ -28,6 +28,11 @@ class MultiSelect(Property):
     type: str = "multi_select"
 
     @classmethod
+    def from_database_dict(cls, name, property):
+        options = [option["name"] for option in property["multi_select"]["options"]]
+        return cls(name, options)
+
+    @classmethod
     def from_notion_dict(cls, name, property):
         value = [option["name"] for option in property["multi_select"]]
         return cls(name, value)
@@ -53,8 +58,13 @@ class Number(Property):
 @dataclass
 class Relation(Property):
     name: str
-    value: list[str]
+    value: list[str] | str
     type: str = "relation"
+
+    @classmethod
+    def from_database_dict(cls, name, property):
+        database_id = property["relation"]["database_id"]
+        return cls(name, database_id)
 
     @classmethod
     def from_notion_dict(cls, name, property):
@@ -83,8 +93,13 @@ class RichText(Property):
 @dataclass
 class Select(Property):
     name: str
-    value: str | None = None
+    value: list[str] | str | None = None
     type: str = "select"
+
+    @classmethod
+    def from_database_dict(cls, name, property):
+        options = [option["name"] for option in property["select"]["options"]]
+        return cls(name, options)
 
     @classmethod
     def from_notion_dict(cls, name, property):
