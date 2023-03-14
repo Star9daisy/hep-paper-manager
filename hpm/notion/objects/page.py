@@ -38,7 +38,6 @@ class Page:
     @classmethod
     def from_json(cls, response: dict):
         _id = response["id"]
-        _title = ""
         _parent_id = response["parent"]["database_id"]
         _url = response["url"]
 
