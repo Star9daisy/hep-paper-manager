@@ -13,18 +13,26 @@ from ..properties import (
     Status,
     Title,
 )
+from .page import Page
 
 
 # ---------------------------------------------------------------------------- #
 class Database:
     def __init__(
-        self, id: str, title: str, description: str, url: str, properties: list[Property]
+        self,
+        id: str,
+        title: str,
+        description: str,
+        url: str,
+        properties: list[Property],
+        pages: list[Page] = [],
     ) -> None:
         self.id = id
         self.title = title
         self.description = description
         self.url = url
         self.properties = properties
+        self.pages = pages
 
     @classmethod
     def from_json(cls, response: dict):
@@ -76,3 +84,4 @@ class Database:
         properties = [i.__dict__ for i in self.properties]
         out += tabulate(properties, headers="keys")
         return out
+
