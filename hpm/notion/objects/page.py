@@ -10,7 +10,7 @@ from ..properties import (
     Relation,
     RichText,
     Select,
-    Status,
+    # Status,
     Title,
 )
 
@@ -54,8 +54,8 @@ class Page:
                 _object = RichText.from_notion_dict(_name, _property)
             elif _type == "select":
                 _object = Select.from_notion_dict(_name, _property)
-            elif _type == "status":
-                _object = Status.from_notion_dict(_name, _property)
+            # elif _type == "status":
+            #     _object = Status.from_notion_dict(_name, _property)
             elif _type == "title":
                 _object = Title.from_notion_dict(_name, _property)
             elif _type == "url":
