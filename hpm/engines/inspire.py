@@ -53,7 +53,11 @@ class InspirePaper:
                 if "cnum" in info:
                     conf_link = info["conference_record"]["$ref"]
                     conf_response = requests.get(conf_link)
-                    cls.published = conf_response.json()["metadata"]["acronyms"][0]
+                    if "acronyms" in conf_response.json()["metadata"]:
+                        cls.published = conf_response.json()["metadata"]["acronyms"][0]
+                    elif "alternative_titles" in conf_response.json()["metadata"]:
+                        titles = conf_response.json()["metadata"]["alternative_titles"][0]["title"]
+                        cls.published = " ".join(titles.split(" ")[1:])
 
         # citations
         cls.citations = meta["citation_count"]
