@@ -43,6 +43,7 @@ def main(token: str, database_id: str, corpus_id: str):
                 Relation("Authors", ids),
                 Select("Published", ins_paper.published),
                 Number("Citations", ins_paper.citations),
+                URL("SemanticURL", sem_paper.url),
                 URL("InspireURL", ins_paper.url),
                 RichText("Bibtex", ins_paper.bibtex),
             ]
@@ -65,7 +66,7 @@ def main(token: str, database_id: str, corpus_id: str):
                 Relation("Authors", ids),
                 Select("Published", sem_paper.published),
                 Number("Citations", sem_paper.citations),
-                URL("InspireURL", sem_paper.url),
+                URL("SemanticURL", sem_paper.url),
             ]
         )
 
