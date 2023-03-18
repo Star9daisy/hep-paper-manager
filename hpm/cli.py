@@ -108,15 +108,19 @@ def add(
             f" or use `hpm config default <database-name>` to set one."
         )
         raise typer.Exit(1)
+
+    if not database_id:
+        database_name = cp["default"]["database"]
+        database_id = cp["databases"][database_name]
+
     if "plugin" not in cp["default"] and not plugin:
         print(
             f"[red]Please specify a plugin by its name"
             f" or use `hpm config default <plugin-name>` to set one."
         )
         raise typer.Exit(1)
-    else:
-        database_name = cp["default"]["database"]
-        database_id = cp["databases"][database_name]
+
+    if not plugin:
         plugin = cp["default"]["plugin"]
 
     module = import_module(f"hpm.plugins.{plugin}")
