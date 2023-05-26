@@ -22,8 +22,8 @@ cached_paper_ids = [p.stem for p in cached_papers_dir.glob("*.json")]
 
 
 # ---------------------------------------------------------------------------- #
-@app.command()
-def get(arxiv_id: str):
+@app.command(help="Get a new paper by Arxiv ID")
+def get(arxiv_id: Annotated[str, typer.Argument(help="Arxiv ID of a paper")]):
     if arxiv_id in cached_paper_ids:
         with open(cached_papers_dir / f"{arxiv_id}.json", "r") as f:
             contents = json.load(f)
@@ -89,7 +89,13 @@ def version_callback(value: bool):
 def main(
     version: Annotated[
         Optional[bool],
-        typer.Option("-v", "--version", callback=version_callback, is_eager=True),
+        typer.Option(
+            "-v",
+            "--version",
+            callback=version_callback,
+            is_eager=True,
+            help="Show the app version info",
+        ),
     ] = None
 ):
     ...
