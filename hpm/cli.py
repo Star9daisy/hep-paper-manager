@@ -22,7 +22,7 @@ cached_paper_ids = [p.stem for p in cached_papers_dir.glob("*.json")]
 
 
 # ---------------------------------------------------------------------------- #
-@app.command(help="Get a new paper by Arxiv ID")
+@app.command(help="Get a new paper by Arxiv ID, and show it in the terminal")
 def get(arxiv_id: Annotated[str, typer.Argument(help="Arxiv ID of a paper")]):
     if arxiv_id in cached_paper_ids:
         with open(cached_papers_dir / f"{arxiv_id}.json", "r") as f:
