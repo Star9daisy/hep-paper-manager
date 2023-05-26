@@ -85,7 +85,7 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
-@app.command()
+@app.callback()
 def main(
     version: Annotated[
         Optional[bool],
