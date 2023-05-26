@@ -28,15 +28,30 @@ cached_paper_ids = [p.stem for p in cached_papers_dir.glob("*.json")]
 @app.command(help="Get a new paper by Arxiv ID, and show it in the terminal")
 def get(arxiv_id: Annotated[str, typer.Argument(help="Arxiv ID of a paper")]):
     if arxiv_id in cached_paper_ids:
-        with open(cached_papers_dir / f"{arxiv_id}.json", "r") as f:
-            contents = json.load(f)
+        print("Fetching from cache...", flush=True, end="")
+        try:
+            with open(cached_papers_dir / f"{arxiv_id}.json", "r") as f:
+                contents = json.load(f)
+        except:
+            print("[red]x[/red]")
+            raise typer.Exit("Error fetching the cached paper")
+        print("[green]✓[/green]")
+
     else:
-        url = f"https://inspirehep.net/api/arxiv/{arxiv_id}"
-        contents = requests.get(url).json(object_pairs_hook=OrderedDict)
+        print("Fetching from InspireHEP...", flush=True, end="")
+
+        try:
+            url = f"https://inspirehep.net/api/arxiv/{arxiv_id}"
+            contents = requests.get(url).json(object_pairs_hook=OrderedDict)
+        except:
+            print("[red]x[/red]")
+            raise typer.Exit("Error fetching the paper")
+        print("[green]✓[/green]")
 
         # Cache the paper
         with open(cached_papers_dir / f"{arxiv_id}.json", "w") as f:
             json.dump(contents, f, indent=4)
+        print(f"Cached in {cached_papers_dir / f'{arxiv_id}.json'}")
 
     metadata = contents["metadata"]
     title = metadata["titles"][-1]["title"]
