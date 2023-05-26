@@ -16,8 +16,11 @@ app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
     add_completion=False,
 )
+app_dir = Path(typer.get_app_dir("hpm", force_posix=True))
+app_dir.mkdir(parents=True, exist_ok=True)
 
-cached_papers_dir = Path("tests/cached_papers")
+cached_papers_dir = app_dir / "cached_papers"
+cached_papers_dir.mkdir(parents=True, exist_ok=True)
 cached_paper_ids = [p.stem for p in cached_papers_dir.glob("*.json")]
 
 
