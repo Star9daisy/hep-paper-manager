@@ -1,156 +1,131 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Protocol
 
 __all__ = [
-    "Property",
     "MultiSelect",
     "Number",
     "Relation",
     "RichText",
     "Select",
     "Title",
-    # "URL",
+    "URL",
 ]
 
 
-# ---------------------------------------------------------------------------- #
-class Property(ABC):
+class Property(Protocol):
     name: str
-    type: str
     value: Any
 
     @classmethod
-    @abstractmethod
-    def from_notion_dict(cls, name, property: dict) -> Property:
+    def from_dict(cls, content) -> Property:
         ...
 
-    @abstractmethod
-    def to_notion_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict:
         ...
 
 
 @dataclass
-class MultiSelect(Property):
+class MultiSelect:
     name: str
     value: list[str]
-    type: str = "multi_select"
 
     @classmethod
-    def from_database_dict(cls, name, property):
-        options = [option["name"] for option in property["multi_select"]["options"]]
-        return cls(name, options)
-
-    @classmethod
-    def from_notion_dict(cls, name, property):
-        value = [option["name"] for option in property["multi_select"]]
+    def from_dict(cls, content):
+        name, property = content
+        value = [option["name"] for option in property[property["type"]]["options"]]
         return cls(name, value)
 
-    def to_notion_dict(self):
-        return {self.name: {"multi_select": [{"name": i} for i in self.value]}}
+    def to_dict(self):
+        return {self.name: {"multi_select": [{"name": option} for option in self.value]}}
 
 
 @dataclass
-class Number(Property):
+class Number:
     name: str
     value: float
-    type: str = "number"
 
     @classmethod
-    def from_notion_dict(cls, name, property):
-        return cls(name, property["number"])
+    def from_dict(cls, content):
+        name, property = content
+        value = property["number"]
+        return cls(name, value)
 
-    def to_notion_dict(self):
+    def to_dict(self):
         return {self.name: {"number": self.value}}
 
 
 @dataclass
-class Relation(Property):
+class Relation:
     name: str
-    value: list[str] | str
-    type: str = "relation"
+    ids: list[str]
 
     @classmethod
-    def from_database_dict(cls, name, property):
-        database_id = property["relation"]["database_id"]
-        return cls(name, database_id)
-
-    @classmethod
-    def from_notion_dict(cls, name, property):
-        ids = [relation["id"] for relation in property["relation"]]
+    def from_dict(cls, content):
+        name, property = content
+        ids = [i["id"] for i in property["relation"]]
         return cls(name, ids)
 
-    def to_notion_dict(self):
-        return {self.name: {"relation": [{"id": id} for id in self.value]}}
+    def to_dict(self):
+        return {self.name: {"relation": [{"id": id} for id in self.ids]}}
 
 
 @dataclass
-class RichText(Property):
+class RichText:
     name: str
     value: str
-    type: str = "rich_text"
 
     @classmethod
-    def from_notion_dict(cls, name, property):
-        content = "".join([part["plain_text"] for part in property["rich_text"]])
-        return cls(name, content)
+    def from_dict(cls, content):
+        name, property = content
+        value = "".join([i["plain_text"] for i in property["rich_text"]])
+        return cls(name, value)
 
-    def to_notion_dict(self):
+    def to_dict(self):
         return {self.name: {"rich_text": [{"text": {"content": self.value}}]}}
 
 
 @dataclass
-class Select(Property):
+class Select:
     name: str
-    value: list[str] | str | None = None
-    type: str = "select"
+    value: str
 
     @classmethod
-    def from_database_dict(cls, name, property):
-        options = [option["name"] for option in property["select"]["options"]]
-        return cls(name, options)
-
-    @classmethod
-    def from_notion_dict(cls, name, property):
-        if property["select"]:
-            value = property["select"]["name"]
-        else:
-            value = None
+    def from_dict(cls, content):
+        name, property = content
+        value = property["select"]["name"]
         return cls(name, value)
 
-    def to_notion_dict(self):
-        if self.value:
-            return {self.name: {"select": {"name": self.value}}}
-        else:
-            return {self.name: {"select": None}}
+    def to_dict(self):
+        return {self.name: {"select": {"name": self.value}}}
 
 
 @dataclass
-class Title(Property):
+class Title:
     name: str
     value: str
-    type: str = "title"
 
     @classmethod
-    def from_notion_dict(cls, name, property):
-        content = "".join([part["plain_text"] for part in property["title"]])
-        return cls(name, content)
+    def from_dict(cls, content):
+        name, property = content
+        value = "".join([i["plain_text"] for i in property["title"]])
+        return cls(name, value)
 
-    def to_notion_dict(self):
+    def to_dict(self):
         return {self.name: {"title": [{"text": {"content": self.value}}]}}
 
 
 @dataclass
-class URL(Property):
+class URL:
     name: str
     value: str
-    type: str = "url"
 
     @classmethod
-    def from_notion_dict(cls, name, property):
-        return cls(name, property["url"])
+    def from_dict(cls, content):
+        name, property = content
+        value = property["url"]
+        return cls(name, value)
 
-    def to_notion_dict(self):
+    def to_dict(self):
         return {self.name: {"url": self.value}}
