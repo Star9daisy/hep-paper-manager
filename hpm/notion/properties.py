@@ -14,6 +14,20 @@ __all__ = [
 ]
 
 
+def read_property(content) -> Property:
+    property_type_to_class = {
+        "multi_select": MultiSelect,
+        "number": Number,
+        "relation": Relation,
+        "rich_text": RichText,
+        "select": Select,
+        "title": Title,
+        "url": URL,
+    }
+    _, property = content
+    return property_type_to_class[property["type"]].from_dict(content)
+
+
 class Property(Protocol):
     name: str
     value: Any
