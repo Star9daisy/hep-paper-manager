@@ -103,12 +103,15 @@ class RichText:
 @dataclass
 class Select:
     name: str
-    value: str
+    value: str | None
 
     @classmethod
     def from_dict(cls, content):
         name, property = content
-        value = property["select"]["name"]
+        if property["select"]:
+            value = property["select"]["name"]
+        else:
+            value = None
         return cls(name, value)
 
     def to_dict(self):
