@@ -6,7 +6,6 @@ from typing import Optional
 
 import typer
 import yaml
-from dotenv import load_dotenv
 from rich import print
 from rich.panel import Panel
 from typing_extensions import Annotated
