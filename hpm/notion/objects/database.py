@@ -1,56 +1,30 @@
-from tabulate import tabulate
-from ..properties import *
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+from ..properties import read_property
 from .page import Page
 
 
+@dataclass
 class Database:
-    def __init__(
-        self,
-        database_id: str,
-        title: str,
-        description: str,
-        url: str,
-        properties: list[Property],
-        pages: list[Page] = [],
-    ) -> None:
-        self.database_id = database_id
-        self.title = title
-        self.description = description
-        self.url = url
-        self.properties = properties
-        self.pages = pages
+    id: str
+    title: str
+    description: str
+    url: str
+    properties: dict = field(default_factory=dict)
+    pages: list[Page | None] = field(default_factory=list)
 
     @classmethod
-    def from_json(cls, response: dict):
-        database_id = response["id"]
-        title = "".join(i["plain_text"] for i in response["title"])
-        description = "".join(i["plain_text"] for i in response["description"])
-        url = response["url"]
-
-        properties = []
-        for _name, _property in response["properties"].items():
-            _type = _property["type"]
-            if _type == "multi_select":
-                _object = MultiSelect.from_database_dict(_name, _property)
-            elif _type == "number":
-                _object = Number.from_notion_dict(_name, _property)
-            elif _type == "relation":
-                _object = Relation.from_database_dict(_name, _property)
-            elif _type == "rich_text":
-                _object = RichText.from_notion_dict(_name, _property)
-            elif _type == "select":
-                _object = Select.from_database_dict(_name, _property)
-            elif _type == "title":
-                _object = Title.from_notion_dict(_name, _property)
-            else:
-                continue
-            properties.append(_object)
-
-        return cls(database_id, title, description, url, properties)
-
-    def get_property(self, name: str) -> Property:
-        for property in self.properties:
-            if property.name == name:
-                return property
-
-        raise ValueError(f"Property {name} not found in this database")
+    def from_dict(cls, retrieved_json: dict, queried_json: dict) -> Database:
+        return cls(
+            id=retrieved_json["id"].replace("-", ""),
+            title="".join(i["plain_text"] for i in retrieved_json["title"]),
+            description="".join(i["plain_text"] for i in retrieved_json["description"]),
+            url=retrieved_json["url"],
+            properties={
+                name: read_property(prop, "database")
+                for name, prop in retrieved_json["properties"].items()
+            },
+            pages=[Page.from_dict(i) for i in queried_json["results"]],
+        )
