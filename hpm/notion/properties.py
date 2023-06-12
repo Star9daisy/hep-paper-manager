@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 __all__ = [
@@ -14,7 +14,7 @@ __all__ = [
 ]
 
 
-def read_property(content) -> Property:
+def read_property(property: dict) -> Property:
     property_type_to_class = {
         "multi_select": MultiSelect,
         "number": Number,
@@ -24,16 +24,15 @@ def read_property(content) -> Property:
         "title": Title,
         "url": URL,
     }
-    _, property = content
-    return property_type_to_class[property["type"]].from_dict(content)
+
+    return property_type_to_class[property["type"]].from_dict(property)
 
 
 class Property(Protocol):
-    name: str
     value: Any
 
     @classmethod
-    def from_dict(cls, content) -> Property:
+    def from_dict(cls, property: dict) -> Property:
         ...
 
     def to_dict(self) -> dict:
@@ -42,107 +41,98 @@ class Property(Protocol):
 
 @dataclass
 class MultiSelect:
-    name: str
-    value: list[str]
+    value: list[str | None] = field(default_factory=list)
 
     @classmethod
-    def from_dict(cls, content):
-        name, property = content
-        value = [option["name"] for option in property[property["type"]]["options"]]
-        return cls(name, value)
+    def from_dict(cls, property: str):
+        options = property["multi_select"]
+        value = [option["name"] for option in options] if options else []
+        return cls(value)
 
     def to_dict(self):
-        return {self.name: {"multi_select": [{"name": option} for option in self.value]}}
+        return {"multi_select": [{"name": option} for option in self.value]}
 
 
 @dataclass
 class Number:
-    name: str
-    value: float
+    value: float | None = None
 
     @classmethod
-    def from_dict(cls, content):
-        name, property = content
+    def from_dict(cls, property: dict):
         value = property["number"]
-        return cls(name, value)
+        return cls(value)
 
     def to_dict(self):
-        return {self.name: {"number": self.value}}
+        return {"number": self.value}
 
 
 @dataclass
 class Relation:
-    name: str
-    ids: list[str]
+    value: list[str | None] = field(default_factory=list)
 
     @classmethod
-    def from_dict(cls, content):
-        name, property = content
-        ids = [i["id"] for i in property["relation"]]
-        return cls(name, ids)
+    def from_dict(cls, property: dict):
+        relations = property["relation"]
+        value = [i["id"].replace("-", "") for i in relations] if relations else []
+        return cls(value)
 
     def to_dict(self):
-        return {self.name: {"relation": [{"id": id} for id in self.ids]}}
+        return {"relation": [{"id": i} for i in self.value]}
 
 
 @dataclass
 class RichText:
-    name: str
-    value: str
+    value: str = ""
 
     @classmethod
-    def from_dict(cls, content):
-        name, property = content
-        value = "".join([i["plain_text"] for i in property["rich_text"]])
-        return cls(name, value)
+    def from_dict(cls, property: dict):
+        content = property["rich_text"]
+        value = "".join([i["plain_text"] for i in content]) if content else ""
+        return cls(value)
 
     def to_dict(self):
-        return {self.name: {"rich_text": [{"text": {"content": self.value}}]}}
+        return {"rich_text": [{"text": {"content": self.value}}]}
 
 
 @dataclass
 class Select:
-    name: str
-    value: str | None
+    value: str | None = None
 
     @classmethod
-    def from_dict(cls, content):
-        name, property = content
-        if property["select"]:
-            value = property["select"]["name"]
-        else:
-            value = None
-        return cls(name, value)
+    def from_dict(cls, property: dict):
+        selection = property["select"]
+        value = selection["name"] if selection else None
+        return cls(value)
 
     def to_dict(self):
-        return {self.name: {"select": {"name": self.value}}}
+        if self.value:
+            return {"select": {"name": self.value}}
+        else:
+            return {"select": None}
 
 
 @dataclass
 class Title:
-    name: str
-    value: str
+    value: str = ""
 
     @classmethod
-    def from_dict(cls, content):
-        name, property = content
-        value = "".join([i["plain_text"] for i in property["title"]])
-        return cls(name, value)
+    def from_dict(cls, property):
+        content = property["title"]
+        value = "".join([i["plain_text"] for i in content]) if content else ""
+        return cls(value)
 
     def to_dict(self):
-        return {self.name: {"title": [{"text": {"content": self.value}}]}}
+        return {"title": [{"text": {"content": self.value}}]}
 
 
 @dataclass
 class URL:
-    name: str
-    value: str
+    value: str | None = None
 
     @classmethod
-    def from_dict(cls, content):
-        name, property = content
+    def from_dict(cls, property: dict):
         value = property["url"]
-        return cls(name, value)
+        return cls(value)
 
     def to_dict(self):
-        return {self.name: {"url": self.value}}
+        return {"url": self.value}
