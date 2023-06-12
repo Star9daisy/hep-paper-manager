@@ -1,9 +1,4 @@
-import json
-
 from hpm.notion.properties import *
-
-with open("tests/property_examples.json", "r") as f:
-    examples = json.load(f)
 
 
 def test_multi_select():
