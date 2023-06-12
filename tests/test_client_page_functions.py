@@ -59,25 +59,23 @@ def test_update_page():
     page0 = Page.from_response(client.retrieve_page(page_id0))
     page0.properties["p_title"] = Title(value="New title")
 
-    new_page0 = Page.from_response(client.update_page(page0))
+    new_page0 = Page.from_response(client.update_page(page0.id, page0.properties_to_dict()))
     assert new_page0.properties["p_title"] == Title(value="New title")
 
     new_page0.properties["p_title"] = Title()
-    old_page0 = Page.from_response(client.update_page(new_page0))
+    old_page0 = Page.from_response(client.update_page(new_page0.id, new_page0.properties_to_dict()))
     assert old_page0.properties["p_title"] == Title()
 
 
 def test_create_archive_restore_page():
-    page0 = Page(parent_id=parent_id)
-
-    new_page0 = Page.from_response(client.create_page(page0))
+    new_page0 = Page.from_response(client.create_page(parent_id))
     old_page0 = Page.from_response(client.retrieve_page(page_id0))
     assert new_page0.properties == old_page0.properties
 
-    archived_page0 = Page.from_response(client.archive_page(new_page0))
+    archived_page0 = Page.from_response(client.archive_page(new_page0.id))
     assert archived_page0 == new_page0
 
-    restored_page0 = Page.from_response(client.restore_page(archived_page0))
+    restored_page0 = Page.from_response(client.restore_page(archived_page0.id))
     assert restored_page0 == archived_page0
 
-    client.archive_page(restored_page0)
+    client.archive_page(restored_page0.id)
