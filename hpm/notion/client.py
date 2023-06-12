@@ -7,37 +7,27 @@ class Client:
     def __init__(self, token: str):
         self.token = token
 
-    # def retrieve_database(self, database_id: str) -> Database:
-    #     url = f"https://api.notion.com/v1/databases/{database_id}"
-    #     headers = {
-    #         "accept": "application/json",
-    #         "Notion-Version": "2022-06-28",
-    #         "content-type": "application/json",
-    #         "authorization": f"Bearer {self.token}",
-    #     }
+    def retrieve_database(self, database_id: str) -> requests.Response:
+        url = f"https://api.notion.com/v1/databases/{database_id}"
+        headers = {
+            "accept": "application/json",
+            "Notion-Version": "2022-06-28",
+            "content-type": "application/json",
+            "authorization": f"Bearer {self.token}",
+        }
 
-    #     response = requests.get(url, headers=headers)
-    #     if response.status_code != 200:
-    #         raise Exception(response.text)
-    #     else:
-    #         return Database.from_json(response.json())
+        return requests.get(url, headers=headers)
 
-    # def query_database(self, database_id: str) -> list[Page]:
-    #     url = f"https://api.notion.com/v1/databases/{database_id}/query"
-    #     payload = {"page_size": 100}
-    #     headers = {
-    #         "accept": "application/json",
-    #         "Notion-Version": "2022-06-28",
-    #         "content-type": "application/json",
-    #         "authorization": f"Bearer {self.token}",
-    #     }
-    #     response = requests.post(url, json=payload, headers=headers)
-
-    #     if response.status_code != 200:
-    #         raise Exception(response.text)
-    #     else:
-    #         pages = [Page.from_json(page) for page in response.json()["results"]]
-    #         return pages
+    def query_database(self, database_id: str) -> requests.Response:
+        url = f"https://api.notion.com/v1/databases/{database_id}/query"
+        payload = {"page_size": 100}
+        headers = {
+            "accept": "application/json",
+            "Notion-Version": "2022-06-28",
+            "content-type": "application/json",
+            "authorization": f"Bearer {self.token}",
+        }
+        return requests.post(url, json=payload, headers=headers)
 
     def create_page(self, parent_id: str, properties: dict = {}) -> requests.Response:
         url = "https://api.notion.com/v1/pages"
