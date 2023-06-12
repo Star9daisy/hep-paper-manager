@@ -9,6 +9,7 @@ from ..properties import read_property
 class Page:
     parent_id: str
     properties: dict = field(default_factory=dict)
+    title: str | None = None
     id: str | None = None
     url: str | None = None
 
@@ -16,10 +17,18 @@ class Page:
     def from_dict(cls, response_json: dict) -> Page:
         content = response_json
 
+        properties = {}
+        title = None
+        for name, prop in content["properties"].items():
+            properties[name] = read_property(prop)
+            if prop["type"] == "title":
+                title = read_property(prop).value
+
         return cls(
+            title=title,
             id=content["id"].replace("-", ""),
             parent_id=content["parent"]["database_id"].replace("-", ""),
-            properties={name: read_property(prop) for name, prop in content["properties"].items()},
+            properties=properties,
             url=content["url"],
         )
 
