@@ -49,33 +49,35 @@ def test_retrieve_page():
         id="48cb3c1ee9664680884dd7bfa05913a3",
         url="https://www.notion.so/Item1-48cb3c1ee9664680884dd7bfa05913a3",
     )
-    page0 = Page.from_response(client.retrieve_page(page_id0))
-    page1 = Page.from_response(client.retrieve_page(page_id1))
+    page0 = Page.from_dict(client.retrieve_page(page_id0).json())
+    page1 = Page.from_dict(client.retrieve_page(page_id1).json())
     assert page0 == expected0
     assert page1 == expected1
 
 
 def test_update_page():
-    page0 = Page.from_response(client.retrieve_page(page_id0))
+    page0 = Page.from_dict(client.retrieve_page(page_id0).json())
     page0.properties["p_title"] = Title(value="New title")
 
-    new_page0 = Page.from_response(client.update_page(page0.id, page0.properties_to_dict()))
+    new_page0 = Page.from_dict(client.update_page(page0.id, page0.properties_to_dict()).json())
     assert new_page0.properties["p_title"] == Title(value="New title")
 
     new_page0.properties["p_title"] = Title()
-    old_page0 = Page.from_response(client.update_page(new_page0.id, new_page0.properties_to_dict()))
+    old_page0 = Page.from_dict(
+        client.update_page(new_page0.id, new_page0.properties_to_dict()).json()
+    )
     assert old_page0.properties["p_title"] == Title()
 
 
 def test_create_archive_restore_page():
-    new_page0 = Page.from_response(client.create_page(parent_id))
-    old_page0 = Page.from_response(client.retrieve_page(page_id0))
+    new_page0 = Page.from_dict(client.create_page(parent_id).json())
+    old_page0 = Page.from_dict(client.retrieve_page(page_id0).json())
     assert new_page0.properties == old_page0.properties
 
-    archived_page0 = Page.from_response(client.archive_page(new_page0.id))
+    archived_page0 = Page.from_dict(client.archive_page(new_page0.id).json())
     assert archived_page0 == new_page0
 
-    restored_page0 = Page.from_response(client.restore_page(archived_page0.id))
+    restored_page0 = Page.from_dict(client.restore_page(archived_page0.id).json())
     assert restored_page0 == archived_page0
 
     client.archive_page(restored_page0.id)
