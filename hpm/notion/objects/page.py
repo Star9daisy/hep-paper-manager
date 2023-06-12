@@ -1,47 +1,39 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
+
+import requests
 
 from ..properties import Property, read_property
 
 
 @dataclass
 class Page:
-    id: str | None
     parent_id: str
-    properties: list[Property]
-    url: str | None
+    properties: dict = field(default_factory=dict)
+    id: str | None = None
+    url: str | None = None
 
     @classmethod
-    def from_dict(cls, content: dict) -> Page:
-        id = content["id"].replace("-", "")
-        parent_id = content["parent"]["database_id"].replace("-", "")
-        properties = [read_property(i) for i in content["properties"].items()]
-        url = content["url"]
+    def from_response(cls, response: requests.Response) -> Page:
+        if response.status_code != 200:
+            raise Exception(response.text)
 
-        return cls(id, parent_id, properties, url)
+        content = response.json()
 
-    def to_dict(self) -> dict:
+        return cls(
+            id=content["id"].replace("-", ""),
+            parent_id=content["parent"]["database_id"].replace("-", ""),
+            properties={name: read_property(prop) for name, prop in content["properties"].items()},
+            url=content["url"],
+        )
+
+    def properties_to_dict(self) -> dict:
         out = {}
-        for property in self.properties:
-            out.update(property.to_dict())
+        for name, property in self.properties.items():
+            out[name] = property.to_dict()
         return out
-
-    def get_property(self, name: str):
-        for property in self.properties:
-            if property.name == name:
-                return property.value
-
-        raise ValueError(f"Property '{name}' not found in this page.")
-
-    def set_property(self, name: str, value: Any):
-        for property in self.properties:
-            if property.name == name:
-                property.value = value
-                return
-
-        raise ValueError(f"Property '{name}' not found in this page.")
 
 
 # class Page:
