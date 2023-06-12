@@ -44,7 +44,7 @@ class MultiSelect:
     value: list[str | None] = field(default_factory=list)
 
     @classmethod
-    def from_dict(cls, property: str):
+    def from_dict(cls, property: dict):
         options = property["multi_select"]
         value = [option["name"] for option in options] if options else []
         return cls(value)
