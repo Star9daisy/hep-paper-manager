@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import requests
 
-from .objects import Page
-
 
 class Client:
     def __init__(self, token: str):
@@ -41,14 +39,14 @@ class Client:
     #         pages = [Page.from_json(page) for page in response.json()["results"]]
     #         return pages
 
-    def create_page(self, page: Page) -> requests.Response:
+    def create_page(self, parent_id: str, properties: dict = {}) -> requests.Response:
         url = "https://api.notion.com/v1/pages"
         payload = {
             "parent": {
                 "type": "database_id",
-                "database_id": page.parent_id,
+                "database_id": parent_id,
             },
-            "properties": page.properties_to_dict(),
+            "properties": properties,
         }
         headers = {
             "accept": "application/json",
@@ -68,10 +66,10 @@ class Client:
         }
         return requests.get(url, headers=headers)
 
-    def update_page(self, page: Page) -> requests.Response:
-        url = f"https://api.notion.com/v1/pages/{page.id}"
+    def update_page(self, page_id: str, properties: dict = {}) -> requests.Response:
+        url = f"https://api.notion.com/v1/pages/{page_id}"
         payload = {
-            "properties": page.properties_to_dict(),
+            "properties": properties,
         }
         headers = {
             "accept": "application/json",
@@ -81,8 +79,8 @@ class Client:
         }
         return requests.patch(url, json=payload, headers=headers)
 
-    def archive_page(self, page: Page) -> requests.Response:
-        url = f"https://api.notion.com/v1/pages/{page.id}"
+    def archive_page(self, page_id: str) -> requests.Response:
+        url = f"https://api.notion.com/v1/pages/{page_id}"
         payload = {
             "archived": True,
         }
@@ -94,8 +92,8 @@ class Client:
         }
         return requests.patch(url, json=payload, headers=headers)
 
-    def restore_page(self, page: Page) -> requests.Response:
-        url = f"https://api.notion.com/v1/pages/{page.id}"
+    def restore_page(self, page_id: str) -> requests.Response:
+        url = f"https://api.notion.com/v1/pages/{page_id}"
         payload = {
             "archived": False,
         }
