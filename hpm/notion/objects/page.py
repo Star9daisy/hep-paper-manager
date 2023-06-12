@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
-import requests
-
-from ..properties import Property, read_property
+from ..properties import read_property
 
 
 @dataclass
@@ -16,11 +13,8 @@ class Page:
     url: str | None = None
 
     @classmethod
-    def from_response(cls, response: requests.Response) -> Page:
-        if response.status_code != 200:
-            raise Exception(response.text)
-
-        content = response.json()
+    def from_dict(cls, response_json: dict) -> Page:
+        content = response_json
 
         return cls(
             id=content["id"].replace("-", ""),
