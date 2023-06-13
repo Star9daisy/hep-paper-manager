@@ -1,17 +1,12 @@
-import json
-import os
 from importlib import import_module
-from pathlib import Path
 from typing import Optional
 
 import typer
 import yaml
 from rich import print
-from rich.panel import Panel
 from typing_extensions import Annotated
 
-from hpm import CACHED_PAPERS_DIR
-from hpm.engines.inspire import Inspire, Paper
+from hpm import APP_DIR, TEMPLATE_DIR
 from hpm.notion.client import Client
 from hpm.notion.objects import Database, Page
 from hpm.notion.properties import *
@@ -23,49 +18,11 @@ app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
     add_completion=False,
 )
-app_dir = Path(typer.get_app_dir("hpm", force_posix=True))
-app_dir.mkdir(parents=True, exist_ok=True)
-
-cached_papers_dir = CACHED_PAPERS_DIR
-cached_papers_dir.mkdir(parents=True, exist_ok=True)
-cached_paper_ids = [p.stem for p in cached_papers_dir.glob("*.json")]
-
-template_dir = app_dir / "templates"
-template_dir.mkdir(parents=True, exist_ok=True)
-
-
-# ---------------------------------------------------------------------------- #
-@app.command(help="Get a new paper by Arxiv ID, and show it in the terminal")
-def get(arxiv_id: Annotated[str, typer.Argument(help="Arxiv ID of a paper")]):
-    if arxiv_id in cached_paper_ids:
-        print("Fetching from cache...")
-        paper = Paper.from_json(cached_papers_dir / f"{arxiv_id}.json")
-    else:
-        print("Fetching from InspireHEP...")
-        inspire = Inspire()
-        paper = inspire.get(arxiv_id)
-
-        # If the paper is published, cache it
-        if paper.journal != "Unpublished":
-            with open(cached_papers_dir / f"{arxiv_id}.json", "w") as f:
-                json.dump(paper.__dict__, f, indent=4)
-            print(f"Cached in {cached_papers_dir / f'{arxiv_id}.json'}")
-
-    print(
-        Panel.fit(
-            f"[green]Title[/green]: [bold][{paper.arxiv_id}] {paper.title}[/bold]\n"
-            f"[green]Authors[/green]: {', '.join(paper.authors)}\n"
-            f"[green]Journal[/green]: {paper.journal}\n"
-            f"[green]Citations[/green]: {paper.citations}\n"
-            f"[green]Abstract[/green]: {paper.abstract}",
-            width=80,
-        )
-    )
 
 
 @app.command()
 def auth(token: str):
-    token_file = app_dir / "auth.yml"
+    token_file = APP_DIR / "auth.yml"
     with open(token_file, "w") as f:
         yaml.dump({"token": token}, f)
 
@@ -74,7 +31,7 @@ def auth(token: str):
 
 @app.command(help="Add a new page to a database")
 def add(template: str, parameters: str):
-    token_file = app_dir / "auth.yml"
+    token_file = APP_DIR / "auth.yml"
     with open(token_file, "r") as f:
         token = yaml.safe_load(f)["token"]
 
@@ -83,24 +40,27 @@ def add(template: str, parameters: str):
 
     # Resolve the template and parameters
     parameters = parameters.split(",")
-    template = template_dir / f"{template}.yml"
+    template = TEMPLATE_DIR / f"{template}.yml"
 
     # Load the template
     with open(template, "r") as f:
         template = yaml.safe_load(f)
 
+    print(f"-> Launching {template['engine']}")
     # Instantiate the engine
     engine = getattr(import_module("hpm.engines"), template["engine"])()
 
     # Unpack the parameters and pass them to the engine to get the results
     engine_results = engine.get(*parameters)
 
+    print(f"-> Fetching database {template['database']}")
     # Get the database according to the template
     database_id = template["database"]
     retrieved_json = client.retrieve_database(database_id).json()
     queried_json = client.query_database(database_id).json()
     database = Database.from_dict(retrieved_json, queried_json)
 
+    print(f"-> Creating page in database {database.title}")
     # Loop over database properties
     # we need to get related database in DatabaseRelation, then extract its pages's title and id to a dictionary.
     # Then when creating a page with this property, we can find its id by its title.
