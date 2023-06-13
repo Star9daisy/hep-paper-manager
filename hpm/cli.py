@@ -69,6 +69,8 @@ def auth(token: str):
     with open(token_file, "w") as f:
         yaml.dump({"token": token}, f)
 
+    print(f"Token saved in {token_file}")
+
 
 @app.command(help="Add a new page to a database")
 def add(template: str, parameters: str):
