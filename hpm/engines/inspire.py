@@ -1,10 +1,14 @@
-from collections import OrderedDict
 import json
+from collections import OrderedDict
+from dataclasses import dataclass
 
 import requests
 
 from hpm import CACHE_DIR
-from dataclasses import dataclass
+
+INSPIRE_CACHED_DIR = CACHE_DIR / "Inspire"
+INSPIRE_CACHED_DIR.mkdir(parents=True, exist_ok=True)
+cached_paper_ids = [p.stem for p in INSPIRE_CACHED_DIR.glob("*.json")]
 
 
 @dataclass
@@ -17,22 +21,7 @@ class Paper:
     abstract: str
 
     @classmethod
-    def from_json(cls, filepath: str):
-        with open(filepath, "r") as f:
-            contents = json.load(f)
-        return cls(
-            arxiv_id=contents["arxiv_id"],
-            title=contents["title"],
-            authors=contents["authors"],
-            journal=contents["journal"],
-            citations=contents["citations"],
-            abstract=contents["abstract"],
-        )
-
-    @classmethod
-    def from_response(cls, response: requests.Response):
-        contents = response.json(object_pairs_hook=OrderedDict)
-
+    def from_dict(cls, contents: dict):
         metadata = contents["metadata"]
         title = metadata["titles"][-1]["title"]
 
@@ -79,13 +68,29 @@ class Inspire:
         self.api = "https://inspirehep.net/api/arxiv/"
 
     def get(self, arxiv_id: str) -> Paper:
-        url = self.api + arxiv_id
-        response = requests.get(url)
+        if arxiv_id in cached_paper_ids:
+            print("Fetching from cache...")
+            with open(INSPIRE_CACHED_DIR / f"{arxiv_id}.json", "r") as f:
+                contents = json.load(f)
+            paper = Paper.from_dict(contents)
 
-        if response.status_code != 200:
-            log_file = CACHE_DIR / f"{arxiv_id}.log"
-            with open(log_file, "w") as f:
-                f.writelines(response.text)
-            raise Exception(f"Error fetching the paper, check {log_file.absolute()}")
         else:
-            return Paper.from_response(response)
+            print("Fetching from InspireHEP...")
+            url = self.api + arxiv_id
+            response = requests.get(url)
+
+            if response.status_code != 200:
+                log_file = CACHE_DIR / f"{arxiv_id}.log"
+                with open(log_file, "w") as f:
+                    f.writelines(response.text)
+                raise Exception(f"Error fetching the paper, check {log_file.absolute()}")
+
+            contents = response.json(object_pairs_hook=OrderedDict)
+            paper = Paper.from_dict(contents)
+
+            if paper.journal != "Unpublished":
+                print(f"Caching the new paper {arxiv_id}...")
+                with open(INSPIRE_CACHED_DIR / f"{arxiv_id}.json", "w") as f:
+                    json.dump(response.json(), f, indent=4)
+
+        return paper
