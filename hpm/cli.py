@@ -133,7 +133,7 @@ def add(template: str, parameters: str):
 
 def version_callback(value: bool):
     if value:
-        print(f"{__app_name__} version {__app_version__}")
+        print(f"{__app_name__} v[yellow]{__app_version__}[/yellow]")
         raise typer.Exit()
 
 
