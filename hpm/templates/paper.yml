@@ -1,0 +1,9 @@
+engine: Inspire
+database: <database_id>
+properties:
+  arxiv_id: Arxiv ID
+  citations: Citations
+  title: Title
+  journal: Journal
+  authors: Authors
+  abstract: Abstract

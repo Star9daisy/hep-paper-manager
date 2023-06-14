@@ -1,4 +1,6 @@
+import shutil
 from importlib import import_module
+from pathlib import Path
 from typing import Optional
 
 import typer
@@ -6,7 +8,7 @@ import yaml
 from rich import print
 from typing_extensions import Annotated
 
-from hpm import APP_DIR, TEMPLATE_DIR
+from hpm import APP_DIR, CACHE_DIR, TEMPLATE_DIR
 from hpm.notion.client import Client
 from hpm.notion.objects import Database, Page
 from hpm.notion.properties import *
@@ -20,13 +22,28 @@ app = typer.Typer(
 )
 
 
-@app.command()
-def auth(token: str):
+@app.command(help="Initialize hpm with the Notion API token")
+def init():
+    print("=== Default directories ===")
+    print(f"App directory: {APP_DIR}")
+    print(f"Template directory: {TEMPLATE_DIR}")
+    print(f"Cache directory: {CACHE_DIR}")
+
+    print()
+    print(f"Welcome to {__app_name__}! Before we start, we need to set up some things.")
+    token = typer.prompt("- token", hide_input=True)
     token_file = APP_DIR / "auth.yml"
     with open(token_file, "w") as f:
         yaml.dump({"token": token}, f)
-
     print(f"Token saved in {token_file}")
+
+    use_template = typer.confirm("- Use the default paper template?")
+    if use_template:
+        paper_template = Path(__file__).parent / "templates/paper.yml"
+        shutil.copy(paper_template, TEMPLATE_DIR)
+        print("Remember to add a database id to the template before using hpm!")
+
+    print("Done!")
 
 
 @app.command(help="Add a new page to a database")
