@@ -11,5 +11,5 @@ APP_DIR.mkdir(parents=True, exist_ok=True)
 TEMPLATE_DIR = APP_DIR / "templates"
 TEMPLATE_DIR.mkdir(parents=True, exist_ok=True)
 
-CACHE_DIR = Path.home() / ".cache" / "hpm"
+CACHE_DIR = APP_DIR / "cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
