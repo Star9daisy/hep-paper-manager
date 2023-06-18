@@ -8,7 +8,9 @@ HPM is a command-line tool that adds High Energy Physics (HEP) papers to a Notio
 - Interactive CLI for easy setup and usage.
 
 ## Installation
-Under building...
+```
+pip install hep-paper-manager
+```
 
 ## Usage
 > Before using `hpm`, check this [link](https://developers.notion.com/docs/create-a-notion-integration) to create an integration with the Notion API to let `hpm` work with your database.
@@ -72,7 +74,7 @@ You can adjust the properties within the template. On the left is the returned v
   ```
 
 ## Updates
-### v0.1.0
+### v0.1.1
 - Add `hpm init` for interactive setup.
 - Add `hpm add` for adding a paper to a Notion database.
 - Introduce the default `Inspire` engine and `paper.yml` template.
