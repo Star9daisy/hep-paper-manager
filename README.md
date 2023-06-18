@@ -74,7 +74,7 @@ You can adjust the properties within the template. On the left is the returned v
   ```
 
 ## Updates
-### v0.1.0
+### v0.1.1
 - Add `hpm init` for interactive setup.
 - Add `hpm add` for adding a paper to a Notion database.
 - Introduce the default `Inspire` engine and `paper.yml` template.
