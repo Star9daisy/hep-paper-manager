@@ -35,28 +35,31 @@ pip install hep-paper-manager
    Journal: Select
    Authors: Multi-select
    Abstract: Text
+   URL: URL
+   Bibtex: Text
+   Source: Select
    ```
-   ![database](https://imgur.com/L3pJk1h.png)
+   ![database](https://imgur.com/RjIKM7I.png)
    Tip: Consider adding Authors as a Relation property. This allows you to concentrate on specific authors or professors of interest. Just add the integration to the related professors' database. hpm will locate authors based on the page Title property in the related database and fetched names.
 
 2. Then set up `hpm` with `hpm init`:
-   ![hpm init](https://imgur.com/282SiHF.png)
+   ![hpm init](https://imgur.com/qm0uPH1.png)
 
 3. Before adding our paper to a database, review the default `paper.yml` template and insert the database ID:
-   ![paper.yml](https://imgur.com/nmXWNrB.png)
-   The database ID is in the database URL. For the database just created: "https://www.notion.so/star9daisy/67877176f7064ed982e177aaf70f27cb?v=ffcad911d3d9416bb91657814242fd27&pvs=4", "67877176f7064ed982e177aaf70f27cb" is the database ID.
+   ![paper.yml](https://imgur.com/zjzqYiT.png)
+   The database ID is in the database URL. For the database just created: "https://www.notion.so/star9daisy/d91282815e5143818ae36ff05132d3b7?v=1ed0289b07ae4e1c8edeeb6eaf1d722f&pvs=4", "d91282815e5143818ae36ff05132d3b7" is the database ID.
    
    Remember to structure your database as shown above and add the integration to the database!
 
 4. Now let's add the paper into the database:
-  ![hpm add](https://imgur.com/ycWCn3Y.png)
+  ![hpm add](https://imgur.com/twxP8cv.png)
    The database in Notion should now look like the following:
-  ![database](https://imgur.com/9U2jdSi.png)
+  ![database](https://imgur.com/DjJBOuG.png)
 
 ## Engines
 - `Inspire`: It fetches papers from the [Inspire HEP](https://inspirehep.net/). It serves the default engine for `hpm`.
   - Parameters: `arxiv_id`
-  - Returns: `Paper(title, authors, abstract, journal, citations)`
+  - Returns: `Paper(title, authors, abstract, journal, citations, url, bibtex, source)`
 
 ## Templates
 You can adjust the properties within the template. On the left is the returned value from the engine and on the right is the property name in the Notion database.
@@ -71,9 +74,14 @@ You can adjust the properties within the template. On the left is the returned v
     journal: Journal
     authors: Authors
     abstract: Abstract
+    url: URL
+    bibtex: Bibtex
+    source: Source
   ```
 
 ## Updates
+### v0.1.2
+- Update paper from Inspire engine to include url, bibtex, and source. 
 ### v0.1.1
 - Add `hpm init` for interactive setup.
 - Add `hpm add` for adding a paper to a Notion database.
