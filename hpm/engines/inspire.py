@@ -19,6 +19,9 @@ class Paper:
     journal: str
     citations: int
     abstract: str
+    url: str
+    bibtex: str
+    source: str
 
     @classmethod
     def from_dict(cls, contents: dict):
@@ -53,6 +56,12 @@ class Paper:
 
         citations = metadata["citation_count"]
         abstract = metadata["abstracts"][-1]["value"]
+        url = f"https://inspirehep.net/literature/{metadata['control_number']}"
+
+        bibtex_link = contents["links"]["bibtex"]
+        bibtex_response = requests.get(bibtex_link)
+        bibtex = bibtex_response.text[:-1]
+
         return Paper(
             arxiv_id=contents["id"],
             title=title,
@@ -60,6 +69,9 @@ class Paper:
             journal=journal,
             citations=citations,
             abstract=abstract,
+            url=url,
+            bibtex=bibtex,
+            source="Inspire",
         )
 
 
