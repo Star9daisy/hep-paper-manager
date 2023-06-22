@@ -24,26 +24,25 @@ app = typer.Typer(
 
 @app.command(help="Initialize hpm with the Notion API token")
 def init():
-    print("=== Default directories ===")
-    print(f"App directory: {APP_DIR}")
-    print(f"Template directory: {TEMPLATE_DIR}")
-    print(f"Cache directory: {CACHE_DIR}")
-
-    print()
-    print(f"Welcome to {__app_name__}! Before we start, we need to set up some things.")
-    token = typer.prompt("- token", hide_input=True)
+    print("Welcome to the HEP Paper Manager!\n")
+    print("Before we start, let's set up a few necessary configurations.\n")
+    token = typer.prompt("Enter your Notion API token", hide_input=True)
     token_file = APP_DIR / "auth.yml"
     with open(token_file, "w") as f:
         yaml.dump({"token": token}, f)
-    print(f"Token saved in {token_file}")
+    print(f"[green]Your token has been saved in {token_file}\n")
 
-    use_template = typer.confirm("- Use the default paper template?")
+    use_template = typer.confirm("Would you like to use the default paper template?", default=True)
     if use_template:
         paper_template = Path(__file__).parent / "templates/paper.yml"
         shutil.copy(paper_template, TEMPLATE_DIR)
-        print("Remember to add a database id to the template before using hpm!")
+        print(f"[green]The default template has been saved in {TEMPLATE_DIR}/paper.yml")
+        print("[yellow]Remember to add a database id to the template before using hpm!\n")
 
-    print("Done!")
+    print("Configuration complete! Here are directories that hpm will use:")
+    print(f"1. App directory: {APP_DIR}")
+    print(f"2. Template directory: {TEMPLATE_DIR}")
+    print(f"3. Cache directory: {CACHE_DIR}")
 
 
 @app.command(help="Add a new page to a database")
