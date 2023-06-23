@@ -80,6 +80,9 @@ You can adjust the properties within the template. On the left is the returned v
   ```
 
 ## Updates
+### v0.1.3
+- Update `hpm add` to check if the paper already exists in the database.
+- You can now create a database with more properties then the template.
 ### v0.1.2
 - Update paper from Inspire engine to include url, bibtex, and source. 
 ### v0.1.1
