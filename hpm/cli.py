@@ -119,14 +119,22 @@ def add(template: str, parameters: str):
                 if i in database.properties[target].value:
                     page.properties[target].value.append(database.properties[target].value[i])
         else:
+            if type(property) == Title:
+                page.title = getattr(engine_results, source)
             page.properties[target].value = getattr(engine_results, source)
+
+    # Check if the page already exists
+    for i in database.pages:
+        if i.title == page.title:
+            print("[red]Page already exists!")
+            raise typer.Exit(code=1)
 
     # Create the page
     response = client.create_page(database_id, page.properties_to_dict())
     if response.status_code == 200:
-        print("Page created successfully!")
+        print("[green]Page created successfully!")
     else:
-        print("Page creation failed!")
+        print("[red]Page creation failed!")
         print(response.text)
         raise typer.Exit(code=1)
 
