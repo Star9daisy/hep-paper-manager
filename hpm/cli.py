@@ -101,12 +101,13 @@ def add(template: str, parameters: str):
         DatabaseURL: URL,
     }
 
-    # Use database properties for page properties
+    # Use template properties for page properties rather than database properties
+    # to allow for other properties that are not in the template but in the database
     page = Page(
         parent_id=database_id,
         properties={
-            name: property_database_to_page[type(property)]()
-            for name, property in database.properties.items()
+            name: property_database_to_page[type(database.properties[name])]()
+            for _, name in template["properties"].items()
         },
     )
 
