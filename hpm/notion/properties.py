@@ -18,6 +18,7 @@ __all__ = [
     "DatabaseSelect",
     "DatabaseTitle",
     "DatabaseURL",
+    "OtherProperty",
     "Property",
     "read_property",
 ]
@@ -47,11 +48,26 @@ def read_property(property: dict, source: str = "page") -> Property:
     else:
         raise ValueError(f"Invalid source: {source}, choose 'page' or 'database'")
 
-    return property_type_to_class[property["type"]].from_dict(property)
+    if property["type"] in property_type_to_class:
+        return property_type_to_class[property["type"]].from_dict(property)
+    else:
+        return OtherProperty()
 
 
 class Property(Protocol):
     value: Any
+
+    @classmethod
+    def from_dict(cls, property: dict) -> Property:
+        ...
+
+    def to_dict(self) -> dict:
+        ...
+
+
+@dataclass
+class OtherProperty:
+    value: str = "Unknown"
 
     @classmethod
     def from_dict(cls, property: dict) -> Property:
