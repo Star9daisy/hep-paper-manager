@@ -19,6 +19,9 @@ jobs:
 
     - name: Install dependencies
       run: poetry install
+    
+    - name: Set up environment variables
+      run: echo "${{ secrets.NOTION_TOKEN }}" > .env
 
     - name: Run tests
       run: poetry run pytest --cov=hpm --cov-report=xml tests
