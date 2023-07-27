@@ -80,6 +80,9 @@ You can adjust the properties within the template. On the left is the returned v
   ```
 
 ## Updates
+### v0.1.4
+- Update print style.
+- Add friendly error message when the `database_id` is not specified.
 ### v0.1.3
 - Update `hpm add` to check if the paper already exists in the database.
 - You can now create a database with more properties then the template.
