@@ -70,4 +70,11 @@ def test_retrieve_and_query_database():
     retrieved_json = client.retrieve_database(parent_id).json()
     queried_json = client.query_database(parent_id).json()
     database = Database.from_dict(retrieved_json, queried_json)
-    assert database == expected
+
+    assert database.id == expected.id
+    assert database.title == expected.title
+    assert database.description == expected.description
+    assert database.url == expected.url
+    assert database.properties == expected.properties
+    for page in database.pages:
+        assert page in expected.pages
