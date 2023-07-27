@@ -94,21 +94,23 @@ def add(template: str, parameters: str):
         )
         raise typer.Exit(1)
 
-    print(f"-> Launching {template['engine']}")
+    console.print(f"[sect]>[/sect] Launching {template['engine']} engine")
     # Instantiate the engine
     engine = getattr(import_module("hpm.engines"), template["engine"])()
 
     # Unpack the parameters and pass them to the engine to get the results
     engine_results = engine.get(*parameters)
+    console.print(f"[done]✔️[/done] Engine launched\n")
 
-    print(f"-> Fetching database {template['database']}")
+    console.print(f"[sect]>[/sect] Fetching Notion database {template['database']}")
     # Get the database according to the template
     database_id = template["database"]
     retrieved_json = client.retrieve_database(database_id).json()
     queried_json = client.query_database(database_id).json()
     database = Database.from_dict(retrieved_json, queried_json)
+    console.print(f"[done]✔️[/done] Database fetched\n")
 
-    print(f"-> Creating page in database {database.title}")
+    console.print(f"[sect]>[/sect] Creating page in database {database.title}")
     # Loop over database properties
     # we need to get related database in DatabaseRelation, then extract its pages's title and id to a dictionary.
     # Then when creating a page with this property, we can find its id by its title.
@@ -158,15 +160,15 @@ def add(template: str, parameters: str):
     # Check if the page already exists
     for i in database.pages:
         if i.title == page.title:
-            print("[red]Page already exists!")
+            console.print("[error]![/error] Page already exists!")
             raise typer.Exit(code=1)
 
     # Create the page
     response = client.create_page(database_id, page.properties_to_dict())
     if response.status_code == 200:
-        print("[green]Page created successfully!")
+        console.print("[done]✔️[/done] Page created successfully!")
     else:
-        print("[red]Page creation failed!")
+        console.print("[error]x[/error] Page creation failed!")
         print(response.text)
         raise typer.Exit(code=1)
 
