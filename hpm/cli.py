@@ -44,11 +44,13 @@ console = Console(
 def init():
     console.print("Welcome to the HEP Paper Manager!\n")
     console.print("Before we start, let's set up a few necessary configurations.\n")
-    token = Prompt.ask("[ques]?[/ques] Enter your Notion API token", console=console, password=True)
+    token = Prompt.ask(
+        "[ques]?[/ques] Enter your Notion API token", console=console, password=True
+    )
     token_file = APP_DIR / "auth.yml"
     with open(token_file, "w") as f:
         yaml.dump({"token": token}, f)
-    console.print(f"[done]✔️[/done] Your token has been saved in {token_file}\n")
+    console.print(f"[done]✔[/done] Your token has been saved in {token_file}\n")
 
     use_template = Confirm.ask(
         "[ques]?[/ques] Would you like to use the default paper template?",
@@ -59,9 +61,11 @@ def init():
         paper_template = Path(__file__).parent / "templates/paper.yml"
         shutil.copy(paper_template, TEMPLATE_DIR)
         console.print(
-            f"[done]✔️[/done] The default template has been saved in {TEMPLATE_DIR}/paper.yml"
+            f"[done]✔[/done] The default template has been saved in {TEMPLATE_DIR}/paper.yml"
         )
-        console.print("[warn]Remember to add a database id to the template before using hpm!\n")
+        console.print(
+            "[warn]Remember to add a database id to the template before using hpm!\n"
+        )
 
     console.print("Configuration complete! Here are directories that hpm will use:")
     console.print(f"1. App directory: {APP_DIR}")
@@ -100,7 +104,7 @@ def add(template: str, parameters: str):
 
     # Unpack the parameters and pass them to the engine to get the results
     engine_results = engine.get(*parameters)
-    console.print(f"[done]✔️[/done] Engine launched\n")
+    console.print(f"[done]✔[/done] Engine launched\n")
 
     console.print(f"[sect]>[/sect] Fetching Notion database {template['database']}")
     # Get the database according to the template
@@ -108,7 +112,7 @@ def add(template: str, parameters: str):
     retrieved_json = client.retrieve_database(database_id).json()
     queried_json = client.query_database(database_id).json()
     database = Database.from_dict(retrieved_json, queried_json)
-    console.print(f"[done]✔️[/done] Database fetched\n")
+    console.print(f"[done]✔[/done] Database fetched\n")
 
     console.print(f"[sect]>[/sect] Creating page in database {database.title}")
     # Loop over database properties
@@ -151,7 +155,9 @@ def add(template: str, parameters: str):
         if type(property) == Relation:
             for i in getattr(engine_results, source):
                 if i in database.properties[target].value:
-                    page.properties[target].value.append(database.properties[target].value[i])
+                    page.properties[target].value.append(
+                        database.properties[target].value[i]
+                    )
         else:
             if type(property) == Title:
                 page.title = getattr(engine_results, source)
@@ -175,7 +181,9 @@ def add(template: str, parameters: str):
 
 def version_callback(value: bool):
     if value:
-        console.print(f"[bold]{__app_name__}[/bold] (version [number]{__app_version__}[/number])")
+        console.print(
+            f"[bold]{__app_name__}[/bold] (version [number]{__app_version__}[/number])"
+        )
         raise typer.Exit()
 
 
