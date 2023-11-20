@@ -25,9 +25,13 @@ class Paper:
 
     @classmethod
     def from_dict(cls, contents: dict):
+        # Metadata ----------------------------------------------------------- #
         metadata = contents["metadata"]
+
+        # Title
         title = metadata["titles"][-1]["title"]
 
+        # Authors
         authors = []
         if "collaborations" in metadata:
             authors.append(f"{metadata['collaborations'][0]['value']} Collaboration")
@@ -36,6 +40,7 @@ class Paper:
                 author_name = " ".join(author["full_name"].split(", ")[::-1])
                 authors.append(author_name)
 
+        # Journal
         match metadata["document_type"][0]:
             case "article":
                 try:
@@ -54,8 +59,13 @@ class Paper:
                             journal = conf_metadata["titles"][0]["title"]
                         break
 
+        # Citations
         citations = metadata["citation_count"]
+
+        # Abstract
         abstract = metadata["abstracts"][-1]["value"]
+
+        # Bibtex
         url = f"https://inspirehep.net/literature/{metadata['control_number']}"
 
         bibtex_link = contents["links"]["bibtex"]
@@ -95,7 +105,9 @@ class Inspire:
                 log_file = CACHE_DIR / f"{arxiv_id}.log"
                 with open(log_file, "w") as f:
                     f.writelines(response.text)
-                raise Exception(f"Error fetching the paper, check {log_file.absolute()}")
+                raise Exception(
+                    f"Error fetching the paper, check {log_file.absolute()}"
+                )
 
             contents = response.json(object_pairs_hook=OrderedDict)
             paper = Paper.from_dict(contents)
