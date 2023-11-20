@@ -41,6 +41,7 @@ class Paper:
                 authors.append(author_name)
 
         # Journal
+        journal = "Unpublished"
         match metadata["document_type"][0]:
             case "article":
                 try:
