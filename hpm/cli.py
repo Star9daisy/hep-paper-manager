@@ -83,7 +83,7 @@ def add(template: str, parameters: str):
     client = Client(token)
 
     # Resolve the template and parameters
-    parameters = parameters.split(",")
+    parameter_list = parameters.split(",")
     template_path = TEMPLATE_DIR / f"{template}.yml"
 
     # Load the template
@@ -103,7 +103,7 @@ def add(template: str, parameters: str):
     engine = getattr(import_module("hpm.engines"), template["engine"])()
 
     # Unpack the parameters and pass them to the engine to get the results
-    engine_results = engine.get(*parameters)
+    engine_results = engine.get(*parameter_list)
     console.print(f"[done]✔[/done] Engine launched\n")
 
     console.print(f"[sect]>[/sect] Fetching Notion database {template['database']}")
