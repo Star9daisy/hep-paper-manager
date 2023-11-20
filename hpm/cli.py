@@ -88,27 +88,28 @@ def add(template: str, parameters: str):
 
     # Load the template
     with open(template_path, "r") as f:
-        template = yaml.safe_load(f)
+        template_content = yaml.safe_load(f)
 
     # Check if the database_id is specified in the template
-    database_id = template["database"]
-    if database_id == "<database_id>":
+    if (database_id := template_content["database"]) == "<database_id>":
         console.print(
             f"[error]x[/error] Please specify a database id in [path]{template_path}[/path]"
         )
         raise typer.Exit(1)
 
-    console.print(f"[sect]>[/sect] Launching {template['engine']} engine")
+    console.print(f"[sect]>[/sect] Launching {template_content['engine']} engine")
     # Instantiate the engine
-    engine = getattr(import_module("hpm.engines"), template["engine"])()
+    engine = getattr(import_module("hpm.engines"), template_content["engine"])()
 
     # Unpack the parameters and pass them to the engine to get the results
     engine_results = engine.get(*parameter_list)
     console.print(f"[done]✔[/done] Engine launched\n")
 
-    console.print(f"[sect]>[/sect] Fetching Notion database {template['database']}")
+    console.print(
+        f"[sect]>[/sect] Fetching Notion database {template_content['database']}"
+    )
     # Get the database according to the template
-    database_id = template["database"]
+    database_id = template_content["database"]
     retrieved_json = client.retrieve_database(database_id).json()
     queried_json = client.query_database(database_id).json()
     database = Database.from_dict(retrieved_json, queried_json)
@@ -145,12 +146,12 @@ def add(template: str, parameters: str):
         parent_id=database_id,
         properties={
             name: property_database_to_page[type(database.properties[name])]()
-            for _, name in template["properties"].items()
+            for _, name in template_content["properties"].items()
         },
     )
 
     # Extract property values from engine results according to the template
-    for source, target in template["properties"].items():
+    for source, target in template_content["properties"].items():
         property = page.properties[target]
         if type(property) == Relation:
             for i in getattr(engine_results, source):
