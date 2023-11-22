@@ -9,7 +9,7 @@ class Inspire:
     def __init__(self):
         self.api = "https://inspirehep.net/api/"
 
-    def get(self, identifier_type: str, identifier_value: str, verbose: int = 1):
+    def get(self, identifier_type: str, identifier_value: str):
         if identifier_type not in ["literature", "doi", "arxiv"]:
             raise ValueError("Only literature, doi, arxiv are supported for now")
 
