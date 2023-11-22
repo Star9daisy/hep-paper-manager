@@ -112,7 +112,7 @@ class InspirePaper:
             date_str += "-1"
 
         date = datetime.strptime(date_str, "%Y-%m-%d")
-        date = date.strftime("%b %d, %Y")
+        date = date.strftime("%Y-%m-%d")
 
         # Type
         type = metadata["document_type"][0]
