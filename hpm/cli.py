@@ -20,9 +20,9 @@ from . import __app_name__, __app_version__
 from .styles import theme
 
 # ---------------------------------------------------------------------------- #
-APP_DIR = typer.get_app_dir(__app_name__, force_posix=True)
-TEMPLATE_DIR = Path(APP_DIR) / "templates"
-CACHE_DIR = Path(APP_DIR) / "cache"
+APP_DIR = Path(typer.get_app_dir(__app_name__, force_posix=True))
+TEMPLATE_DIR = APP_DIR / "templates"
+CACHE_DIR = APP_DIR / "cache"
 
 # ---------------------------------------------------------------------------- #
 app = typer.Typer(
@@ -42,26 +42,22 @@ def init():
     )
 
     # Setup app directory ---------------------------------------------------- #
-    app_dir = Path(
-        Prompt.ask("\n[ques]? Set the directory for hpm", console=c, default=APP_DIR)
-    )
-    if app_dir.exists():
+    c.print("\n[sect]>[/sect] Setting up app directory...", end="")
+    if APP_DIR.exists():
+        c.print("[error]✘")
         c.print("[error]This directory already exists.")
         c.print()
         c.print(
             "[hint]Check out the directory and ensure it could be safely removed.\n"
-            f"Use `rmdir {app_dir}` or `rm -rf {app_dir}` (caution!) to remove it.\n"
+            f"Use `rmdir {APP_DIR}` or `rm -rf {APP_DIR}` (caution!) to remove it.\n"
             "Then run `hpm init` again."
         )
         raise typer.Exit(1)
 
-    app_dir = Path(app_dir)
-    template_dir = app_dir / "templates"
-    cache_dir = app_dir / "cache"
-
-    app_dir.mkdir()
-    template_dir.mkdir()
-    cache_dir.mkdir()
+    APP_DIR.mkdir()
+    TEMPLATE_DIR.mkdir()
+    CACHE_DIR.mkdir()
+    c.print("[done]✔")
 
     # Token ------------------------------------------------------------------ #
     token = Prompt.ask(
@@ -80,7 +76,7 @@ def init():
         )
         raise typer.Exit(1)
 
-    with open(app_dir / "auth.yml", "w") as f:
+    with open(APP_DIR / "auth.yml", "w") as f:
         yaml.dump({"token": token}, f)
 
     # Database --------------------------------------------------------------- #
@@ -138,19 +134,19 @@ def init():
         template_content = yaml.safe_load(f)
         template_content["database_id"] = database_id
     try:
-        with open(template_dir / "paper.yml", "w") as f:
+        with open(TEMPLATE_DIR / "paper.yml", "w") as f:
             yaml.dump(template_content, f, sort_keys=False)
     except:
         c.print("[error]✘")
         c.print("[error]Failed to create the paper template.")
         c.print()
         c.print(
-            f"[hint] Check out the directory {template_dir} and ensure it exists.\n"
+            f"[hint] Check out the directory {TEMPLATE_DIR} and ensure it exists.\n"
             "Or run `hpm init` again."
         )
         raise typer.Exit(1)
     c.print("[done]✔")
-    c.print(f"[done]Paper template saved in {template_dir / 'paper.yml'}")
+    c.print(f"[done]Paper template saved in {TEMPLATE_DIR / 'paper.yml'}")
     c.print()
     c.print("[hint]Remember to review the template and update it if necessary.")
 
