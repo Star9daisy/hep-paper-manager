@@ -74,8 +74,6 @@ class InspirePaper:
                     else:
                         journal = conf_metadata["titles"][0]["title"]
                     break
-        else:
-            raise ValueError(f"Unknown document type: {metadata['document_type'][0]}")
 
         # Abstract
         abstract = metadata["abstracts"][0]["value"]
