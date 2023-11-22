@@ -166,17 +166,31 @@ def add(paper_id: str, id_type: str = "literature"):
         template = yaml.safe_load(f)
 
     # Get the database ------------------------------------------------------- #
+    c.print(f"[sect]>[/sect] Retrieving database {template['database_id']}...", end="")
     database_id = template["database_id"]
     D = Database(token)
-    D.retrieve_database(database_id)
+
+    try:
+        D.retrieve_database(database_id)
+    except Exception as e:
+        c.print("[error]✘")
+        c.print(f"[error]Failed to retrieve the database: {e}")
+        raise typer.Exit(1)
+    c.print("[done]✔")
 
     # Get the paper ---------------------------------------------------------- #
-    response_json = Inspire().get(
-        identifier_type=id_type,
-        identifier_value=paper_id,
-    )
+    c.print(f"[sect]>[/sect] Retrieving paper {paper_id}...", end="")
+    try:
+        response_json = Inspire().get(
+            identifier_type=id_type,
+            identifier_value=paper_id,
+        )
+    except Exception as e:
+        c.print("[error]✘")
+        c.print(f"[error]Failed to retrieve the paper: {e}")
+        raise typer.Exit(1)
+    c.print(f"[done]✔")
     paper = InspirePaper.from_dict(response_json)
-    c.print(paper)
 
     # Paper -> Page according to the template -------------------------------- #
     properties = Properties()
@@ -185,8 +199,16 @@ def add(paper_id: str, id_type: str = "literature"):
         getattr(properties, f"set_{col_type}")(database_col, getattr(paper, prop))
 
     # Create the page -------------------------------------------------------- #
+    c.print(f"[sect]>[/sect] Creating page for {paper.title}...", end="")
     page = Page(token)
-    page.create_page(database_id, properties)
+
+    try:
+        page.create_page(database_id, properties)
+    except Exception as e:
+        c.print("[error]✘")
+        c.print(f"[error]Failed to create the page: {e}")
+        raise typer.Exit(1)
+    c.print("[done]✔")
 
 
 def version_callback(value: bool):
