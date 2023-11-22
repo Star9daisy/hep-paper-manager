@@ -139,7 +139,7 @@ def init():
         template_content["database_id"] = database_id
     try:
         with open(template_dir / "paper.yml", "w") as f:
-            yaml.dump(template_content, f)
+            yaml.dump(template_content, f, sort_keys=False)
     except:
         c.print("[error]✘")
         c.print("[error]Failed to create the paper template.")
