@@ -13,9 +13,6 @@ class Inspire:
         if identifier_type not in ["literature", "doi", "arxiv"]:
             raise ValueError("Only literature, doi, arxiv are supported for now")
 
-        if verbose > 0:
-            print(f"Getting {identifier_type} {identifier_value}...")
-
         url = self.api + identifier_type + "/" + identifier_value
         response = requests.get(url)
 
