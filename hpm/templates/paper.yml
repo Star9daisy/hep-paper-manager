@@ -1,11 +1,15 @@
 engine: Inspire
 database_id: <database_id>
 properties:
-  arxiv_id: Arxiv ID
+  date: Date
   citations: Citations
   title: Title
+  type: Type
   journal: Journal
   authors: Authors
-  abstract: Abstract
   link: Link
+  abstract: Abstract
   bibtex: Bibtex
+  inspire_id: Inspire ID
+  arxiv_id: Arxiv ID
+  doi: DOI
