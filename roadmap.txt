@@ -1,0 +1,35 @@
+hpm init
+- token
+    [?] The number of databases is greater than 1
+    [✔] Select one
+        <database name> <database id>
+    [✘] Tell user to add an integration to a database
+- template
+- cache
+
+hpm add ID (inspire/arxiv/doi)
+[?] ID in database
+[✔] use "hpm update ID" instead
+[✘] add to database
+    - ID to paper by InspireHEP
+        [?] is published
+        [✔️] cache paper
+    - paper to page according to the template
+    - page to Notion
+
+hpm update ID
+[?] paper exists
+[✔] update page
+[✘] use "hpm add ID" instead
+
+hpm info
+[?] hpm directory
+[✘] use "hpm init" first
+[✔] show info
+token: <token>
+database: <database name> [<database id>]
+template: <template path>
+    <template content>
+cache: <cache path>
+    <the size of cache>
+    <the number of cached papers>

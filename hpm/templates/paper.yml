@@ -7,6 +7,5 @@ properties:
   journal: Journal
   authors: Authors
   abstract: Abstract
-  url: URL
+  link: Link
   bibtex: Bibtex
-  source: Source

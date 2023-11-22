@@ -5,72 +5,152 @@ from typing import Optional
 
 import typer
 import yaml
+from notion_database.const.query import Direction, Timestamp
+from notion_database.search import Search
 from rich.console import Console
 from rich.prompt import Confirm, Prompt
-from rich.theme import Theme
+from tabulate import tabulate
 from typing_extensions import Annotated
 
-from hpm import APP_DIR, CACHE_DIR, TEMPLATE_DIR
 from hpm.notion.client import Client
 from hpm.notion.objects import Database, Page
 from hpm.notion.properties import *
 
 from . import __app_name__, __app_version__
+from .styles import theme
+
+# ---------------------------------------------------------------------------- #
+APP_DIR = typer.get_app_dir(__app_name__, force_posix=True)
 
 # ---------------------------------------------------------------------------- #
 app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
     add_completion=False,
 )
-
-console = Console(
-    theme=Theme(
-        {
-            "sect": "bold white",  # section
-            "info": "bold blue",  # informatiom
-            "done": "bold green",  # done
-            "ques": "bold yellow",  # question
-            "error": "bold red",  # error
-            "warn": "yellow",  # warning
-            "path": "cyan underline",  # path
-            "number": "cyan",  # number
-        },
-        inherit=False,
-    )
-)
+c = Console(theme=theme)
 
 
+# ---------------------------------------------------------------------------- #
 @app.command(help="Initialize hpm with the Notion API token")
 def init():
-    console.print("Welcome to the HEP Paper Manager!\n")
-    console.print("Before we start, let's set up a few necessary configurations.\n")
+    # Welcome info ----------------------------------------------------------- #
+    c.print(
+        "Welcome to HEP Paper Manager.\n"
+        "It helps add a paper from InspireHEP to Notion database"
+    )
+
+    # Setup app directory ---------------------------------------------------- #
+    app_dir = Path(
+        Prompt.ask("\n[ques]? Set the directory for hpm", console=c, default=APP_DIR)
+    )
+    if app_dir.exists():
+        c.print("[error]This directory already exists.")
+        c.print()
+        c.print(
+            "[hint]Check out the directory and ensure it could be safely removed.\n"
+            f"Use `rmdir {app_dir}` or `rm -rf {app_dir}` (caution!) to remove it.\n"
+            "Then run `hpm init` again."
+        )
+        raise typer.Exit(1)
+
+    app_dir = Path(app_dir)
+    template_dir = app_dir / "templates"
+    cache_dir = app_dir / "cache"
+
+    app_dir.mkdir()
+    template_dir.mkdir()
+    cache_dir.mkdir()
+
+    # Token ------------------------------------------------------------------ #
     token = Prompt.ask(
-        "[ques]?[/ques] Enter your Notion API token", console=console, password=True
+        "\n[ques]? Enter the integration token",
+        console=c,
+        password=True,
     )
-    token_file = APP_DIR / "auth.yml"
-    with open(token_file, "w") as f:
+    if token != "":
+        c.print("[done]Integration token added")
+    else:
+        c.print("[error]Empty integration token")
+        c.print()
+        c.print(
+            "[hint]Integration token is started with 'secret_', "
+            "copy and paste it here."
+        )
+        raise typer.Exit(1)
+
+    with open(app_dir / "auth.yml", "w") as f:
         yaml.dump({"token": token}, f)
-    console.print(f"[done]✔[/done] Your token has been saved in {token_file}\n")
 
-    use_template = Confirm.ask(
-        "[ques]?[/ques] Would you like to use the default paper template?",
-        console=console,
-        default=True,
+    # Database --------------------------------------------------------------- #
+    c.print("\n[sect]>[/sect] Retriving databases...", end="")
+    try:
+        S = Search(token)
+        S.search_database(
+            query="",
+            sort={
+                "direction": Direction.ascending,
+                "timestamp": Timestamp.last_edited_time,
+            },
+        )
+    except:
+        c.print("[error]✘")
+        c.print("[error]Invalid integration token.")
+        c.print()
+        c.print(
+            "[hint]Please create an integration first. "
+            "For more information, check out\n"
+            "https://developers.notion.com/docs/create-a-notion-integration"
+            "#create-your-integration-in-notion"
+        )
+        raise typer.Exit(1)
+    c.print("[done]✔")
+
+    if len(S.result) == 0:
+        c.print("[error]No databases connected to the integration.")
+        c.print()
+        c.print(
+            "[hint]Please add the integration to a database first. "
+            "For more information, check out\n"
+            "https://developers.notion.com/docs/create-a-notion-integration"
+            "#give-your-integration-page-permissions"
+        )
+        raise typer.Exit(1)
+
+    db_table = {
+        "Index": [i for i in range(len(S.result))],
+        "Name": [i["title"][0]["plain_text"] for i in S.result],
+        "Database ID": [i["id"] for i in S.result],
+    }
+    c.print(tabulate(db_table, headers="keys", showindex=True))
+
+    db_index = int(
+        Prompt.ask("[ques]? Choose one as paper database", console=c, default=0)
     )
-    if use_template:
-        paper_template = Path(__file__).parent / "templates/paper.yml"
-        shutil.copy(paper_template, TEMPLATE_DIR)
-        console.print(
-            f"[done]✔[/done] The default template has been saved in {TEMPLATE_DIR}/paper.yml"
-        )
-        console.print(
-            "[warn]Remember to add a database id to the template before using hpm!\n"
-        )
+    database_id = S.result[db_index]["id"]
+    database_name = S.result[db_index]["title"][0]["plain_text"]
 
-    console.print("Configuration complete! Here are directories that hpm will use:")
-    console.print(f"1. App directory: {APP_DIR}")
-    console.print(f"2. Template directory: {TEMPLATE_DIR}")
-    console.print(f"3. Cache directory: {CACHE_DIR}")
+    # Template --------------------------------------------------------------- #
+    c.print(f"\n[sect]>[/sect] Creating template for {database_name}...", end="")
+    paper_template = Path(__file__).parent / "templates/paper.yml"
+    with open(paper_template, "r") as f:
+        template_content = yaml.safe_load(f)
+        template_content["database_id"] = database_id
+    try:
+        with open(template_dir / "paper.yml", "w") as f:
+            yaml.dump(template_content, f)
+    except:
+        c.print("[error]✘")
+        c.print("[error]Failed to create the paper template.")
+        c.print()
+        c.print(
+            f"[hint] Check out the directory {template_dir} and ensure it exists.\n"
+            "Or run `hpm init` again."
+        )
+        raise typer.Exit(1)
+    c.print("[done]✔")
+    c.print(f"[done]Paper template saved in {template_dir / 'paper.yml'}")
+    c.print()
+    c.print("[hint]Remember to review the template and update it if necessary.")
 
 
 @app.command(help="Add a new page to a database")
