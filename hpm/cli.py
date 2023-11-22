@@ -1,22 +1,20 @@
-import shutil
-from importlib import import_module
 from pathlib import Path
 from typing import Optional
 
 import typer
 import yaml
 from notion_database.const.query import Direction, Timestamp
+from notion_database.database import Database
+from notion_database.page import Page
+from notion_database.properties import Properties
 from notion_database.search import Search
 from rich.console import Console
-from rich.prompt import Confirm, Prompt
+from rich.prompt import Prompt
 from tabulate import tabulate
 from typing_extensions import Annotated
 
-from hpm.notion.client import Client
-from hpm.notion.objects import Database, Page
-from hpm.notion.properties import *
-
 from . import __app_name__, __app_version__
+from .engines import Inspire, InspirePaper
 from .styles import theme
 
 # ---------------------------------------------------------------------------- #
@@ -151,111 +149,44 @@ def init():
     c.print("[hint]Remember to review the template and update it if necessary.")
 
 
-@app.command(help="Add a new page to a database")
-def add(template: str, parameters: str):
-    token_file = APP_DIR / "auth.yml"
-    with open(token_file, "r") as f:
-        token = yaml.safe_load(f)["token"]
+@app.command(help="Add an Inpsire paper to a Notion database")
+def add(paper_id: str, id_type: str = "literature"):
+    # Get the token ---------------------------------------------------------- #
+    with open(APP_DIR / "auth.yml", "r") as f:
+        token = yaml.safe_load(f).get("token")
 
-    # Create a Notion client
-    client = Client(token)
-
-    # Resolve the template and parameters
-    parameter_list = parameters.split(",")
-    template_path = TEMPLATE_DIR / f"{template}.yml"
-
-    # Load the template
-    with open(template_path, "r") as f:
-        template_content = yaml.safe_load(f)
-
-    # Check if the database_id is specified in the template
-    if (database_id := template_content["database"]) == "<database_id>":
-        console.print(
-            f"[error]x[/error] Please specify a database id in [path]{template_path}[/path]"
-        )
+    if token is None:
+        c.print("[error]No integration token found.")
+        c.print()
+        c.print("[hint]Please run `hpm init` to initialize the app first.")
         raise typer.Exit(1)
 
-    console.print(f"[sect]>[/sect] Launching {template_content['engine']} engine")
-    # Instantiate the engine
-    engine = getattr(import_module("hpm.engines"), template_content["engine"])()
+    # Get the template ------------------------------------------------------- #
+    with open(TEMPLATE_DIR / "paper.yml", "r") as f:
+        template = yaml.safe_load(f)
 
-    # Unpack the parameters and pass them to the engine to get the results
-    engine_results = engine.get(*parameter_list)
-    console.print(f"[done]✔[/done] Engine launched\n")
+    # Get the database ------------------------------------------------------- #
+    database_id = template["database_id"]
+    D = Database(token)
+    D.retrieve_database(database_id)
 
-    console.print(
-        f"[sect]>[/sect] Fetching Notion database {template_content['database']}"
+    # Get the paper ---------------------------------------------------------- #
+    response_json = Inspire().get(
+        identifier_type=id_type,
+        identifier_value=paper_id,
     )
-    # Get the database according to the template
-    database_id = template_content["database"]
-    retrieved_json = client.retrieve_database(database_id).json()
-    queried_json = client.query_database(database_id).json()
-    database = Database.from_dict(retrieved_json, queried_json)
-    console.print(f"[done]✔[/done] Database fetched\n")
+    paper = InspirePaper.from_dict(response_json)
+    c.print(paper)
 
-    console.print(f"[sect]>[/sect] Creating page in database {database.title}")
-    # Loop over database properties
-    # we need to get related database in DatabaseRelation, then extract its pages's title and id to a dictionary.
-    # Then when creating a page with this property, we can find its id by its title.
-    for name, prop in database.properties.items():
-        if type(prop) == DatabaseRelation:
-            related_database_id = prop.value
-            retrieved_json = client.retrieve_database(related_database_id).json()
-            queried_json = client.query_database(related_database_id).json()
-            related_database = Database.from_dict(retrieved_json, queried_json)
-            database.properties[name] = DatabaseRelation(
-                {i.title: i.id for i in related_database.pages}
-            )
+    # Paper -> Page according to the template -------------------------------- #
+    properties = Properties()
+    for prop, database_col in template["properties"].items():
+        col_type = D.result["properties"][database_col]["type"]
+        getattr(properties, f"set_{col_type}")(database_col, getattr(paper, prop))
 
-    # Convert database properties to page properties
-    property_database_to_page = {
-        DatabaseMultiSelect: MultiSelect,
-        DatabaseNumber: Number,
-        DatabaseRelation: Relation,
-        DatabaseRichText: RichText,
-        DatabaseSelect: Select,
-        DatabaseTitle: Title,
-        DatabaseURL: URL,
-    }
-
-    # Use template properties for page properties rather than database properties
-    # to allow for other properties that are not in the template but in the database
-    page = Page(
-        parent_id=database_id,
-        properties={
-            name: property_database_to_page[type(database.properties[name])]()
-            for _, name in template_content["properties"].items()
-        },
-    )
-
-    # Extract property values from engine results according to the template
-    for source, target in template_content["properties"].items():
-        property = page.properties[target]
-        if type(property) == Relation:
-            for i in getattr(engine_results, source):
-                if i in database.properties[target].value:
-                    page.properties[target].value.append(
-                        database.properties[target].value[i]
-                    )
-        else:
-            if type(property) == Title:
-                page.title = getattr(engine_results, source)
-            page.properties[target].value = getattr(engine_results, source)
-
-    # Check if the page already exists
-    for i in database.pages:
-        if i.title == page.title:
-            console.print("[error]![/error] Page already exists!")
-            raise typer.Exit(code=1)
-
-    # Create the page
-    response = client.create_page(database_id, page.properties_to_dict())
-    if response.status_code == 200:
-        console.print("[done]✔️[/done] Page created successfully!")
-    else:
-        console.print("[error]x[/error] Page creation failed!")
-        print(response.text)
-        raise typer.Exit(code=1)
+    # Create the page -------------------------------------------------------- #
+    page = Page(token)
+    page.create_page(database_id, properties)
 
 
 def version_callback(value: bool):
