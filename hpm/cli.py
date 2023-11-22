@@ -21,6 +21,8 @@ from .styles import theme
 
 # ---------------------------------------------------------------------------- #
 APP_DIR = typer.get_app_dir(__app_name__, force_posix=True)
+TEMPLATE_DIR = Path(APP_DIR) / "templates"
+CACHE_DIR = Path(APP_DIR) / "cache"
 
 # ---------------------------------------------------------------------------- #
 app = typer.Typer(
