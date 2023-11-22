@@ -191,8 +191,10 @@ def add(paper_id: str, id_type: str = "literature"):
 
 def version_callback(value: bool):
     if value:
-        console.print(
-            f"[bold]{__app_name__}[/bold] (version [number]{__app_version__}[/number])"
+        c.print(
+            "== [bold]HEP Paper Manager[/bold] ==\n"
+            f"{__app_name__} @v[bold cyan]{__app_version__}[/bold cyan]\n\n"
+            "Made by Star9daisy with [bold red]♥[/bold red]"
         )
         raise typer.Exit()
 
