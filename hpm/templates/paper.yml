@@ -1,5 +1,5 @@
 engine: Inspire
-database: <database_id>
+database_id: <database_id>
 properties:
   arxiv_id: Arxiv ID
   citations: Citations
