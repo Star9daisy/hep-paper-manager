@@ -86,7 +86,7 @@ class InspirePaper:
         bibtex = bibtex_response.text[:-1]
 
         # Inspire ID
-        inspire_id = metadata.get("control_number", "")
+        inspire_id = str(metadata["control_number"])
 
         # Arxiv ID
         arxiv_id = ""
