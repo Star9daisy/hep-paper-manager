@@ -178,7 +178,17 @@ def add(paper_id: str, id_type: str = "literature"):
         raise typer.Exit(1)
     c.print("[done]✔")
 
-    # Get the paper ---------------------------------------------------------- #
+    # Check if the paper is already in the database -------------------------- #
+    c.print(f"[sect]>[/sect] Checking if it is a new paper...", end="")
+    D.run_query_database(database_id)
+    for page in D.result["results"]:
+        if page["properties"]["Inspire ID"]["rich_text"][0]["plain_text"] == paper_id:
+            c.print("[error]✘")
+            c.print("[error]This paper is already in the database.")
+            c.print()
+            c.print("[hint] Use `hpm update` to update the paper info.")
+            raise typer.Exit(1)
+
     c.print(f"[sect]>[/sect] Retrieving paper {paper_id}...", end="")
     try:
         response_json = Inspire().get(
@@ -209,6 +219,11 @@ def add(paper_id: str, id_type: str = "literature"):
         c.print(f"[error]Failed to create the page: {e}")
         raise typer.Exit(1)
     c.print("[done]✔")
+
+
+@app.command()
+def update(paper_id: str):
+    ...
 
 
 @app.command()
