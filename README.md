@@ -51,7 +51,7 @@ paper:
 The "Type" above is what we call a "property" in Notion. You can add a new
 property by clicking `+` in the database page. Or click an existing property
 to modify its type.
-![properties](https://imgur.com/FeqCkhW.gif)
+![FeqCkhW](https://github.com/Star9daisy/hep-paper-manager/assets/47071425/81630270-ea99-41d6-a4a2-33ddbe0c4b88)
 
 Open a blank page, it should look like this:
 ![blank page](https://imgur.com/qPGOU7C.png)
