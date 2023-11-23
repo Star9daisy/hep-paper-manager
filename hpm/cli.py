@@ -211,6 +211,37 @@ def add(paper_id: str, id_type: str = "literature"):
     c.print("[done]✔")
 
 
+@app.command()
+def info():
+    if not APP_DIR.exists():
+        c.print("[error]No app directory found.")
+        c.print()
+        c.print("[hint]Please run `hpm init` to initialize the app first.")
+        raise typer.Exit(1)
+
+    c.print(f"[sect]>[/sect] App directory:")
+    c.print(f"[path]{APP_DIR}\n")
+
+    c.print(f"[sect]>[/sect] Auth file:")
+    c.print(f"[path]{APP_DIR / 'auth.yml'}\n")
+
+    c.print(f"[sect]>[/sect] Template file:")
+    c.print(f"[path]{TEMPLATE_DIR / 'paper.yml'}\n")
+
+    with (TEMPLATE_DIR / "paper.yml").open() as f:
+        template = yaml.safe_load(f)
+
+    properties = {"Paper": [], "Database": []}
+    for prop, database_col in template["properties"].items():
+        properties["Paper"].append(prop)
+        properties["Database"].append(database_col)
+
+    c.print(f"[sect]>[/sect] Database ID:")
+    c.print(f"[number]{template['database_id']}\n")
+    c.print(f"[sect]>[/sect] Paper template properties:")
+    c.print(tabulate(properties, headers="keys"))
+
+
 def version_callback(value: bool):
     if value:
         c.print(
