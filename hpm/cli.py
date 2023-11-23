@@ -117,7 +117,7 @@ def init():
         "Name": [i["title"][0]["plain_text"] for i in S.result],
         "Database ID": [i["id"] for i in S.result],
     }
-    c.print(tabulate(db_table, headers="keys", showindex=True))
+    c.print(tabulate(db_table, headers="keys"))
 
     db_index = int(
         Prompt.ask("[ques]? Choose one as paper database", console=c, default=0)
