@@ -125,7 +125,7 @@ def init():
     c.print(tabulate(db_table, headers="keys"))
 
     db_index = int(
-        Prompt.ask("[ques]? Choose one as paper database", console=c, default=0)
+        Prompt.ask("[ques]? Choose one as paper database [0]", console=c, default=0)
     )
     database_id = S.result[db_index]["id"]
     database_name = S.result[db_index]["title"][0]["plain_text"]
