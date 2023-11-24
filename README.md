@@ -72,6 +72,11 @@ hpm init
 ```
 ![hpm init](https://imgur.com/uxBkbW6.gif)
 
+If you want to change the default template, use `hpm info` to find the location
+of the template file. Then modify the template file directly.
+
+![hpm info](https://imgur.com/QuVPVK4.png)
+
    
 ### Step 3: Add the paper to the database
 Usually, we search for papers on Inspire. The Inspire ID is the number in the
@@ -94,6 +99,23 @@ hpm add "10.1007/JHEP07(2016)069" --id-type doi
 ![other id](https://imgur.com/j4zi8ws.png)
 
 You can now add more papers to your Notion database.
+
+### Step 4: Update the paper
+After a while, the paper may have newer information like citation number. You
+can update the paper in the database by `hpm update`.
+```bash
+hpm update 1405106
+```
+
+Just like `hpm add`, you can also update papers by Arxiv ID or DOI.
+```bash
+hpm update 1511.05190 --id-type arxiv
+hpm update "10.1007/JHEP07(2016)069" --id-type doi
+```
+
+Note, the columns in the database but not in the template will not be updated.
+So you can add more columns to the database without worrying about losing
+information.
 
 ## Engines
 - `Inspire`: It fetches papers from the [Inspire HEP](https://inspirehep.net/).
@@ -137,8 +159,17 @@ of `InspirePaper`:
     arxiv_id: Arxiv ID
     doi: DOI
   ```
+  These properties match the properties of the InpspirePaper class. You can
+  modify the template to fit your needs. 
+
+  ! Remember the last three lines are necessary. You can't remove them.
 
 ## Updates
+### v0.2.0
+- Refactor the codebase by introducing `notion_database`.
+- Add `hpm update` to update one paper in the database.
+- Add `hpm info` to show the information of this app.
+
 ### v0.1.4
 - Update print style.
 - Add friendly error message when the `database_id` is not specified.
