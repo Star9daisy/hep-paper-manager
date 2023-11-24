@@ -21,6 +21,11 @@ from .styles import theme
 APP_DIR = Path(typer.get_app_dir(__app_name__, force_posix=True))
 TEMPLATE_DIR = APP_DIR / "templates"
 CACHE_DIR = APP_DIR / "cache"
+ID_MAPPINGS = {
+    "literature": "Inspire ID",
+    "arxiv": "Arxiv ID",
+    "doi": "DOI",
+}
 
 # ---------------------------------------------------------------------------- #
 app = typer.Typer(
