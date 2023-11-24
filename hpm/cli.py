@@ -243,7 +243,7 @@ def add(paper_id: str, id_type: str = "literature"):
     c.print("[done]✔")
 
 
-@app.command()
+@app.command(help="Update an Inpsire paper in a Notion database")
 def update(paper_id: str, id_type: str = "literature"):
     if not APP_DIR.exists():
         c.print("[error]No app directory found.")
@@ -335,7 +335,7 @@ def update(paper_id: str, id_type: str = "literature"):
     c.print("[done]✔")
 
 
-@app.command()
+@app.command(help="Show the app info")
 def info():
     if not APP_DIR.exists():
         c.print("[error]No app directory found.")
