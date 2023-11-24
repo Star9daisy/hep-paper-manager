@@ -170,6 +170,86 @@ def add(paper_id: str, id_type: str = "literature"):
     with open(TEMPLATE_DIR / "paper.yml", "r") as f:
         template = yaml.safe_load(f)
 
+    # Notion operators ------------------------------------------------------- #
+    database_id = template["database_id"]
+    D = Database(token)
+    P = Page(token)
+
+    # Check if the paper is already in the database -------------------------- #
+    c.print(f"[sect]>[/sect] Checking if it is a new paper...", end="")
+    D.run_query_database(database_id)
+
+    for page in D.result["results"]:
+        id_col = ID_MAPPINGS[id_type]
+        page_id = page["properties"][id_col]["rich_text"][0]["plain_text"]
+        if page_id == paper_id:
+            c.print("[error]✘")
+            c.print("[error]This paper is already in the database.")
+            c.print()
+            c.print("[hint]Use `hpm update` to update the paper info.")
+            raise typer.Exit(1)
+    c.print("[done]✔️")
+
+    # Get the paper according to the identifier ------------------------------ #
+    c.print(f"[sect]>[/sect] Retrieving paper {paper_id}...", end="")
+    try:
+        response_json = Inspire().get(
+            identifier_type=id_type,
+            identifier_value=paper_id,
+        )
+    except Exception as e:
+        c.print("[error]✘")
+        c.print(f"[error]Failed to retrieve the paper: {e}")
+        raise typer.Exit(1)
+    c.print(f"[done]✔")
+
+    paper = InspirePaper.from_dict(response_json)
+
+    # Prepare for the page properties ---------------------------------------- #
+    # Retrieve the database to get columns' type
+    c.print(f"[sect]>[/sect] Retrieving database {database_id}...", end="")
+    try:
+        D.retrieve_database(database_id)
+    except Exception as e:
+        c.print("[error]✘")
+        c.print(f"[error]Failed to retrieve the database: {e}")
+        raise typer.Exit(1)
+    c.print("[done]✔")
+
+    # Convert Paper to Page according to the template
+    properties = Properties()
+    for prop, database_col in template["properties"].items():
+        col_type = D.result["properties"][database_col]["type"]
+        getattr(properties, f"set_{col_type}")(database_col, getattr(paper, prop))
+
+    # Create the page -------------------------------------------------------- #
+    c.print(f"[sect]>[/sect] Creating page for {paper.title}...", end="")
+
+    try:
+        P.create_page(database_id, properties)
+    except Exception as e:
+        c.print("[error]✘")
+        c.print(f"[error]Failed to create the page: {e}")
+        raise typer.Exit(1)
+    c.print("[done]✔")
+
+
+@app.command()
+def update(paper_id: str, id_type: str = "literature"):
+    # Get the token ---------------------------------------------------------- #
+    with open(APP_DIR / "auth.yml", "r") as f:
+        token = yaml.safe_load(f).get("token")
+
+    if token is None:
+        c.print("[error]No integration token found.")
+        c.print()
+        c.print("[hint]Please run `hpm init` to initialize the app first.")
+        raise typer.Exit(1)
+
+    # Get the template ------------------------------------------------------- #
+    with open(TEMPLATE_DIR / "paper.yml", "r") as f:
+        template = yaml.safe_load(f)
+
     # Get the database ------------------------------------------------------- #
     c.print(f"[sect]>[/sect] Retrieving database {template['database_id']}...", end="")
     database_id = template["database_id"]
@@ -184,16 +264,34 @@ def add(paper_id: str, id_type: str = "literature"):
     c.print("[done]✔")
 
     # Check if the paper is already in the database -------------------------- #
-    c.print(f"[sect]>[/sect] Checking if it is a new paper...", end="")
+    c.print(f"[sect]>[/sect] Checking if it is in the database...", end="")
     D.run_query_database(database_id)
-    for page in D.result["results"]:
-        if page["properties"]["Inspire ID"]["rich_text"][0]["plain_text"] == paper_id:
-            c.print("[error]✘")
-            c.print("[error]This paper is already in the database.")
-            c.print()
-            c.print("[hint] Use `hpm update` to update the paper info.")
-            raise typer.Exit(1)
 
+    id_mapping = {
+        "literature": "Inspire ID",
+        "arxiv": "arXiv ID",
+        "doi": "DOI",
+    }
+    page_id = None
+    exist = False
+    for page in D.result["results"]:
+        if (
+            page["properties"][id_mapping[id_type]]["rich_text"][0]["plain_text"]
+            == paper_id
+        ):
+            page_id = page["id"]
+            c.print("[done]✔️")
+            exist = True
+            break
+
+    if not exist:
+        c.print("[error]✘")
+        c.print("[error]This paper is not in the database.")
+        c.print()
+        c.print("[hint] Use `hpm add` to add the paper to the database first.")
+        raise typer.Exit(1)
+
+    # Get the paper according to the Inspire ID ------------------------------ #
     c.print(f"[sect]>[/sect] Retrieving paper {paper_id}...", end="")
     try:
         response_json = Inspire().get(
@@ -208,20 +306,21 @@ def add(paper_id: str, id_type: str = "literature"):
     paper = InspirePaper.from_dict(response_json)
 
     # Paper -> Page according to the template -------------------------------- #
+    D.retrieve_database(database_id)
     properties = Properties()
     for prop, database_col in template["properties"].items():
         col_type = D.result["properties"][database_col]["type"]
         getattr(properties, f"set_{col_type}")(database_col, getattr(paper, prop))
 
-    # Create the page -------------------------------------------------------- #
-    c.print(f"[sect]>[/sect] Creating page for {paper.title}...", end="")
+    # Update the page -------------------------------------------------------- #
+    c.print(f"[sect]>[/sect] Updating page for {paper.title}...", end="")
     page = Page(token)
 
     try:
-        page.create_page(database_id, properties)
+        page.update_page(page_id, properties)  # type: ignore
     except Exception as e:
         c.print("[error]✘")
-        c.print(f"[error]Failed to create the page: {e}")
+        c.print(f"[error]Failed to update the page: {e}")
         raise typer.Exit(1)
     c.print("[done]✔")
 
