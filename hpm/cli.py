@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
+import pyfiglet
 import typer
 import yaml
 from notion_database.const.query import Direction, Timestamp
@@ -39,6 +40,7 @@ c = Console(theme=theme)
 @app.command(help="Initialize hpm with the Notion API token")
 def init():
     # Welcome info ----------------------------------------------------------- #
+    c.print(pyfiglet.figlet_format(f"{__app_name__} {__app_version__}", font="slant"))
     c.print(
         "Welcome to HEP Paper Manager.\n"
         "It helps add a paper from InspireHEP to Notion database"
@@ -48,7 +50,7 @@ def init():
     c.print("\n[sect]>[/sect] Setting up app directory...", end="")
     if APP_DIR.exists():
         c.print("[error]✘")
-        c.print("[error]This directory already exists.")
+        c.print(f"[error]{APP_DIR} already exists.")
         c.print()
         c.print(
             "[hint]Check out the directory and ensure it could be safely removed.\n"
@@ -61,6 +63,7 @@ def init():
     TEMPLATE_DIR.mkdir()
     CACHE_DIR.mkdir()
     c.print("[done]✔")
+    c.print(f"[done]App directory ready at {APP_DIR}")
 
     # Token ------------------------------------------------------------------ #
     token = Prompt.ask(
@@ -129,6 +132,7 @@ def init():
     )
     database_id = S.result[db_index]["id"]
     database_name = S.result[db_index]["title"][0]["plain_text"]
+    c.print(f"[done]Selected [{db_index}] '{database_name}'")
 
     # Template --------------------------------------------------------------- #
     c.print(f"\n[sect]>[/sect] Creating template for {database_name}...", end="")
