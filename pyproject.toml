@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "hep-paper-manager"
-version = "0.1.4"
+version = "0.2.0"
 description = "HPM is a command-line tool that adds High Energy Physics (HEP) papers to a Notion database."
+license = "MIT"
 authors = ["Star9daisy <star9daisy@outlook.com>"]
 readme = "README.md"
+repository = "https://github.com/Star9daisy/hep-paper-manager"
+keywords = ["high-energy-physics", "inspire-hep", "notion", "cli"]
 packages = [
     { include = "hpm" },
 ]
