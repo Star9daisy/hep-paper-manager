@@ -156,6 +156,12 @@ def init():
 
 @app.command(help="Add an Inpsire paper to a Notion database")
 def add(paper_id: str, id_type: str = "literature"):
+    if not APP_DIR.exists():
+        c.print("[error]No app directory found.")
+        c.print()
+        c.print("[hint]Please run `hpm init` to initialize the app first.")
+        raise typer.Exit(1)
+
     # Get the token ---------------------------------------------------------- #
     with open(APP_DIR / "auth.yml", "r") as f:
         token = yaml.safe_load(f).get("token")
@@ -235,6 +241,12 @@ def add(paper_id: str, id_type: str = "literature"):
 
 @app.command()
 def update(paper_id: str, id_type: str = "literature"):
+    if not APP_DIR.exists():
+        c.print("[error]No app directory found.")
+        c.print()
+        c.print("[hint]Please run `hpm init` to initialize the app first.")
+        raise typer.Exit(1)
+
     # Get the token ---------------------------------------------------------- #
     with open(APP_DIR / "auth.yml", "r") as f:
         token = yaml.safe_load(f).get("token")
