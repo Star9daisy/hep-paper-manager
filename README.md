@@ -24,11 +24,14 @@ database.
 3. Enter a name for your integration.
 4. Copy the integration secret as your token.
 
+Check the official guide for integrations [here](https://developers.notion.com/docs/create-a-notion-integration).
+
 ![integration](https://imgur.com/RXib1zV.gif)
 
 ### Step 1: Create a Notion database
 A database is the place where we'll put all papers of interest in. Create an
 empty page and make it a database.
+
 ![database](https://imgur.com/jLBqKYg.gif)
 
 Each item represents a paper. Below is what we want to record for each
@@ -62,10 +65,10 @@ To complete the database setup, we need to add the integration to the database.
 ### Step 2: Set up `hpm`
 To let `hpm` add papers for you, we need to install and initialize it first.
 ```bash
-pip install hpm
+pip install hep-paper-manager
 hpm init
 ```
-![hpm init](https://imgur.com/MxoTz7I.gif)
+![hpm init](https://imgur.com/uxBkbW6.gif)
 
    
 ### Step 3: Add the paper to the database
