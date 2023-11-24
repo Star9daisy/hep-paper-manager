@@ -1,5 +1,7 @@
 # HEP Paper Manager (HPM)
 
+![workflow](https://imgur.com/u8SVtjE.png)
+
 HPM is a command-line tool that helps adds Inspire literature to a
 Notion database. 
 
