@@ -165,6 +165,10 @@ of `InspirePaper`:
   ! Remember the last three lines are necessary. You can't remove them.
 
 ## Updates
+### v0.2.1
+- Fix the bug that `hpm add` only checks the first 100 pages in the database.
+- Fix the checkmark style.
+
 ### v0.2.0
 - Refactor the codebase by introducing `notion_database`.
 - Add `hpm update` to update one paper in the database.
