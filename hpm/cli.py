@@ -198,7 +198,7 @@ def add(paper_id: str, id_type: str = "literature"):
             c.print()
             c.print("[hint]Use `hpm update` to update the paper info.")
             raise typer.Exit(1)
-    c.print("[done]✔️")
+    c.print("[done]✔")
 
     # Get the paper according to the identifier ------------------------------ #
     c.print(f"[sect]>[/sect] Retrieving paper {paper_id}...", end="")
