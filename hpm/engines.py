@@ -45,6 +45,8 @@ class InspirePaper:
 
         # Title
         title = metadata["titles"][0]["title"]
+        if "inline\\" in title:
+            title = metadata["titles"][-1]["title"]
 
         # Authors
         authors = []
@@ -79,6 +81,8 @@ class InspirePaper:
 
         # Abstract
         abstract = metadata["abstracts"][0]["value"]
+        if len(abstract) > 2000:
+            abstract = abstract[:1997] + "..."
 
         # Bibtext
         bibtex_link = response_json["links"]["bibtex"]
