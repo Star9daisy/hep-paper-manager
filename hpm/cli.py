@@ -189,15 +189,22 @@ def add(paper_id: str, id_type: str = "literature"):
     c.print(f"[sect]>[/sect] Checking if it is a new paper...", end="")
     D.run_query_database(database_id)
 
-    for page in D.result["results"]:
-        id_col = ID_MAPPINGS[id_type]
-        page_id = page["properties"][id_col]["rich_text"][0]["plain_text"]
-        if page_id == paper_id:
-            c.print("[error]✘")
-            c.print("[error]This paper is already in the database.")
-            c.print()
-            c.print("[hint]Use `hpm update` to update the paper info.")
-            raise typer.Exit(1)
+    while True:
+        for page in D.result["results"]:
+            id_col = ID_MAPPINGS[id_type]
+            page_id = page["properties"][id_col]["rich_text"][0]["plain_text"]
+            if page_id == paper_id:
+                c.print("[error]✘")
+                c.print("[error]This paper is already in the database.")
+                c.print()
+                c.print("[hint]Use `hpm update` to update the paper info.")
+                raise typer.Exit(1)
+
+        if D.result["has_more"]:
+            D.find_all_page(database_id, start_cursor=D.result["next_cursor"])
+        else:
+            break
+
     c.print("[done]✔")
 
     # Get the paper according to the identifier ------------------------------ #
