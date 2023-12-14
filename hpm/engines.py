@@ -68,16 +68,19 @@ class InspirePaper:
             except KeyError:
                 journal = "Unpublished"
         elif metadata["document_type"][0] == "conference paper":
-            for i in metadata["publication_info"]:
-                if "cnum" in i:
-                    conf_url = i["conference_record"]["$ref"]
-                    conf_contents = requests.get(conf_url).json()
-                    conf_metadata = conf_contents["metadata"]
-                    if "acronyms" in conf_metadata:
-                        journal = conf_metadata["acronyms"][0]
-                    else:
-                        journal = conf_metadata["titles"][0]["title"]
-                    break
+            try:
+                for i in metadata["publication_info"]:
+                    if "cnum" in i:
+                        conf_url = i["conference_record"]["$ref"]
+                        conf_contents = requests.get(conf_url).json()
+                        conf_metadata = conf_contents["metadata"]
+                        if "acronyms" in conf_metadata:
+                            journal = conf_metadata["acronyms"][0]
+                        else:
+                            journal = conf_metadata["titles"][0]["title"]
+                        break
+            except KeyError:
+                journal = "Unpublished"
 
         # Abstract
         abstract = metadata["abstracts"][0]["value"]
