@@ -166,7 +166,7 @@ of `InspirePaper`:
 
 ## Updates
 ### v0.2.2
-- Fix the bug that some conference paper may have no publication info.
+- Fix the error when `hpm add` some conference papers that may have no publication info.
 
 ### v0.2.1
 - Fix the bug that `hpm add` only checks the first 100 pages in the database.
