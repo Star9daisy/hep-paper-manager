@@ -165,6 +165,8 @@ of `InspirePaper`:
   ! Remember the last three lines are necessary. You can't remove them.
 
 ## Updates
+### v0.2.2
+- Fix the bug that some conference paper may have no publication info.
 ### v0.2.1
 - Fix the bug that `hpm add` only checks the first 100 pages in the database.
 - Fix the checkmark style.
