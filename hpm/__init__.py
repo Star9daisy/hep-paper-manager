@@ -1,2 +1,2 @@
 __app_name__ = "hpm"
-__app_version__ = "0.2.1"
+__app_version__ = "0.2.2"
