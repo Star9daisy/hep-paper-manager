@@ -161,9 +161,10 @@ def add(arxiv_id: str):
     properties = Properties()
     for paper_property, page_property in template["properties"].items():
         property_type = property_dict[page_property]
-        getattr(properties, f"set_{property_type}")(
-            page_property, getattr(paper, paper_property)
-        )
+        if getattr(paper, paper_property) is not None:
+            getattr(properties, f"set_{property_type}")(
+                page_property, getattr(paper, paper_property)
+            )
 
     P = Page(integrations_token=token)
     P.create_page(template["database_id"], properties)
