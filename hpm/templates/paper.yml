@@ -1,15 +1,14 @@
-engine: Inspire
 database_id: <database_id>
 properties:
-  date: Date
-  citations: Citations
   title: Title
-  type: Type
-  journal: Journal
   authors: Authors
-  link: Link
+  date: Date
+  journal: Published in
+  arxiv_id: ArXiv ID
+  doi: DOI
+  n_citations: Number of citations
+  n_references: Number of references
+  n_pages: Number of pages
   abstract: Abstract
   bibtex: Bibtex
-  inspire_id: Inspire ID
-  arxiv_id: Arxiv ID
-  doi: DOI
+  url: URL

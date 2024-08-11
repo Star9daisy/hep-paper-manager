@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import datetime
@@ -7,140 +5,109 @@ from datetime import datetime
 import requests
 
 
-class Inspire:
-    def __init__(self):
-        self.api = "https://inspirehep.net/api/"
-
-    def get(self, identifier_type: str, identifier_value: str):
-        if identifier_type not in ["literature", "doi", "arxiv"]:
-            raise ValueError("Only literature, doi, arxiv are supported for now")
-
-        url = self.api + identifier_type + "/" + identifier_value
-        response = requests.get(url)
-
-        if response.status_code != 200:
-            raise ValueError(f"Failed to get data from InspireHEP: {response.text}")
-
-        return response.json(object_pairs_hook=OrderedDict)
-
-
 @dataclass
 class InspirePaper:
-    date: str
-    citations: int
     title: str
-    type: str
-    journal: str
     authors: list[str]
-    link: str
+    date: str
+    journal: str | None
+    arxiv_id: str
+    doi: str | None
+    n_citations: int
+    n_references: int
+    n_pages: int | None
     abstract: str
     bibtex: str
-    inspire_id: str
-    arxiv_id: str
-    doi: str
+    url: str
 
-    @classmethod
-    def from_dict(cls, response_json: dict):
-        metadata = response_json["metadata"]
 
-        # Title
-        title = metadata["titles"][0]["title"]
-        if "inline\\" in title:
-            title = metadata["titles"][-1]["title"]
+class Inspire:
+    def __init__(self) -> None:
+        self.endpoint = "https://inspirehep.net/api/arxiv"
 
-        # Authors
+    def get(self, arxiv_id: str) -> InspirePaper:
+        url = f"{self.endpoint}/{arxiv_id}"
+        response = requests.get(url)
+        info = response.json(object_pairs_hook=OrderedDict)
+        meta = info["metadata"]
+
+        # return meta
+
+        # Title -------------------------------------------------------------- #
+        title = meta["titles"][0]["title"]
+
+        # Authors ------------------------------------------------------------ #
         authors = []
-        if "collaborations" in metadata:
-            authors.append(f"{metadata['collaborations'][0]['value']} Collaboration")
+        for author in meta["authors"][:10]:
+            name = " ".join(author["full_name"].split(", ")[::-1])
+            authors.append(name)
+
+        # Date --------------------------------------------------------------- #
+        if "preprint_date" in meta and meta["preprint_date"].count("-") == 2:
+            date = meta["preprint_date"]
         else:
-            for author in metadata["authors"][:10]:  # Only get first 10 authors
-                author_name = " ".join(author["full_name"].split(", ")[::-1])
-                authors.append(author_name)
+            date = meta["legacy_creation_date"]
 
-        # Number of citations
-        n_citations = metadata["citation_count"]
+        date = datetime.strptime(date, "%Y-%m-%d")
+        date = date.strftime("%Y-%m-%d")
 
-        # Journal
-        journal = "Unpublished"
-        if metadata["document_type"][0] == "article":
-            try:
-                journal = metadata["publication_info"][0]["journal_title"]
-            except KeyError:
-                journal = "Unpublished"
-        elif metadata["document_type"][0] == "conference paper":
-            try:
-                for i in metadata["publication_info"]:
-                    if "cnum" in i:
-                        conf_url = i["conference_record"]["$ref"]
-                        conf_contents = requests.get(conf_url).json()
-                        conf_metadata = conf_contents["metadata"]
-                        if "acronyms" in conf_metadata:
-                            journal = conf_metadata["acronyms"][0]
-                        else:
-                            journal = conf_metadata["titles"][0]["title"]
-                        break
-            except KeyError:
-                journal = "Unpublished"
+        # Citation count ----------------------------------------------------- #
+        n_citations = meta["citation_count"]
 
-        # Abstract
-        abstract = metadata["abstracts"][0]["value"]
+        # References count --------------------------------------------------- #
+        n_references = len(meta["references"])
+
+        # Pages count -------------------------------------------------------- #
+        n_pages = meta.get("number_of_pages")
+
+        # Journal ------------------------------------------------------------ #
+        if "publication_info" not in meta:
+            journal = None
+        else:
+            for i in meta["publication_info"]:
+                if "pubinfo_freetext" in i:
+                    journal = i["pubinfo_freetext"].split(",")[0]
+
+                if "journal_title" in i:
+                    journal = i["journal_title"]
+                    break
+
+                if "cnum" in i:
+                    conf_url = i["conference_record"]["$ref"]
+                    conf_response = requests.get(conf_url)
+                    conf_meta = conf_response.json()["metadata"]
+                    if "acronyms" in conf_meta:
+                        journal = conf_meta["acronyms"][0]
+                    else:
+                        journal = conf_meta["titles"][0]["title"]
+                    break
+
+        # DOI
+        doi = None
+        if "dois" in meta:
+            doi = meta["dois"][0]["value"]
+
+        # Abstract ----------------------------------------------------------- #
+        abstract = meta["abstracts"][0]["value"]
         if len(abstract) > 2000:
             abstract = abstract[:1997] + "..."
 
-        # Bibtext
-        bibtex_link = response_json["links"]["bibtex"]
+        # Bibtex ------------------------------------------------------------- #
+        bibtex_link = info["links"]["bibtex"]
         bibtex_response = requests.get(bibtex_link)
         bibtex = bibtex_response.text[:-1]
 
-        # Inspire ID
-        inspire_id = str(metadata["control_number"])
-
-        # Arxiv ID
-        arxiv_id = ""
-        if "arxiv_eprints" in metadata:
-            arxiv_id = metadata["arxiv_eprints"][0]["value"]
-
-        # DOI
-        doi = ""
-        if "dois" in metadata:
-            doi = metadata["dois"][0]["value"]
-
-        # Date
-        if "preprint_date" in metadata:
-            date_str = metadata["preprint_date"]
-        elif "imprints" in metadata:
-            date_str = metadata["imprints"][0]["date"]
-        else:
-            raise ValueError("No date found")
-
-        if date_str.count("-") > 2:
-            raise ValueError(f"Unknow date format: {date_str}")
-        if date_str.count("-") == 1:
-            date_str += "-1"
-
-        date = datetime.strptime(date_str, "%Y-%m-%d")
-        date = date.strftime("%Y-%m-%d")
-
-        # Type
-        type = metadata["document_type"][0]
-        if "publication_type" in metadata:
-            pub_type = metadata["publication_type"][0]
-            type = pub_type
-
-        # Link
-        link = f"https://inspirehep.net/literature/{inspire_id}"
-
-        return cls(
+        return InspirePaper(
             title=title,
             authors=authors,
-            citations=n_citations,
+            date=date,
             journal=journal,
-            abstract=abstract,
-            bibtex=bibtex,
-            inspire_id=inspire_id,
             arxiv_id=arxiv_id,
             doi=doi,
-            date=date,
-            type=type,
-            link=link,
+            n_citations=n_citations,
+            n_references=n_references,
+            n_pages=n_pages,
+            abstract=abstract,
+            bibtex=bibtex,
+            url=url,
         )
