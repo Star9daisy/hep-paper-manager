@@ -1,92 +1,42 @@
 from pathlib import Path
-from typing import Optional
 
-import pyfiglet
 import typer
 import yaml
-from notion_database.const.query import Direction, Timestamp
 from notion_database.database import Database
 from notion_database.page import Page
 from notion_database.properties import Properties
-from notion_database.search import Search
+from notion_database.search import Direction, Search, Timestamp
 from rich.console import Console
 from rich.prompt import Prompt
-from tabulate import tabulate
-from typing_extensions import Annotated
+from typing_extensions import Annotated, Optional
 
 from . import __app_name__, __app_version__
-from .engines import Inspire, InspirePaper
+from .engines import Inspire
 from .styles import theme
 
-# ---------------------------------------------------------------------------- #
-APP_DIR = Path(typer.get_app_dir(__app_name__, force_posix=True))
-TEMPLATE_DIR = APP_DIR / "templates"
-CACHE_DIR = APP_DIR / "cache"
-ID_MAPPINGS = {
-    "literature": "Inspire ID",
-    "arxiv": "Arxiv ID",
-    "doi": "DOI",
-}
+APP_DIR = Path(typer.get_app_dir("hpm", force_posix=True))
+TOKEN_FILE = APP_DIR / "TOKEN"
+TEMPLATE_FILE = APP_DIR / "paper.yml"
 
-# ---------------------------------------------------------------------------- #
 app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
     add_completion=False,
 )
+
 c = Console(theme=theme)
+print = c.print
 
 
-# ---------------------------------------------------------------------------- #
-@app.command(help="Initialize hpm with the Notion API token")
+@app.command(help="Initialize with the Notion API token")
 def init():
-    # Welcome info ----------------------------------------------------------- #
-    c.print(pyfiglet.figlet_format(f"{__app_name__} {__app_version__}", font="slant"))
-    c.print(
-        "Welcome to HEP Paper Manager.\n"
-        "It helps add a paper from InspireHEP to Notion database"
-    )
+    # Create the app directories
+    APP_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Setup app directory ---------------------------------------------------- #
-    c.print("\n[sect]>[/sect] Setting up app directory...", end="")
-    if APP_DIR.exists():
-        c.print("[error]✘")
-        c.print(f"[error]{APP_DIR} already exists.")
-        c.print()
-        c.print(
-            "[hint]Check out the directory and ensure it could be safely removed.\n"
-            f"Use `rmdir {APP_DIR}` or `rm -rf {APP_DIR}` (caution!) to remove it.\n"
-            "Then run `hpm init` again."
-        )
-        raise typer.Exit(1)
+    # Ask for the token
+    token = Prompt.ask("[ques]?[/ques] Enter the integration token", console=c)
+    print()
 
-    APP_DIR.mkdir()
-    TEMPLATE_DIR.mkdir()
-    CACHE_DIR.mkdir()
-    c.print("[done]✔")
-    c.print(f"[done]App directory ready at {APP_DIR}")
-
-    # Token ------------------------------------------------------------------ #
-    token = Prompt.ask(
-        "\n[ques]? Enter the integration token",
-        console=c,
-        password=True,
-    )
-    if token != "":
-        c.print("[done]Integration token added")
-    else:
-        c.print("[error]Empty integration token")
-        c.print()
-        c.print(
-            "[hint]Integration token is started with 'secret_', "
-            "copy and paste it here."
-        )
-        raise typer.Exit(1)
-
-    with open(APP_DIR / "auth.yml", "w") as f:
-        yaml.dump({"token": token}, f)
-
-    # Database --------------------------------------------------------------- #
-    c.print("\n[sect]>[/sect] Retriving databases...", end="")
+    # Check if token is valid
     try:
         S = Search(token)
         S.search_database(
@@ -96,286 +46,267 @@ def init():
                 "timestamp": Timestamp.last_edited_time,
             },
         )
-    except:
-        c.print("[error]✘")
-        c.print("[error]Invalid integration token.")
-        c.print()
-        c.print(
-            "[hint]Please create an integration first. "
-            "For more information, check out\n"
-            "https://developers.notion.com/docs/create-a-notion-integration"
-            "#create-your-integration-in-notion"
-        )
-        raise typer.Exit(1)
-    c.print("[done]✔")
+    except Exception:
+        print("[error]Invalid token!")
+        typer.Exit(1)
 
-    if len(S.result) == 0:
-        c.print("[error]No databases connected to the integration.")
-        c.print()
-        c.print(
-            "[hint]Please add the integration to a database first. "
-            "For more information, check out\n"
-            "https://developers.notion.com/docs/create-a-notion-integration"
-            "#give-your-integration-page-permissions"
-        )
-        raise typer.Exit(1)
+    # Save the token
+    with open(TOKEN_FILE, "w") as f:
+        f.write(token)
 
-    db_table = {
-        "Index": [i for i in range(len(S.result))],
-        "Name": [i["title"][0]["plain_text"] for i in S.result],
-        "Database ID": [i["id"] for i in S.result],
-    }
-    c.print(tabulate(db_table, headers="keys"))
+    # Show the databases to choose from
+    for index, database in enumerate(S.result, start=1):
+        title = database["title"][0]["plain_text"]
+        id = database["id"]
+        print(f"[num]{index}[/num]: {title} {id}")
 
-    db_index = int(
-        Prompt.ask("[ques]? Choose one as paper database [0]", console=c, default=0)
+    # Ask for the database
+    choice = Prompt.ask(
+        "[ques]?[/ques] Choose one as the paper database",
+        default="1",
+        console=c,
     )
-    database_id = S.result[db_index]["id"]
-    database_name = S.result[db_index]["title"][0]["plain_text"]
-    c.print(f"[done]Selected [{db_index}] '{database_name}'")
+    print()
+    choice = int(choice) - 1
+    database_id = S.result[choice]["id"]
 
-    # Template --------------------------------------------------------------- #
-    c.print(f"\n[sect]>[/sect] Creating template for {database_name}...", end="")
-    paper_template = Path(__file__).parent / "templates/paper.yml"
-    with open(paper_template, "r") as f:
+    # Modify the provided template file to replace the database_id
+    template = Path(__file__).parent / "templates/paper.yml"
+    with template.open() as f:
         template_content = yaml.safe_load(f)
         template_content["database_id"] = database_id
-    try:
-        with open(TEMPLATE_DIR / "paper.yml", "w") as f:
-            yaml.dump(template_content, f, sort_keys=False)
-    except:
-        c.print("[error]✘")
-        c.print("[error]Failed to create the paper template.")
-        c.print()
-        c.print(
-            f"[hint] Check out the directory {TEMPLATE_DIR} and ensure it exists.\n"
-            "Or run `hpm init` again."
-        )
-        raise typer.Exit(1)
-    c.print("[done]✔")
-    c.print(f"[done]Paper template saved in {TEMPLATE_DIR / 'paper.yml'}")
-    c.print()
-    c.print("[hint]Remember to review the template and update it if necessary.")
+
+    # Save the template file
+    with TEMPLATE_FILE.open("w") as f:
+        yaml.dump(template_content, f, sort_keys=False)
+
+    print("[done]Initialized!")
 
 
-@app.command(help="Add an Inpsire paper to a Notion database")
-def add(paper_id: str, id_type: str = "literature"):
-    if not APP_DIR.exists():
-        c.print("[error]No app directory found.")
-        c.print()
-        c.print("[hint]Please run `hpm init` to initialize the app first.")
-        raise typer.Exit(1)
+@app.command(help="Add a paper via its ArXiv ID")
+def add(arxiv_id: str):
+    print(f"[sect]>[/sect] Adding paper [num]{arxiv_id}[/num] to the database...")
+    print()
 
-    # Get the token ---------------------------------------------------------- #
-    with open(APP_DIR / "auth.yml", "r") as f:
-        token = yaml.safe_load(f).get("token")
+    # Load the token
+    with open(TOKEN_FILE) as f:
+        token = f.read()
 
-    if token is None:
-        c.print("[error]No integration token found.")
-        c.print()
-        c.print("[hint]Please run `hpm init` to initialize the app first.")
-        raise typer.Exit(1)
-
-    # Get the template ------------------------------------------------------- #
-    with open(TEMPLATE_DIR / "paper.yml", "r") as f:
+    # Load the template
+    with open(TEMPLATE_FILE) as f:
         template = yaml.safe_load(f)
 
-    # Notion operators ------------------------------------------------------- #
-    database_id = template["database_id"]
+    # Get the paper
+    print("[info]i[/info] Getting the paper from Inspire")
+    paper = Inspire().get(arxiv_id)
+
+    # Check if it exists according to the title
+    print("[info]i[/info] Checking if it exists in the database")
     D = Database(token)
-    P = Page(token)
 
-    # Check if the paper is already in the database -------------------------- #
-    c.print(f"[sect]>[/sect] Checking if it is a new paper...", end="")
-    D.run_query_database(database_id)
+    ## Find title column
+    D.retrieve_database(database_id=template["database_id"])
 
+    property_dict = {}
+    title_column = None
+    for property in D.result["properties"].values():
+        property_dict[property["name"]] = property["type"]
+        if property["type"] == "title":
+            title_column = property["name"]
+
+    ## Check if the title exists
+    ## The default query only returns 100 results, so we need to loop through all
+    D.run_query_database(database_id=template["database_id"])
+
+    all_pages = []
     while True:
-        for page in D.result["results"]:
-            id_col = ID_MAPPINGS[id_type]
-            page_id = page["properties"][id_col]["rich_text"][0]["plain_text"]
-            if page_id == paper_id:
-                c.print("[error]✘")
-                c.print("[error]This paper is already in the database.")
-                c.print()
-                c.print("[hint]Use `hpm update` to update the paper info.")
-                raise typer.Exit(1)
+        all_pages += D.result["results"]
 
         if D.result["has_more"]:
-            D.find_all_page(database_id, start_cursor=D.result["next_cursor"])
+            D.find_all_page(
+                template["database_id"],
+                start_cursor=D.result["next_cursor"],
+            )
         else:
             break
 
-    c.print("[done]✔")
+    for page in all_pages:
+        title = page["properties"][title_column]["title"][0]["plain_text"]
+        if title == paper.title:
+            print()
+            print(
+                "[error]Error:[/error] [error_msg]This paper already exists in the database."
+            )
+            raise typer.Exit(1)
 
-    # Get the paper according to the identifier ------------------------------ #
-    c.print(f"[sect]>[/sect] Retrieving paper {paper_id}...", end="")
-    try:
-        response_json = Inspire().get(
-            identifier_type=id_type,
-            identifier_value=paper_id,
-        )
-        paper = InspirePaper.from_dict(response_json)
-    except Exception as e:
-        c.print("[error]✘")
-        c.print(f"[error]Failed to retrieve the paper: {e}")
-        raise typer.Exit(1)
-    c.print(f"[done]✔")
+    # Convert paper to page and create it in the database
+    print("[info]i[/info] Creating the page in the database")
 
-    # Prepare for the page properties ---------------------------------------- #
-    # Retrieve the database to get columns' type
-    c.print(f"[sect]>[/sect] Retrieving database {database_id}...", end="")
-    try:
-        D.retrieve_database(database_id)
-    except Exception as e:
-        c.print("[error]✘")
-        c.print(f"[error]Failed to retrieve the database: {e}")
-        raise typer.Exit(1)
-    c.print("[done]✔")
-
-    # Convert Paper to Page according to the template
     properties = Properties()
-    for prop, database_col in template["properties"].items():
-        col_type = D.result["properties"][database_col]["type"]
-        getattr(properties, f"set_{col_type}")(database_col, getattr(paper, prop))
+    for paper_property, page_property in template["properties"].items():
+        property_type = property_dict[page_property]
+        getattr(properties, f"set_{property_type}")(
+            page_property, getattr(paper, paper_property)
+        )
 
-    # Create the page -------------------------------------------------------- #
-    c.print(f"[sect]>[/sect] Creating page for {paper.title}...", end="")
+    P = Page(integrations_token=token)
+    P.create_page(template["database_id"], properties)
 
-    try:
-        P.create_page(database_id, properties)
-    except Exception as e:
-        c.print("[error]✘")
-        c.print(f"[error]Failed to create the page: {e}")
-        raise typer.Exit(1)
-    c.print("[done]✔")
+    print()
+    print("[done]✔[/done] Added")
+    print()
+    print(f"Check it here: [url]{P.result['url']}")
 
 
-@app.command(help="Update an Inpsire paper in a Notion database")
-def update(paper_id: str, id_type: str = "literature"):
-    if not APP_DIR.exists():
-        c.print("[error]No app directory found.")
-        c.print()
-        c.print("[hint]Please run `hpm init` to initialize the app first.")
-        raise typer.Exit(1)
+@app.command(help="Update a paper or all papers")
+def update(arxiv_id: str):
+    # Load the token
+    with open(TOKEN_FILE) as f:
+        token = f.read()
 
-    # Get the token ---------------------------------------------------------- #
-    with open(APP_DIR / "auth.yml", "r") as f:
-        token = yaml.safe_load(f).get("token")
-
-    if token is None:
-        c.print("[error]No integration token found.")
-        c.print()
-        c.print("[hint]Please run `hpm init` to initialize the app first.")
-        raise typer.Exit(1)
-
-    # Get the template ------------------------------------------------------- #
-    with open(TEMPLATE_DIR / "paper.yml", "r") as f:
+    # Load the template
+    with open(TEMPLATE_FILE) as f:
         template = yaml.safe_load(f)
 
-    # Notion operators ------------------------------------------------------- #
-    database_id = template["database_id"]
-    D = Database(token)
-    P = Page(token)
+    if arxiv_id != "all":
+        print(f"[sect]>[/sect] Updating paper [num]{arxiv_id}[/num]...")
+        print()
 
-    # Check if the paper is already in the database -------------------------- #
-    c.print(f"[sect]>[/sect] Checking if it is in the database...", end="")
-    D.run_query_database(database_id)
+        # Get the paper
+        print("[info]i[/info] Getting the paper from Inspire")
+        paper = Inspire().get(arxiv_id)
 
-    page_id = None
-    exist = False
-    for page in D.result["results"]:
-        id_col = ID_MAPPINGS[id_type]
-        page_id = page["properties"][id_col]["rich_text"][0]["plain_text"]
-        if page_id == paper_id:
+        # Check if it exists according to the title
+        print("[info]i[/info] Checking if it exists in the database")
+        D = Database(token)
+
+        ## Find title column
+        D.retrieve_database(database_id=template["database_id"])
+
+        property_dict = {}
+        title_column = None
+        for property in D.result["properties"].values():
+            property_dict[property["name"]] = property["type"]
+            if property["type"] == "title":
+                title_column = property["name"]
+
+        ## Check if the title exists and get the page id
+        is_existing = False
+        page_id = None
+        D.run_query_database(database_id=template["database_id"])
+
+        ## The default query only returns 100 results, so we need to loop through all
+        all_pages = []
+        while True:
+            all_pages += D.result["results"]
+
+            if D.result["has_more"]:
+                D.find_all_page(
+                    template["database_id"],
+                    start_cursor=D.result["next_cursor"],
+                )
+            else:
+                break
+
+        for page in all_pages:
+            title = page["properties"][title_column]["title"][0]["plain_text"]
+            if title == paper.title:
+                is_existing = True
+                page_id = page["id"]
+                break
+
+        if not is_existing:
+            print()
+            print(
+                "[error]Error:[/error] [error_msg]This paper does not exist in the database."
+            )
+            raise typer.Exit(1)
+
+        # Convert paper to page and create it in the database
+        print("[info]i[/info] Updating the page in the database")
+
+        properties = Properties()
+        for paper_property, page_property in template["properties"].items():
+            property_type = property_dict[page_property]
+            if getattr(paper, paper_property) is not None:
+                getattr(properties, f"set_{property_type}")(
+                    page_property, getattr(paper, paper_property)
+                )
+
+        P = Page(integrations_token=token)
+        P.update_page(page_id, properties)
+
+        print()
+        print("[done]✔[/done] Updated")
+        print()
+        print(f"Check it here: [url]{P.result['url']}")
+
+    else:
+        print("[sect]>[/sect] Updating all papers...")
+        print()
+
+        # Get all arxiv ids and page ids
+        print("[info]i[/info] Getting all papers from the database")
+
+        D = Database(token)
+        D.retrieve_database(database_id=template["database_id"])
+
+        property_dict = {}
+        for property in D.result["properties"].values():
+            property_dict[property["name"]] = property["type"]
+
+        D.run_query_database(database_id=template["database_id"])
+
+        ## The default query only returns 100 results
+        all_pages = []
+        while True:
+            all_pages += D.result["results"]
+
+            if D.result["has_more"]:
+                D.find_all_page(
+                    template["database_id"],
+                    start_cursor=D.result["next_cursor"],
+                )
+            else:
+                break
+
+        total = len(all_pages)
+        for i, page in enumerate(all_pages):
+            arxiv_id = page["properties"]["ArXiv ID"]["rich_text"][0]["plain_text"]
             page_id = page["id"]
-            exist = True
-            break
 
-    if not exist:
-        c.print("[error]✘")
-        c.print("[error]This paper is not in the database.")
-        c.print()
-        c.print("[hint]Use `hpm add` to add the paper to the database first.")
-        raise typer.Exit(1)
-    c.print("[done]✔️")
+            print(
+                f"[info]i[/info] Updating [{i+1}/{total}] [num]{arxiv_id}[/num]...",
+                end="",
+            )
 
-    # Get the paper according to the identifier ------------------------------ #
-    c.print(f"[sect]>[/sect] Retrieving paper {paper_id}...", end="")
-    try:
-        response_json = Inspire().get(
-            identifier_type=id_type,
-            identifier_value=paper_id,
-        )
-        paper = InspirePaper.from_dict(response_json)
-    except Exception as e:
-        c.print("[error]✘")
-        c.print(f"[error]Failed to retrieve the paper: {e}")
-        raise typer.Exit(1)
-    c.print(f"[done]✔")
+            # Get the paper
+            # print("[info]i[/info] Getting the paper from Inspire")
+            paper = Inspire().get(arxiv_id)
 
-    # Get the database ------------------------------------------------------- #
-    c.print(f"[sect]>[/sect] Retrieving database {database_id}...", end="")
-    database_id = template["database_id"]
-    try:
-        D.retrieve_database(database_id)
-    except Exception as e:
-        c.print("[error]✘")
-        c.print(f"[error]Failed to retrieve the database: {e}")
-        raise typer.Exit(1)
-    c.print("[done]✔")
+            # Convert paper to page and create it in the database
+            # print("[info]i[/info] Updating the page in the database")
 
-    # Convert Paper to Page according to the template
-    properties = Properties()
-    for prop, database_col in template["properties"].items():
-        col_type = D.result["properties"][database_col]["type"]
-        getattr(properties, f"set_{col_type}")(database_col, getattr(paper, prop))
+            properties = Properties()
+            for paper_property, page_property in template["properties"].items():
+                property_type = property_dict[page_property]
+                if getattr(paper, paper_property) is not None:
+                    getattr(properties, f"set_{property_type}")(
+                        page_property, getattr(paper, paper_property)
+                    )
 
-    # Update the page -------------------------------------------------------- #
-    c.print(f"[sect]>[/sect] Updating page for {paper.title}...", end="")
+            P = Page(integrations_token=token)
+            P.update_page(page_id, properties)
 
-    try:
-        P.update_page(page_id, properties)  # type: ignore
-    except Exception as e:
-        c.print("[error]✘")
-        c.print(f"[error]Failed to update the page: {e}")
-        raise typer.Exit(1)
-    c.print("[done]✔")
+            print("[done]✔")
 
-
-@app.command(help="Show the app info")
-def info():
-    if not APP_DIR.exists():
-        c.print("[error]No app directory found.")
-        c.print()
-        c.print("[hint]Please run `hpm init` to initialize the app first.")
-        raise typer.Exit(1)
-
-    c.print(f"[sect]>[/sect] App directory:")
-    c.print(f"[path]{APP_DIR}\n")
-
-    c.print(f"[sect]>[/sect] Auth file:")
-    c.print(f"[path]{APP_DIR / 'auth.yml'}\n")
-
-    c.print(f"[sect]>[/sect] Template file:")
-    c.print(f"[path]{TEMPLATE_DIR / 'paper.yml'}\n")
-
-    with (TEMPLATE_DIR / "paper.yml").open() as f:
-        template = yaml.safe_load(f)
-
-    properties = {"Paper": [], "Database": []}
-    for prop, database_col in template["properties"].items():
-        properties["Paper"].append(prop)
-        properties["Database"].append(database_col)
-
-    c.print(f"[sect]>[/sect] Database ID:")
-    c.print(f"[number]{template['database_id']}\n")
-    c.print(f"[sect]>[/sect] Paper template properties:")
-    c.print(tabulate(properties, headers="keys"))
+        print()
+        print("[done]✔[/done] Updated all papers")
 
 
 def version_callback(value: bool):
     if value:
-        c.print(
+        print(
             "== [bold]HEP Paper Manager[/bold] ==\n"
             f"{__app_name__} @v[bold cyan]{__app_version__}[/bold cyan]\n\n"
             "Made by Star9daisy with [bold red]♥[/bold red]"
@@ -394,6 +325,5 @@ def main(
             is_eager=True,
             help="Show the app version info",
         ),
-    ] = None
-):
-    ...
+    ] = None,
+): ...
