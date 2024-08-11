@@ -11,7 +11,7 @@ theme = Theme(
         "warn": "yellow",  # warning
         "hint": "italic yellow",  # hint
         "path": "cyan underline",  # path
-        "number": "cyan",  # number
+        "num": "cyan",  # number
     },
     inherit=False,
 )
