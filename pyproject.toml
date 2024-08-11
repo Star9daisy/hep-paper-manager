@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "hep-paper-manager"
-version = "0.2.2"
-description = "HPM is a command-line tool that adds High Energy Physics (HEP) papers to a Notion database."
+version = "0.3.0"
+description = "A command-line app helps add High Energy Physics (HEP) papers to a Notion database."
 license = "MIT"
 authors = ["Star9daisy <star9daisy@outlook.com>"]
 readme = "README.md"
