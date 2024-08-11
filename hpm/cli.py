@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from pathlib import Path
+from typing import Optional
 
 import pyfiglet
 import typer
@@ -9,7 +12,7 @@ from notion_database.properties import Properties
 from notion_database.search import Direction, Search, Timestamp
 from rich.console import Console
 from rich.prompt import Prompt
-from typing_extensions import Annotated, Optional
+from typing_extensions import Annotated
 
 from . import __app_name__, __app_version__
 from .engines import Inspire
@@ -327,7 +330,6 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
-@app.callback()
 def main(
     version: Annotated[
         Optional[bool],
