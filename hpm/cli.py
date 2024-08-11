@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pyfiglet
 import typer
 import yaml
 from notion_database.database import Database
@@ -29,11 +30,23 @@ print = c.print
 
 @app.command(help="Initialize with the Notion API token")
 def init():
+    # Welcome info
+    print(pyfiglet.figlet_format(f"{__app_name__} {__app_version__}", font="slant"))
+    print(
+        "Welcome to HEP Paper Manager.\n"
+        "It helps add a paper from InspireHEP to Notion database"
+    )
+    print()
+
     # Create the app directories
     APP_DIR.mkdir(parents=True, exist_ok=True)
 
     # Ask for the token
-    token = Prompt.ask("[ques]?[/ques] Enter the integration token", console=c)
+    token = Prompt.ask(
+        "[ques]?[/ques] Enter the integration token",
+        password=True,
+        console=c,
+    )
     print()
 
     # Check if token is valid
@@ -58,7 +71,7 @@ def init():
     for index, database in enumerate(S.result, start=1):
         title = database["title"][0]["plain_text"]
         id = database["id"]
-        print(f"[num]{index}[/num]: {title} {id}")
+        print(f"[num]{index}[/num]: {title} ({id})")
 
     # Ask for the database
     choice = Prompt.ask(
@@ -80,7 +93,7 @@ def init():
     with TEMPLATE_FILE.open("w") as f:
         yaml.dump(template_content, f, sort_keys=False)
 
-    print("[done]Initialized!")
+    print("[done]✔[/done] Initialized!")
 
 
 @app.command(help="Add a paper via its ArXiv ID")
