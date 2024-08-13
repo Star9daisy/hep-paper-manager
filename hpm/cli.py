@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Optional
 
@@ -331,6 +329,7 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
+@app.callback()
 def main(
     version: Annotated[
         Optional[bool],
