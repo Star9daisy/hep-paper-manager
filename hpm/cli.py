@@ -151,6 +151,8 @@ def add(arxiv_id: str):
             print(
                 "[error]Error:[/error] [error_msg]This paper already exists in the database."
             )
+            print()
+            print(f"[hint]Check it here: [url]{page['url']}")
             raise typer.Exit(1)
 
     # Convert paper to page and create it in the database
@@ -170,7 +172,7 @@ def add(arxiv_id: str):
     print()
     print("[done]✔[/done] Added")
     print()
-    print(f"Check it here: [url]{P.result['url']}")
+    print(f"[hint]Check it here: [url]{P.result['url']}")
 
 
 @app.command(help="Update a paper or all papers")
