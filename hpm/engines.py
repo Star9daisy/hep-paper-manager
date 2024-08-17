@@ -99,6 +99,9 @@ class Inspire:
         bibtex_response = requests.get(bibtex_link)
         bibtex = bibtex_response.text[:-1]
 
+        # URL ---------------------------------------------------------------- #
+        url = f"https://inspirehep.net/literature/{meta['control_number']}"
+
         return InspirePaper(
             title=title,
             authors=authors,
