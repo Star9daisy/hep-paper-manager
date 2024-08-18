@@ -40,9 +40,12 @@ class Inspire:
 
         # Authors ------------------------------------------------------------ #
         authors = []
-        for author in meta["authors"][:10]:
-            name = " ".join(author["full_name"].split(", ")[::-1])
-            authors.append(name)
+        if "collaborations" in meta:
+            authors.append(f"{meta['collaborations'][0]['value']} Collaboration")
+        else:
+            for author in meta["authors"][:10]:
+                name = " ".join(author["full_name"].split(", ")[::-1])
+                authors.append(name)
 
         # Date --------------------------------------------------------------- #
         if "preprint_date" in meta and meta["preprint_date"].count("-") == 2:
