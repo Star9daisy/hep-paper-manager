@@ -251,12 +251,43 @@ def update(arxiv_id: str):
                 )
 
         P = Page(integrations_token=token)
-        P.update_page(page_id, properties)
+        P.retrieve_page(page_id)
 
-        print()
-        print("[done]✔[/done] Updated")
-        print()
-        print(f"Check it here: [url]{P.result['url']}")
+        updated_info = []
+
+        # Check if the journal is updated
+        if "journal" in template["properties"]:
+            journal_column = template["properties"]["journal"]
+            page_journal = P.result["properties"][journal_column]["select"]
+            page_journal = page_journal["name"] if page_journal is not None else None
+            if paper.journal != page_journal:
+                updated_info.append(
+                    f"{journal_column}: {page_journal} -> {paper.journal}"
+                )
+
+        # Check if the number of citations is updated
+        if "n_citations" in template["properties"]:
+            citations_column = template["properties"]["n_citations"]
+            page_citations = P.result["properties"][citations_column]["number"]
+            page_citations = page_citations if page_citations is not None else 0
+            if paper.n_citations != page_citations:
+                updated_info.append(
+                    f"{citations_column}: {page_citations} -> {paper.n_citations}"
+                )
+
+        if len(updated_info) == 0:
+            print("[done]✔[/done] No updates needed")
+
+        else:
+            P.update_page(page_id, properties)
+
+            print()
+            print("[done]✔[/done] Updated")
+            print()
+            for info in updated_info:
+                print(f"[info]i[/info] {info}")
+            print()
+            print(f"[hint]Check it here: [url]{P.result['url']}")
 
     else:
         print("[sect]>[/sect] Updating all papers...")
@@ -313,9 +344,39 @@ def update(arxiv_id: str):
                     )
 
             P = Page(integrations_token=token)
-            P.update_page(page_id, properties)
+            P.retrieve_page(page_id)
 
-            print("[done]✔")
+            updated_info = []
+
+            # Check if the journal is updated
+            if "journal" in template["properties"]:
+                journal_column = template["properties"]["journal"]
+                page_journal = P.result["properties"][journal_column]["select"]
+                page_journal = (
+                    page_journal["name"] if page_journal is not None else None
+                )
+                if paper.journal != page_journal:
+                    updated_info.append(
+                        f"{journal_column}: {page_journal} -> {paper.journal}"
+                    )
+
+            # Check if the number of citations is updated
+            if "n_citations" in template["properties"]:
+                citations_column = template["properties"]["n_citations"]
+                page_citations = P.result["properties"][citations_column]["number"]
+                page_citations = page_citations if page_citations is not None else 0
+                if paper.n_citations != page_citations:
+                    updated_info.append(
+                        f"{citations_column}: {page_citations} -> {paper.n_citations}"
+                    )
+
+            if len(updated_info) == 0:
+                print("[done]=[/done]")
+
+            else:
+                P.update_page(page_id, properties)
+
+                print(f"[done]✔[/done] {', '.join(updated_info)}")
 
         print()
         print("[done]✔[/done] Updated all papers")
