@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import requests
 from typeguard import typechecked
 
@@ -9,11 +11,11 @@ from .objects.page_properties import PageProperty
 
 @typechecked
 class Notion:
-    def __init__(self, token: str) -> None:
+    def __init__(self, api_key: str | None = None) -> None:
         self.base_url = "https://api.notion.com/v1"
-        self.token = token
+        self.api_key = api_key or os.getenv("NOTION_API_KEY")
         self.headers = {
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
             "Notion-Version": "2022-06-28",
         }
