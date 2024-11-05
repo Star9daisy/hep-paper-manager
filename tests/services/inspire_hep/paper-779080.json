@@ -1,0 +1,705 @@
+{
+    "updated": "2023-03-10T10:45:56.079592+00:00",
+    "id": "779080",
+    "metadata": {
+        "citation_count": 10458,
+        "documents": [
+            {
+                "key": "f2f49af66c6eefaa13ba3ecc1e82fe06",
+                "url": "https://inspirehep.net/files/f2f49af66c6eefaa13ba3ecc1e82fe06",
+                "source": "Springer",
+                "filename": "JHEP04(2008)063.pdf"
+            }
+        ],
+        "citation_count_without_self_citations": 10366,
+        "report_numbers": [
+            {
+                "value": "LPTHE-07-03"
+            }
+        ],
+        "publication_info": [
+            {
+                "year": 2008,
+                "artid": "063",
+                "page_start": "063",
+                "journal_title": "JHEP",
+                "journal_record": {
+                    "$ref": "https://inspirehep.net/api/journals/1213103"
+                },
+                "journal_volume": "04"
+            }
+        ],
+        "core": true,
+        "dois": [
+            {
+                "value": "10.1088/1126-6708/2008/04/063"
+            }
+        ],
+        "titles": [
+            {
+                "title": "The anti-$k_t$ jet clustering algorithm"
+            },
+            {
+                "title": "The anti-k_t jet clustering algorithm",
+                "source": "arXiv"
+            }
+        ],
+        "$schema": "https://inspirehep.net/schemas/records/hep.json",
+        "authors": [
+            {
+                "uuid": "b1856103-38bb-4572-9297-07075e16703f",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/1014791"
+                },
+                "full_name": "Cacciari, Matteo",
+                "affiliations": [
+                    {
+                        "value": "Paris, LPTHE",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/908583"
+                        }
+                    }
+                ],
+                "signature_block": "CACARm",
+                "curated_relation": true
+            },
+            {
+                "ids": [
+                    {
+                        "value": "0000-0002-2655-4373",
+                        "schema": "ORCID"
+                    }
+                ],
+                "uuid": "1603343b-c832-4892-9fa6-4e0a46790bf9",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/990581"
+                },
+                "full_name": "Salam, Gavin P.",
+                "affiliations": [
+                    {
+                        "value": "Paris, LPTHE",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/908583"
+                        }
+                    }
+                ],
+                "signature_block": "SALANg",
+                "curated_relation": true
+            },
+            {
+                "uuid": "16e855b1-3e3a-4acf-ae89-aaf2ba273840",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/1020028"
+                },
+                "full_name": "Soyez, Gregory",
+                "affiliations": [
+                    {
+                        "value": "Brookhaven",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/902689"
+                        }
+                    }
+                ],
+                "signature_block": "SYg",
+                "curated_relation": true
+            }
+        ],
+        "curated": true,
+        "figures": [
+            {
+                "key": "715fb7311a97e8f1179da5254b653a16",
+                "url": "https://inspirehep.net/files/715fb7311a97e8f1179da5254b653a16",
+                "source": "arxiv",
+                "caption": "A sample parton-level event (generated with Herwig~\\cite{Herwig}), together with many random soft ``ghosts'', clustered with four different jets algorithms, illustrating the ``active'' catchment areas of the resulting hard jets. For $k_t$ and Cam/Aachen the detailed shapes are in part determined by the specific set of ghosts used, and change when the ghosts aremodified.",
+                "filename": "herwig-parton-level-ev-kt-R1.0-ghosted4root.png"
+            },
+            {
+                "key": "8ad47af8984140907b3c5e453c003576",
+                "url": "https://inspirehep.net/files/8ad47af8984140907b3c5e453c003576",
+                "source": "arxiv",
+                "caption": "A sample parton-level event (generated with Herwig~\\cite{Herwig}), together with many random soft ``ghosts'', clustered with four different jets algorithms, illustrating the ``active'' catchment areas of the resulting hard jets. For $k_t$ and Cam/Aachen the detailed shapes are in part determined by the specific set of ghosts used, and change when the ghosts aremodified.",
+                "filename": "herwig-parton-level-ev-cam-R1.0-ghosted4root.png"
+            },
+            {
+                "key": "68c33e3f11f8c099091315db1ba92734",
+                "url": "https://inspirehep.net/files/68c33e3f11f8c099091315db1ba92734",
+                "source": "arxiv",
+                "caption": "A sample parton-level event (generated with Herwig~\\cite{Herwig}), together with many random soft ``ghosts'', clustered with four different jets algorithms, illustrating the ``active'' catchment areas of the resulting hard jets. For $k_t$ and Cam/Aachen the detailed shapes are in part determined by the specific set of ghosts used, and change when the ghosts aremodified.",
+                "filename": "herwig-parton-level-ev-siscone-R1.0-f0.75-ghosted4root.png"
+            },
+            {
+                "key": "3f3a34258a38cceba7143637962fa0c7",
+                "url": "https://inspirehep.net/files/3f3a34258a38cceba7143637962fa0c7",
+                "source": "arxiv",
+                "caption": "A sample parton-level event (generated with Herwig~\\cite{Herwig}), together with many random soft ``ghosts'', clustered with four different jets algorithms, illustrating the ``active'' catchment areas of the resulting hard jets. For $k_t$ and Cam/Aachen the detailed shapes are in part determined by the specific set of ghosts used, and change when the ghosts aremodified.",
+                "filename": "herwig-parton-level-ev-antikt-R1.0-ghosted4root.png"
+            },
+            {
+                "key": "0406a5ce5759ab26c7e096a1018b751e",
+                "url": "https://inspirehep.net/files/0406a5ce5759ab26c7e096a1018b751e",
+                "source": "arxiv",
+                "caption": "Distribution of areas in dijet events at the LHC. We have generated events with Pythia 6.4 with a $p_{t,min}$ of 1 TeV. Only the two hardest jets have been kept with a further requirement $|y|\\le 2$. The area distribution obtained from anti-$k_t$ (scaled by 0.1) is compared to the other algorithms. (a) passive area at parton level; (b) active area at hadron level including the underlying event and pileup corresponding to highluminosity LHC running.",
+                "filename": "area_histogram.png"
+            },
+            {
+                "key": "c2b4ef62615f36f791a126306111be7c",
+                "url": "https://inspirehep.net/files/c2b4ef62615f36f791a126306111be7c",
+                "source": "arxiv",
+                "caption": "Average jet area in dijet events at the LHC. We have generated events with Herwig 6.5 and only the two hardest jets with $|y|\\le 2$ have been kept. The curves correspond to the average jet area at a given $p_t$. The yellow band around the anti-$k_t$ line corresponds to the area fluctuations. For clarity, the latter are not shown for the other algorithms. The encapsulated graph is a zoom on the anti-$k_t$ results. Note that the horizontal scale is $\\ln \\ln(p_t/\\Lambda_{QCD})$ with$\\Lambda_{QCD}=200$~MeV.",
+                "filename": "anom_dim.png"
+            },
+            {
+                "key": "bdd81baad75d37a5e598daafc8c3cd41",
+                "url": "https://inspirehep.net/files/bdd81baad75d37a5e598daafc8c3cd41",
+                "source": "arxiv",
+                "caption": "Distribution of back-reaction for the anti-$k_t$ algorithm as compared to $k_t$, Cambridge/Aachen and SISCone. It is calculated for dijet events simulated with Pythia 6.4 in which the two hardest jets have $p_t > 200 \\GeV$ and are both situated at $|y|<2$. The back reaction corresponds to the net transverse momentum change of each of the two hardest jets due to the reassignment of non-pileup particles when one adds high-luminosity LHC pileup to the event ($\\sim$ 25 $pp$ interactions per bunchcrossing).",
+                "filename": "antikt-back_reaction.png"
+            },
+            {
+                "key": "6c132d157245da9bf54996ba1d2a631f",
+                "url": "https://inspirehep.net/files/6c132d157245da9bf54996ba1d2a631f",
+                "source": "arxiv",
+                "caption": "Top mass reconstruction in Pythia-simulated LHC $t\\bar t$ events. Both the $t$ and the $\\bar t$ decay hadronically, $t \\to bW^+ \\to bq\\bar q$ and $\\bar t \\to \\bar bW^- \\to \\barbq\\bar q$. All jet algorithms have been used with $R=0.4$.",
+                "filename": "antikt_tmass.png"
+            }
+        ],
+        "texkeys": [
+            "Cacciari:2008gp"
+        ],
+        "citeable": true,
+        "keywords": [
+            {
+                "value": "hadron hadron: interaction",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "p p: inclusive reaction",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "jet: hadroproduction",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "cluster",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "jet: pair production",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "quantum chromodynamics: perturbation theory",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "nonperturbative",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "top: pair production",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "top: decay",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "top: mass",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "numerical calculations: Monte Carlo",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "CERN LHC Coll",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "14000 GeV-cms",
+                "schema": "INSPIRE"
+            }
+        ],
+        "refereed": true,
+        "abstracts": [
+            {
+                "value": "The k_t and Cambridge/Aachen inclusive jet finding algorithms for hadron-hadron collisions can be seen as belonging to a broader class of sequential recombination jet algorithms, parametrised by the power of the energy scale in the distance measure. We examine some properties of a new member of this class, for which the power is negative. This ``anti-k_t'' algorithm essentially behaves like an idealised cone algorithm, in that jets with only soft fragmentation are conical, active and passive areas are equal, the area anomalous dimensions are zero, the non-global logarithms are those of a rigid boundary and the Milan factor is universal. None of these properties hold for existing sequential recombination algorithms, nor for cone algorithms with split--merge steps, such as SISCone. They are however the identifying characteristics of the collinear unsafe plain ``iterative cone'' algorithm, for which the anti-k_t algorithm provides a natural, fast, infrared and collinear safe replacement.",
+                "source": "arXiv"
+            }
+        ],
+        "references": [
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/354686"
+                },
+                "reference": {
+                    "label": "1",
+                    "publication_info": {
+                        "artid": "187",
+                        "page_start": "187",
+                        "journal_title": "Nucl.Phys.B",
+                        "journal_volume": "406"
+                    }
+                },
+                "legacy_curated": true,
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/34969"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9305266",
+                    "publication_info": {
+                        "artid": "3160",
+                        "page_start": "3160",
+                        "journal_title": "Phys.Rev.D",
+                        "journal_volume": "48"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/583553"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0203009",
+                    "publication_info": {
+                        "year": 2002,
+                        "artid": "017",
+                        "page_start": "017",
+                        "journal_title": "JHEP",
+                        "journal_volume": "03"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/445565"
+                },
+                "reference": {
+                    "label": "2",
+                    "arxiv_eprint": "hep-ph/9707323",
+                    "publication_info": {
+                        "year": 1997,
+                        "artid": "001",
+                        "page_start": "001",
+                        "journal_title": "JHEP",
+                        "journal_volume": "08"
+                    }
+                },
+                "legacy_curated": true,
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/484872"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9907280"
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/526927"
+                },
+                "reference": {
+                    "label": "3",
+                    "arxiv_eprint": "hep-ex/0005012"
+                },
+                "legacy_curated": true,
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/779079"
+                },
+                "reference": {
+                    "label": "4",
+                    "arxiv_eprint": "0802.1188",
+                    "publication_info": {
+                        "year": 2008,
+                        "artid": "005",
+                        "page_start": "005",
+                        "journal_title": "JHEP",
+                        "journal_volume": "04"
+                    }
+                },
+                "legacy_curated": true,
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/747950"
+                },
+                "reference": {
+                    "label": "5",
+                    "arxiv_eprint": "0704.0292",
+                    "publication_info": {
+                        "year": 2007,
+                        "artid": "086",
+                        "page_start": "086",
+                        "journal_title": "JHEP",
+                        "journal_volume": "05"
+                    }
+                },
+                "legacy_curated": true,
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1614070"
+                },
+                "reference": {
+                    "label": "6",
+                    "report_numbers": [
+                        "CERN-LHCC-2006-001"
+                    ]
+                },
+                "legacy_curated": true,
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/534486"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0010017",
+                    "publication_info": {
+                        "artid": "238",
+                        "page_start": "238",
+                        "journal_title": "Comput.Phys.Commun.",
+                        "journal_volume": "135"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/625931"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0308153"
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/599813"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0210213"
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/555905"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0104277",
+                    "publication_info": {
+                        "artid": "323",
+                        "page_start": "323",
+                        "journal_title": "Phys.Lett.B",
+                        "journal_volume": "512"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/614597"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0303051",
+                    "publication_info": {
+                        "artid": "014012",
+                        "journal_title": "Phys.Rev.D",
+                        "journal_volume": "68"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/588050"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0206076",
+                    "publication_info": {
+                        "year": 2002,
+                        "artid": "006",
+                        "page_start": "006",
+                        "journal_title": "JHEP",
+                        "journal_volume": "08"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/603180"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0211426",
+                    "publication_info": {
+                        "year": 2002,
+                        "artid": "063",
+                        "page_start": "063",
+                        "journal_title": "JHEP",
+                        "journal_volume": "12"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/634969"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0312108",
+                    "publication_info": {
+                        "year": 2004,
+                        "artid": "027",
+                        "page_start": "027",
+                        "journal_title": "JHEP",
+                        "journal_volume": "01"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/729504"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0610242",
+                    "publication_info": {
+                        "year": 2006,
+                        "artid": "044",
+                        "page_start": "044",
+                        "journal_title": "JHEP",
+                        "journal_volume": "12"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/446602"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9707532",
+                    "publication_info": {
+                        "artid": "396",
+                        "page_start": "396",
+                        "journal_title": "Nucl.Phys.B",
+                        "journal_volume": "511"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/467385"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9802381",
+                    "publication_info": {
+                        "year": 1998,
+                        "artid": "003",
+                        "page_start": "003",
+                        "journal_title": "JHEP",
+                        "journal_volume": "05"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/475779"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9809247",
+                    "publication_info": {
+                        "year": 1998,
+                        "artid": "001",
+                        "page_start": "001",
+                        "journal_title": "JHEP",
+                        "journal_volume": "10"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/468305"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9803382",
+                    "publication_info": {
+                        "year": 1998,
+                        "artid": "017",
+                        "page_start": "017",
+                        "journal_title": "JHEP",
+                        "journal_volume": "04"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/510003"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9911316",
+                    "publication_info": {
+                        "year": 1999,
+                        "artid": "025",
+                        "page_start": "025",
+                        "journal_title": "JHEP",
+                        "journal_volume": "11"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/439632"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/9701309",
+                    "publication_info": {
+                        "artid": "297",
+                        "page_start": "297",
+                        "journal_title": "Nucl.Phys.B",
+                        "journal_volume": "497"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/730981"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0611061",
+                    "publication_info": {
+                        "artid": "014022",
+                        "journal_title": "Phys.Rev.D",
+                        "journal_volume": "75"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/700668"
+                },
+                "reference": {
+                    "arxiv_eprint": "hep-ph/0512210",
+                    "publication_info": {
+                        "artid": "57",
+                        "page_start": "57",
+                        "journal_title": "Phys.Lett.B",
+                        "journal_volume": "641"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "reference": {
+                    "publication_info": {
+                        "artid": "1167",
+                        "page_start": "1167",
+                        "journal_title": "Software Pract.Exper.",
+                        "journal_volume": "30"
+                    }
+                }
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/191870"
+                },
+                "reference": {
+                    "publication_info": {
+                        "artid": "214",
+                        "page_start": "214",
+                        "journal_title": "Phys.Lett.B",
+                        "journal_volume": "132"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/770552"
+                },
+                "reference": {
+                    "arxiv_eprint": "0712.2447",
+                    "publication_info": {
+                        "artid": "484",
+                        "page_start": "484",
+                        "journal_title": "Prog.Part.Nucl.Phys.",
+                        "journal_volume": "60"
+                    }
+                },
+                "curated_relation": false
+            }
+        ],
+        "arxiv_eprints": [
+            {
+                "value": "0802.1189",
+                "categories": [
+                    "hep-ph"
+                ]
+            }
+        ],
+        "document_type": [
+            "article"
+        ],
+        "energy_ranges": [
+            "> 10 TeV"
+        ],
+        "preprint_date": "2008-02",
+        "control_number": 779080,
+        "legacy_version": "20180820143813.0",
+        "number_of_pages": 12,
+        "inspire_categories": [
+            {
+                "term": "Phenomenology-HEP"
+            }
+        ],
+        "legacy_creation_date": "2008-02-10",
+        "external_system_identifiers": [
+            {
+                "value": "hal-00345768",
+                "schema": "HAL"
+            },
+            {
+                "value": "2008JHEP...04..063C",
+                "schema": "ADS"
+            },
+            {
+                "value": "SPIRES-7656629",
+                "schema": "SPIRES"
+            }
+        ]
+    },
+    "uuid": "8034b7c4-2686-43da-b128-299f30d8ff18",
+    "revision_id": 107,
+    "links": {
+        "bibtex": "https://inspirehep.net/api/literature/779080?format=bibtex",
+        "latex-eu": "https://inspirehep.net/api/literature/779080?format=latex-eu",
+        "latex-us": "https://inspirehep.net/api/literature/779080?format=latex-us",
+        "json": "https://inspirehep.net/api/literature/779080?format=json",
+        "cv": "https://inspirehep.net/api/literature/779080?format=cv",
+        "citations": "https://inspirehep.net/api/literature/?q=refersto%3Arecid%3A779080"
+    },
+    "created": "2008-02-10T00:00:00+00:00"
+}

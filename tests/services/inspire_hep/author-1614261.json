@@ -1,0 +1,56 @@
+{
+    "updated": "2023-09-14T05:37:02.851699+00:00",
+    "id": "1614261",
+    "metadata": {
+        "email_addresses": [
+            {
+                "value": "lukedeoliveira@lbl.gov",
+                "current": true
+            }
+        ],
+        "positions": [
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/institutions/902953"
+                },
+                "current": true,
+                "institution": "LBL, Berkeley",
+                "curated_relation": true
+            }
+        ],
+        "ids": [
+            {
+                "value": "0000-0001-7566-6593",
+                "schema": "ORCID"
+            },
+            {
+                "value": "L.De.Oliveira.1",
+                "schema": "INSPIRE BAI"
+            },
+            {
+                "value": "INSPIRE-00488399",
+                "schema": "INSPIRE ID"
+            }
+        ],
+        "name": {
+            "value": "de Oliveira, Luke",
+            "preferred_name": "Luke de Oliveira"
+        },
+        "stub": false,
+        "status": "active",
+        "$schema": "https://inspirehep.net/schemas/records/authors.json",
+        "deleted": false,
+        "control_number": 1614261,
+        "legacy_version": "20180116213146.0",
+        "arxiv_categories": [
+            "hep-ex"
+        ],
+        "legacy_creation_date": "2017-08-03"
+    },
+    "uuid": "f56e79ae-4489-4e8b-ae7a-de1e010b516f",
+    "revision_id": 124,
+    "links": {
+        "json": "https://inspirehep.net/api/authors/1614261?format=json"
+    },
+    "created": "2017-08-03T00:00:00+00:00"
+}

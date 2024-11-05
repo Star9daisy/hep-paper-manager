@@ -1,37 +1,32 @@
+import shutil
 from pathlib import Path
-from typing import Optional
 
 import pyfiglet
 import typer
 import yaml
-from notion_database.database import Database
-from notion_database.page import Page
-from notion_database.properties import Properties
-from notion_database.search import Direction, Search, Timestamp
-from rich.console import Console
 from rich.prompt import Prompt
-from typing_extensions import Annotated
+from typing_extensions import Annotated, Optional
+
+from hpm.services.inspire_hep.client import InspireHEP
+from hpm.services.inspire_hep.objects import Author, Paper
+from hpm.services.notion.client import Notion
+from hpm.services.notion.objects.page import Page
+from hpm.services.notion.objects.page_properties import ALL_PAGE_PROPERTIES
 
 from . import __app_name__, __app_version__
-from .engines import Inspire
-from .styles import theme
-
-APP_DIR = Path(typer.get_app_dir("hpm", force_posix=True))
-TOKEN_FILE = APP_DIR / "TOKEN"
-TEMPLATE_FILE = APP_DIR / "paper.yml"
+from .config import APP_DIR, TEMPLATE_FILE, TOKEN_FILE
+from .utils import c, print
 
 app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
     add_completion=False,
+    pretty_exceptions_show_locals=False,
 )
-
-c = Console(theme=theme)
-print = c.print
 
 
 @app.command(help="Initialize with the Notion API token")
 def init():
-    # Welcome info
+    # Welcome info ----------------------------------------------------------- #
     print(pyfiglet.figlet_format(f"{__app_name__} {__app_version__}", font="slant"))
     print(
         "Welcome to HEP Paper Manager.\n"
@@ -39,42 +34,55 @@ def init():
     )
     print()
 
-    # Create the app directories
-    APP_DIR.mkdir(parents=True, exist_ok=True)
-
-    # Ask for the token
-    token = Prompt.ask(
-        "[ques]?[/ques] Enter the integration token",
-        password=True,
-        console=c,
-    )
+    # Check if hpm has already been initialized ------------------------------ #
+    reinitialized = False
+    if APP_DIR.exists():
+        if (
+            Prompt.ask(
+                "[ques]?[/ques] hpm has already been initialized. Clean and reinitialize?",
+                default="y",
+                console=c,
+                choices=["y", "n"],
+            )
+            == "y"
+        ):
+            reinitialized = True
+            shutil.rmtree(APP_DIR)
+            APP_DIR.mkdir()
+    else:
+        reinitialized = True
+        APP_DIR.mkdir()
     print()
 
-    # Check if token is valid
-    try:
-        S = Search(token)
-        S.search_database(
-            query="",
-            sort={
-                "direction": Direction.ascending,
-                "timestamp": Timestamp.last_edited_time,
-            },
+    # Ask for the token ------------------------------------------------------ #
+    if reinitialized:
+        token = Prompt.ask(
+            "[ques]?[/ques] Enter the integration token",
+            password=True,
+            console=c,
         )
-    except Exception:
-        print("[error]Invalid token!")
-        typer.Exit(1)
+        print()
 
-    # Save the token
-    with open(TOKEN_FILE, "w") as f:
-        f.write(token)
+        with open(TOKEN_FILE, "w") as f:
+            f.write(token)
+        print("[green]✔[/green] Token saved")
+        print()
+    else:
+        with open(TOKEN_FILE, "r") as f:
+            token = f.read()
 
-    # Show the databases to choose from
-    for index, database in enumerate(S.result, start=1):
-        title = database["title"][0]["plain_text"]
-        id = database["id"]
-        print(f"[num]{index}[/num]: {title} ({id})")
+    # Choose the database ---------------------------------------------------- #
+    # Search all databases related to the token
+    notion = Notion(token)
+    response = notion.search_database()
+    n_databases = len(response["results"])
+    print(f"[num]{n_databases}[/num] databases found:")
+    for index, result in enumerate(response["results"], start=1):
+        title = result["title"][0]["plain_text"]
+        url = result["url"]
+        print(f"  [num]{index}[/num]: {title} -> ([url]{url}[/url])")
+    print()
 
-    # Ask for the database
     choice = Prompt.ask(
         "[ques]?[/ques] Choose one as the paper database",
         default="1",
@@ -82,9 +90,11 @@ def init():
     )
     print()
     choice = int(choice) - 1
-    database_id = S.result[choice]["id"]
+    database_id = response["results"][choice]["id"]
+    print(f"[green]✔[/green] Database ID: {database_id}")
+    print()
 
-    # Modify the provided template file to replace the database_id
+    # Modify the provided template file to replace the database_id ----------- #
     template = Path(__file__).parent / "templates/paper.yml"
     with template.open() as f:
         template_content = yaml.safe_load(f)
@@ -110,69 +120,71 @@ def add(arxiv_id: str):
     with open(TEMPLATE_FILE) as f:
         template = yaml.safe_load(f)
 
-    # Get the paper
+    # Get the paper ---------------------------------------------------------- #
     print("[info]i[/info] Getting the paper from Inspire")
-    paper = Inspire().get(arxiv_id)
+    paper_response = InspireHEP().get_paper(arxiv_id)
+    paper = Paper.from_response(paper_response)
 
     # Check if it exists according to the title
     print("[info]i[/info] Checking if it exists in the database")
-    D = Database(token)
+    database_id = template["database_id"]
+    notion = Notion(token)
 
-    ## Find title column
-    D.retrieve_database(database_id=template["database_id"])
+    retrieved_database_data = notion.retrieve_database(database_id)
+    title_property = [
+        property["name"]
+        for property in retrieved_database_data["properties"].values()
+        if property["type"] == "title"
+    ][0]
 
-    property_dict = {}
-    title_column = None
-    for property in D.result["properties"].values():
-        property_dict[property["name"]] = property["type"]
-        if property["type"] == "title":
-            title_column = property["name"]
+    all_page_data = []
+    has_more = True
+    while has_more:
+        response = notion.query_database(database_id)
+        all_page_data += response["results"]
+        has_more = response["has_more"]
 
-    ## Check if the title exists
-    ## The default query only returns 100 results, so we need to loop through all
-    D.run_query_database(database_id=template["database_id"])
-
-    all_pages = []
-    while True:
-        all_pages += D.result["results"]
-
-        if D.result["has_more"]:
-            D.find_all_page(
-                template["database_id"],
-                start_cursor=D.result["next_cursor"],
-            )
-        else:
-            break
-
-    for page in all_pages:
-        title = page["properties"][title_column]["title"][0]["plain_text"]
-        if title == paper.title:
-            print()
-            print(
-                "[error]Error:[/error] [error_msg]This paper already exists in the database."
-            )
-            print()
-            print(f"[hint]Check it here: [url]{page['url']}")
+    for page_data in all_page_data:
+        if (
+            page_data["properties"][title_property]["title"][0]["plain_text"]
+            == paper.title
+        ):
+            print(f"Paper [{paper.eprint}]{paper.title} already exists")
             raise typer.Exit(1)
 
-    # Convert paper to page and create it in the database
-    print("[info]i[/info] Creating the page in the database")
+    # Create template page according to the database ------------------------- #
+    template_page = Page(
+        properties={
+            k: ALL_PAGE_PROPERTIES[v["type"]]()
+            for k, v in retrieved_database_data["properties"].items()
+            if v["type"] in ALL_PAGE_PROPERTIES
+        }
+    )
 
-    properties = Properties()
+    # Update the template page according to the paper ------------------------ #
     for paper_property, page_property in template["properties"].items():
-        property_type = property_dict[page_property]
-        if getattr(paper, paper_property) is not None:
-            getattr(properties, f"set_{property_type}")(
-                page_property, getattr(paper, paper_property)
-            )
+        if page_property is None:
+            continue
 
-    P = Page(integrations_token=token)
-    P.create_page(template["database_id"], properties)
+        if "." not in paper_property:
+            value = getattr(paper, paper_property)
+        else:
+            first_level_property = paper_property.split(".")[0]
+            second_level_property = paper_property.split(".")[1]
+            value = [
+                getattr(i, second_level_property)
+                for i in getattr(paper, first_level_property)
+            ]
 
+        template_page.properties[page_property].value = value
+
+    # Create a new page
+    response = notion.create_page(database_id, template_page.properties)
+    new_page = Page.from_response(response)
     print()
-    print("[done]✔[/done] Added")
+    print("[done]✔[/done] Paper added")
     print()
-    print(f"[hint]Check it here: [url]{P.result['url']}")
+    print(f"[hint]Check it here: [url]{new_page.url}[/url]")
 
 
 @app.command(help="Update a paper or all papers")
@@ -184,202 +196,151 @@ def update(arxiv_id: str):
     # Load the template
     with open(TEMPLATE_FILE) as f:
         template = yaml.safe_load(f)
+    database_id = template["database_id"]
+
+    # Setup clients
+    inspire_hep = InspireHEP()
+    notion = Notion(token)
 
     if arxiv_id != "all":
-        print(f"[sect]>[/sect] Updating paper [num]{arxiv_id}[/num]...")
+        print(f"[sect]>[/sect] Updating paper [num]{arxiv_id}[/num]")
         print()
 
         # Get the paper
         print("[info]i[/info] Getting the paper from Inspire")
-        paper = Inspire().get(arxiv_id)
+        paper_response = inspire_hep.get_paper(arxiv_id)
+        paper = Paper.from_response(paper_response)
 
         # Check if it exists according to the title
         print("[info]i[/info] Checking if it exists in the database")
-        D = Database(token)
 
-        ## Find title column
-        D.retrieve_database(database_id=template["database_id"])
+        retrieved_database_data = notion.retrieve_database(database_id)
+        title_property = [
+            property["name"]
+            for property in retrieved_database_data["properties"].values()
+            if property["type"] == "title"
+        ][0]
 
-        property_dict = {}
-        title_column = None
-        for property in D.result["properties"].values():
-            property_dict[property["name"]] = property["type"]
-            if property["type"] == "title":
-                title_column = property["name"]
+        exists = False
+        template_page = Page()
+        all_page_data = []
+        has_more = True
+        start_cursor = None
+        while has_more:
+            response = notion.query_database(database_id, start_cursor=start_cursor)
+            all_page_data += response["results"]
+            has_more = response["has_more"]
+            start_cursor = response["next_cursor"]
 
-        ## Check if the title exists and get the page id
-        is_existing = False
-        page_id = None
-        D.run_query_database(database_id=template["database_id"])
-
-        ## The default query only returns 100 results, so we need to loop through all
-        all_pages = []
-        while True:
-            all_pages += D.result["results"]
-
-            if D.result["has_more"]:
-                D.find_all_page(
-                    template["database_id"],
-                    start_cursor=D.result["next_cursor"],
-                )
-            else:
+        for page_data in all_page_data:
+            if (
+                page_data["properties"][title_property]["title"][0]["plain_text"]
+                == paper.title
+            ):
+                template_page = Page.from_response(page_data)
+                exists = True
                 break
 
-        for page in all_pages:
-            title = page["properties"][title_column]["title"][0]["plain_text"]
-            if title == paper.title:
-                is_existing = True
-                page_id = page["id"]
-                break
-
-        if not is_existing:
-            print()
+        if not exists:
             print(
-                "[error]Error:[/error] [error_msg]This paper does not exist in the database."
+                f"Paper [{paper.eprint}]{paper.title} hasn't been added to this database yet"
             )
             raise typer.Exit(1)
 
-        # Convert paper to page and create it in the database
-        print("[info]i[/info] Updating the page in the database")
+        # Update the template page according to the paper -------------------- #
+        need_update = False
+        for i_property, (paper_property, page_property) in enumerate(
+            template["properties"].items()
+        ):
+            if page_property is None:
+                continue
 
-        properties = Properties()
-        for paper_property, page_property in template["properties"].items():
-            property_type = property_dict[page_property]
-            if getattr(paper, paper_property) is not None:
-                getattr(properties, f"set_{property_type}")(
-                    page_property, getattr(paper, paper_property)
-                )
+            if "." not in paper_property:
+                value = getattr(paper, paper_property)
+            else:
+                first_level_property = paper_property.split(".")[0]
+                second_level_property = paper_property.split(".")[1]
+                value = [
+                    getattr(i, second_level_property)
+                    for i in getattr(paper, first_level_property)
+                ]
 
-        P = Page(integrations_token=token)
-        P.retrieve_page(page_id)
+            if template_page.properties[page_property].value != value:
+                original_value = template_page.properties[page_property].value
+                print(f"  └ Updating {page_property}: {original_value} -> {value}")
+                template_page.properties[page_property].value = value
+                need_update = True
 
-        updated_info = []
+            if (i_property == len(template["properties"]) - 1) and need_update:
+                print()
 
-        # Check if the journal is updated
-        if "journal" in template["properties"]:
-            journal_column = template["properties"]["journal"]
-            page_journal = P.result["properties"][journal_column]["select"]
-            page_journal = page_journal["name"] if page_journal is not None else None
-            if paper.journal != page_journal:
-                updated_info.append(
-                    f"{journal_column}: {page_journal} -> {paper.journal}"
-                )
-
-        # Check if the number of citations is updated
-        if "n_citations" in template["properties"]:
-            citations_column = template["properties"]["n_citations"]
-            page_citations = P.result["properties"][citations_column]["number"]
-            page_citations = page_citations if page_citations is not None else 0
-            if paper.n_citations != page_citations:
-                updated_info.append(
-                    f"{citations_column}: {page_citations} -> {paper.n_citations}"
-                )
-
-        if len(updated_info) == 0:
-            print("[done]✔[/done] No updates needed")
-
-        else:
-            P.update_page(page_id, properties)
-
+        if need_update:
+            updated_page = notion.update_page(
+                template_page.id, template_page.properties
+            )
             print()
-            print("[done]✔[/done] Updated")
-            print()
-            for info in updated_info:
-                print(f"[info]i[/info] {info}")
-            print()
-            print(f"[hint]Check it here: [url]{P.result['url']}")
+
+        print("[done]✔[/done] Paper updated")
+        print()
+        print(f"[hint]Check it here: [url]{updated_page['url']}[/url]")
 
     else:
-        print("[sect]>[/sect] Updating all papers...")
+        print("[sect]>[/sect] Updating all papers in the database")
         print()
 
-        # Get all arxiv ids and page ids
-        print("[info]i[/info] Getting all papers from the database")
+        all_page_data = []
+        has_more = True
+        start_cursor = None
+        while has_more:
+            response = notion.query_database(database_id, start_cursor=start_cursor)
+            all_page_data += response["results"]
+            has_more = response["has_more"]
+            start_cursor = response["next_cursor"]
 
-        D = Database(token)
-        D.retrieve_database(database_id=template["database_id"])
-
-        property_dict = {}
-        for property in D.result["properties"].values():
-            property_dict[property["name"]] = property["type"]
-
-        D.run_query_database(database_id=template["database_id"])
-
-        ## The default query only returns 100 results
-        all_pages = []
-        while True:
-            all_pages += D.result["results"]
-
-            if D.result["has_more"]:
-                D.find_all_page(
-                    template["database_id"],
-                    start_cursor=D.result["next_cursor"],
-                )
-            else:
-                break
-
-        total = len(all_pages)
-        for i, page in enumerate(all_pages):
-            arxiv_id = page["properties"]["ArXiv ID"]["rich_text"][0]["plain_text"]
-            page_id = page["id"]
-
+        for i_page, page_data in enumerate(all_page_data, start=1):
+            template_page = Page.from_response(page_data)
+            arxiv_id_col_name = template["properties"]["eprint"]
+            title_col_name = template["properties"]["title"]
+            arxiv_id = template_page.properties[arxiv_id_col_name].value
+            title = template_page.properties[title_col_name].value
             print(
-                f"[info]i[/info] Updating [{i+1}/{total}] [num]{arxiv_id}[/num]...",
-                end="",
+                f"[info]i[/info] Paper [{i_page}/{len(all_page_data)}]: {arxiv_id} : {title}"
             )
 
-            # Get the paper
-            # print("[info]i[/info] Getting the paper from Inspire")
-            paper = Inspire().get(arxiv_id)
+            paper_response = inspire_hep.get_paper(arxiv_id)
+            paper = Paper.from_response(paper_response)
 
-            # Convert paper to page and create it in the database
-            # print("[info]i[/info] Updating the page in the database")
+            need_update = False
+            for i_property, (paper_property, page_property) in enumerate(
+                template["properties"].items()
+            ):
+                if page_property is None:
+                    continue
 
-            properties = Properties()
-            for paper_property, page_property in template["properties"].items():
-                property_type = property_dict[page_property]
-                if getattr(paper, paper_property) is not None:
-                    getattr(properties, f"set_{property_type}")(
-                        page_property, getattr(paper, paper_property)
-                    )
+                if "." not in paper_property:
+                    value = getattr(paper, paper_property)
+                else:
+                    first_level_property = paper_property.split(".")[0]
+                    second_level_property = paper_property.split(".")[1]
+                    value = [
+                        getattr(i, second_level_property)
+                        for i in getattr(paper, first_level_property)
+                    ]
 
-            P = Page(integrations_token=token)
-            P.retrieve_page(page_id)
+                if template_page.properties[page_property].value != value:
+                    original_value = template_page.properties[page_property].value
+                    print(f"  └ {page_property}: {original_value} -> {value}")
+                    template_page.properties[page_property].value = value
+                    need_update = True
 
-            updated_info = []
+                if (i_property == len(template["properties"]) - 1) and need_update:
+                    print()
 
-            # Check if the journal is updated
-            if "journal" in template["properties"]:
-                journal_column = template["properties"]["journal"]
-                page_journal = P.result["properties"][journal_column]["select"]
-                page_journal = (
-                    page_journal["name"] if page_journal is not None else None
-                )
-                if paper.journal != page_journal:
-                    updated_info.append(
-                        f"{journal_column}: {page_journal} -> {paper.journal}"
-                    )
-
-            # Check if the number of citations is updated
-            if "n_citations" in template["properties"]:
-                citations_column = template["properties"]["n_citations"]
-                page_citations = P.result["properties"][citations_column]["number"]
-                page_citations = page_citations if page_citations is not None else 0
-                if paper.n_citations != page_citations:
-                    updated_info.append(
-                        f"{citations_column}: {page_citations} -> {paper.n_citations}"
-                    )
-
-            if len(updated_info) == 0:
-                print("[done]=[/done]")
-
-            else:
-                P.update_page(page_id, properties)
-
-                print(f"[done]✔[/done] {', '.join(updated_info)}")
+            if need_update:
+                notion.update_page(template_page.id, template_page.properties)
 
         print()
-        print("[done]✔[/done] Updated all papers")
+        print("[done]✔[/done] All papers updated")
 
 
 def version_callback(value: bool):

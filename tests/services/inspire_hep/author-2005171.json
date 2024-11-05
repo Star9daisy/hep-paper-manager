@@ -1,0 +1,24 @@
+{
+    "metadata": {
+        "ids": [
+            {
+                "value": "L.Mackey.1",
+                "schema": "INSPIRE BAI"
+            }
+        ],
+        "name": {
+            "value": "Mackey, Lauren"
+        },
+        "stub": true,
+        "$schema": "https://inspirehep.net/schemas/records/authors.json",
+        "control_number": 2005171
+    },
+    "links": {
+        "json": "https://inspirehep.net/api/authors/2005171?format=json"
+    },
+    "uuid": "6319e2c2-6f6b-4cc2-afda-bf3b528deb69",
+    "id": "2005171",
+    "updated": "2022-01-07T11:29:51.782704+00:00",
+    "created": "2022-01-07T11:29:51.782697+00:00",
+    "revision_id": 0
+}

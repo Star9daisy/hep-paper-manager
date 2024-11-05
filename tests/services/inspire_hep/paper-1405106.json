@@ -1,0 +1,1407 @@
+{
+    "id": "1405106",
+    "created": "2015-11-18T00:00:00+00:00",
+    "updated": "2023-11-28T13:37:30.486814+00:00",
+    "links": {
+        "bibtex": "https://inspirehep.net/api/literature/1405106?format=bibtex",
+        "latex-eu": "https://inspirehep.net/api/literature/1405106?format=latex-eu",
+        "latex-us": "https://inspirehep.net/api/literature/1405106?format=latex-us",
+        "json": "https://inspirehep.net/api/literature/1405106?format=json",
+        "cv": "https://inspirehep.net/api/literature/1405106?format=cv",
+        "citations": "https://inspirehep.net/api/literature/?q=refersto%3Arecid%3A1405106"
+    },
+    "metadata": {
+        "citation_count": 335,
+        "citation_count_without_self_citations": 299,
+        "documents": [
+            {
+                "key": "e667638de754eafb80b9655176391a2d",
+                "url": "https://inspirehep.net/files/e667638de754eafb80b9655176391a2d",
+                "source": "SCOAP3",
+                "filename": "scoap",
+                "description": "Article from SCOAP3"
+            }
+        ],
+        "publication_info": [
+            {
+                "year": 2016,
+                "artid": "069",
+                "page_start": "069",
+                "journal_title": "JHEP",
+                "journal_record": {
+                    "$ref": "https://inspirehep.net/api/journals/1213103"
+                },
+                "journal_volume": "07"
+            }
+        ],
+        "core": true,
+        "dois": [
+            {
+                "value": "10.1007/JHEP07(2016)069",
+                "source": "bibmatch"
+            }
+        ],
+        "titles": [
+            {
+                "title": "Jet-images \u2014 deep learning edition"
+            },
+            {
+                "title": "Jet-Images -- Deep Learning Edition",
+                "source": "arXiv"
+            }
+        ],
+        "$schema": "https://inspirehep.net/schemas/records/hep.json",
+        "authors": [
+            {
+                "uuid": "403d1b87-c1b1-454b-b3f4-586eae49d927",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/1614261"
+                },
+                "full_name": "de Oliveira, Luke",
+                "affiliations": [
+                    {
+                        "value": "Stanford U., Math. Dept.",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/904207"
+                        }
+                    }
+                ],
+                "signature_block": "OLAVARl",
+                "curated_relation": true,
+                "raw_affiliations": [
+                    {
+                        "value": "Institute for Computational and Mathematical Engineering - Stanford U. - Huang Building 475 Via Ortega - Stanford - CA - 94305 - U.S.A."
+                    }
+                ]
+            },
+            {
+                "uuid": "4bd92b0b-1619-4f1e-8934-145973837d5f",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/1055164"
+                },
+                "full_name": "Kagan, Michael",
+                "affiliations": [
+                    {
+                        "value": "SLAC",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/903206"
+                        }
+                    }
+                ],
+                "signature_block": "CAGANm",
+                "raw_affiliations": [
+                    {
+                        "value": "SLAC National Accelerator Laboratory - Stanford U. - 2575 Sand Hill Rd - Menlo Park - CA - 94025 - U.S.A."
+                    }
+                ]
+            },
+            {
+                "uuid": "9c5a0682-6dbb-4557-b0f0-32596191f6d1",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/2005171"
+                },
+                "full_name": "Mackey, Lester",
+                "affiliations": [
+                    {
+                        "value": "Stanford U., Statistics Dept.",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/904211"
+                        }
+                    }
+                ],
+                "signature_block": "MCYl",
+                "raw_affiliations": [
+                    {
+                        "value": "Department of Statistics - Stanford U. - 390 Serra Mall - Stanford - CA - 94305 - U.S.A."
+                    }
+                ]
+            },
+            {
+                "uuid": "3c1292e5-07e5-40e3-836b-d0f28243459a",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/1067995"
+                },
+                "full_name": "Nachman, Benjamin",
+                "affiliations": [
+                    {
+                        "value": "SLAC",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/903206"
+                        }
+                    }
+                ],
+                "signature_block": "NACHNANb",
+                "curated_relation": true,
+                "raw_affiliations": [
+                    {
+                        "value": "SLAC National Accelerator Laboratory - Stanford U. - 2575 Sand Hill Rd - Menlo Park - CA - 94025 - U.S.A."
+                    }
+                ]
+            },
+            {
+                "uuid": "f150216e-c73a-4d27-a878-e052e42aabcf",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/authors/1020905"
+                },
+                "full_name": "Schwartzman, Ariel",
+                "affiliations": [
+                    {
+                        "value": "SLAC",
+                        "record": {
+                            "$ref": "https://inspirehep.net/api/institutions/903206"
+                        }
+                    }
+                ],
+                "signature_block": "SWARTSNANa",
+                "raw_affiliations": [
+                    {
+                        "value": "SLAC National Accelerator Laboratory - Stanford U. - 2575 Sand Hill Rd - Menlo Park - CA - 94025 - U.S.A."
+                    }
+                ]
+            }
+        ],
+        "curated": true,
+        "figures": [
+            {
+                "key": "d78dcf1ef0bee8a6a56033f561201882",
+                "url": "https://inspirehep.net/files/d78dcf1ef0bee8a6a56033f561201882",
+                "source": "arxiv",
+                "caption": "The distributions of the jet mass (top left), $\\tau_{21}$ (top right) and the $\\Delta R$ between subjets (bottom) for signal (blue) and background (red) jets.",
+                "filename": "figures_mass.png"
+            },
+            {
+                "key": "7dadaec8a32207845c7b01f04a950aad",
+                "url": "https://inspirehep.net/files/7dadaec8a32207845c7b01f04a950aad",
+                "source": "arxiv",
+                "caption": "The distributions of the jet mass (top left), $\\tau_{21}$ (top right) and the $\\Delta R$ between subjets (bottom) for signal (blue) and background (red) jets.",
+                "filename": "figures_tau21.png"
+            },
+            {
+                "key": "def4ce7f320bbb81076a2e5abf9a73f8",
+                "url": "https://inspirehep.net/files/def4ce7f320bbb81076a2e5abf9a73f8",
+                "source": "arxiv",
+                "caption": "The distributions of the jet mass (top left), $\\tau_{21}$ (top right) and the $\\Delta R$ between subjets (bottom) for signal (blue) and background (red) jets.",
+                "filename": "figures_dR.png"
+            },
+            {
+                "key": "644d49eb787420124368f7e9d9d8a8cc",
+                "url": "https://inspirehep.net/files/644d49eb787420124368f7e9d9d8a8cc",
+                "source": "arxiv",
+                "caption": "The average jet image for signal $W$ jets (top) and background QCD jets (bottom) before (left) and after (right) applying the rotation, re-pixelation, and inversion steps of the pre-processing. The average is taken over images of jets with $240$ GeV $&lt;p_T&lt;$ 260 GeV and 65~GeV~$&lt;$ mass $&lt;$~95~GeV.",
+                "filename": "figures_Image_mass_average_fixed_nonorm.png"
+            },
+            {
+                "key": "c477b74b760beb90164159a811f3eea5",
+                "url": "https://inspirehep.net/files/c477b74b760beb90164159a811f3eea5",
+                "source": "arxiv",
+                "caption": "The distribution of the image mass after various states of pre-processing for signal jets (left) and background jets (right). The {\\it No pixelation line} is the jet mass without any detector granularity and without any pre-processing. {\\it Only pixelation} has only detector granularity but no pre-processing and all subsequent lines have this pixelation applied as well as translation to center the image at the origin. The translation is called {\\it naive} when the energy is used as the pixel intensity instead of the pixel transverse momentum. {\\it Flip} denotes the parity inversion operation and the $p_T^2$ norm is a $L^2$ normalization scheme. The naive translation and the $I^2$ normalization image masses are both multiplied by constants so that the centers of the distribution are roughly in the same location as for the other distributions.",
+                "filename": "figures_ImageMass_Comparison.png"
+            },
+            {
+                "key": "7481762a5cdbe0a04da3488bd2eeb642",
+                "url": "https://inspirehep.net/files/7481762a5cdbe0a04da3488bd2eeb642",
+                "source": "arxiv",
+                "caption": "The tradeoff between $W$ boson (signal) jet efficiency and inverse QCD (background) efficiency for various pre-processing algorithms applied to the jet (images). The {\\it No pixelation line} is the jet mass without any detector granularity and without any pre-processing. {\\it Only pixelation} has only detector granularity but no pre-processing and all subsequent lines have this pixelation applied as well as translation to center the image at the origin. The translation is called {\\it naive} when the energy is used as the pixel intensity instead of the pixel transverse momentum. {\\it Flip} denotes the parity inversion operation and the $p_T^2$ norm is a $L^2$ normalization scheme.",
+                "filename": "figures_ROCs.png"
+            },
+            {
+                "key": "64bd984c854f9083fdf4f23f6ae5b0a9",
+                "url": "https://inspirehep.net/files/64bd984c854f9083fdf4f23f6ae5b0a9",
+                "source": "arxiv",
+                "caption": "The convolution neural network concept as applied to jet-images.",
+                "filename": "figures_architecture.png"
+            },
+            {
+                "key": "626eea3add7748595cfdeb583733d426",
+                "url": "https://inspirehep.net/files/626eea3add7748595cfdeb583733d426",
+                "source": "arxiv",
+                "caption": "The distribution of the fraction of pixels (occupancy) that have a nonzero entry (blue) or at least 1\\% of the scalar sum of the pixel intensities from all pixels (red).",
+                "filename": "figures_occ.png"
+            },
+            {
+                "key": "8ce7594011202d71375d5b068bd009e8",
+                "url": "https://inspirehep.net/files/8ce7594011202d71375d5b068bd009e8",
+                "source": "arxiv",
+                "caption": "The marginal distributions of the ConvNet (left) and MaxOut (right) network outputs for signal and background jet images.",
+                "filename": "figures_convnet.png"
+            },
+            {
+                "key": "5964114c87b9c1ce56785a2a6bce9483",
+                "url": "https://inspirehep.net/files/5964114c87b9c1ce56785a2a6bce9483",
+                "source": "arxiv",
+                "caption": "The joint probability distribution the jet mass and the ConvNet (left) and MaxOut (right) network outputs for the background.",
+                "filename": "figures_mass_convnet_back.png"
+            },
+            {
+                "key": "8fe366432c3954d5073ec20124906a4c",
+                "url": "https://inspirehep.net/files/8fe366432c3954d5073ec20124906a4c",
+                "source": "arxiv",
+                "caption": "The joint probability distribution between $\\tau_{21}$ and the ConvNet (left) and MaxOut (right) network outputs for the background.",
+                "filename": "figures_tau21_convnet_back.png"
+            },
+            {
+                "key": "4f1f4e155eca8da171cbeaed6230984e",
+                "url": "https://inspirehep.net/files/4f1f4e155eca8da171cbeaed6230984e",
+                "source": "arxiv",
+                "caption": "The joint probability distribution between the $\\Delta R$ between subjets and the ConvNet (left) and MaxOut (right) network outputs for the background.",
+                "filename": "figures_dR_convnet_back.png"
+            },
+            {
+                "key": "f00c051236b0478c0e9c1fbdcf360956",
+                "url": "https://inspirehep.net/files/f00c051236b0478c0e9c1fbdcf360956",
+                "source": "arxiv",
+                "caption": "The joint probability distribution between jet mass and the $\\Delta R$ between subjets (left) and $\\tau_{21}$ (right) for the background.",
+                "filename": "figures_mass_dR_back.png"
+            },
+            {
+                "key": "5fc7e97356ce85ccf0a8e110ea6d9b6e",
+                "url": "https://inspirehep.net/files/5fc7e97356ce85ccf0a8e110ea6d9b6e",
+                "source": "arxiv",
+                "caption": "The joint probability distribution between the $\\Delta R$ between subjets and $\\tau_{21}$ for the background.",
+                "filename": "figures_tau21_dR_back.png"
+            }
+        ],
+        "license": [
+            {
+                "url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+                "imposing": "arXiv"
+            },
+            {
+                "license": "CC-BY-4.0"
+            }
+        ],
+        "texkeys": [
+            "deOliveira:2015xxd"
+        ],
+        "citeable": true,
+        "imprints": [
+            {
+                "date": "2016-07-13"
+            }
+        ],
+        "keywords": [
+            {
+                "value": "Jet substructure",
+                "source": "author"
+            },
+            {
+                "value": "Hadron-Hadron scattering (experiments)",
+                "source": "author"
+            },
+            {
+                "value": "boosted particle",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "W: boosted particle",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "track data analysis: jet",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "W'",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "collimator",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "sensitivity",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "performance",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "PYTHIA",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "phase space",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "neural network",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "particle: energy",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "energy: high",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "CERN LHC Coll",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "numerical calculations: Monte Carlo",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "new physics",
+                "schema": "INSPIRE"
+            },
+            {
+                "value": "13000 GeV-cms",
+                "schema": "INSPIRE"
+            }
+        ],
+        "refereed": true,
+        "abstracts": [
+            {
+                "value": "Building on the notion of a particle physics detector as a camera and the collimated streams of high energy particles, or jets, it measures as an image, we investigate the potential of machine learning techniques based on deep learning architectures to identify highly boosted W bosons. Modern deep learning algorithms trained on jet images can out-perform standard physically-motivated feature driven approaches to jet tagging. We develop techniques for visualizing how these features are learned by the network and what additional information is used to improve performance. This interplay between physicallymotivated feature driven tools and supervised learning algorithms is general and can be used to significantly increase the sensitivity to discover new particles and new forces, and gain a deeper understanding of the physics within jets.",
+                "source": "Springer"
+            },
+            {
+                "value": "Building on the notion of a particle physics detector as a camera and the collimated streams of high energy particles, or jets, it measures as an image, we investigate the potential of machine learning techniques based on deep learning architectures to identify highly boosted W bosons. Modern deep learning algorithms trained on jet images can out-perform standard physically-motivated feature driven approaches to jet tagging. We develop techniques for visualizing how these features are learned by the network and what additional information is used to improve performance. This interplay between physically-motivated feature driven tools and supervised learning algorithms is general and can be used to significantly increase the sensitivity to discover new particles and new forces, and gain a deeper understanding of the physics within jets.",
+                "source": "arXiv"
+            }
+        ],
+        "references": [
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1083293"
+                },
+                "reference": {
+                    "misc": [
+                        "Jet Substructure at the Tevatron and LHC: New results, new tools, new benchmarks"
+                    ],
+                    "label": "1",
+                    "authors": [
+                        {
+                            "full_name": "Altheimer, A."
+                        }
+                    ],
+                    "arxiv_eprint": "1201.0008",
+                    "publication_info": {
+                        "year": 2012,
+                        "artid": "063001",
+                        "journal_title": "J.Phys.G",
+                        "journal_volume": "39"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1264118"
+                },
+                "reference": {
+                    "misc": [
+                        "Boosted objects and jet substructure at the LHC. Report of BOOST2012, held at IFIC Valencia, 23rd-27th of July 2012"
+                    ],
+                    "label": "2",
+                    "authors": [
+                        {
+                            "full_name": "Altheimer, A."
+                        }
+                    ],
+                    "arxiv_eprint": "1311.2708",
+                    "publication_info": {
+                        "year": 2014,
+                        "artid": "2792",
+                        "page_start": "2792",
+                        "journal_title": "Eur.Phys.J.C",
+                        "journal_volume": "74"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1357881"
+                },
+                "reference": {
+                    "misc": [
+                        "Towards an Understanding of the Correlations in Jet Substructure"
+                    ],
+                    "label": "3",
+                    "authors": [
+                        {
+                            "full_name": "Adams, D."
+                        }
+                    ],
+                    "arxiv_eprint": "1504.00679",
+                    "publication_info": {
+                        "year": 2015,
+                        "artid": "409",
+                        "page_start": "409",
+                        "journal_title": "Eur.Phys.J.C",
+                        "journal_volume": "75"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1307242"
+                },
+                "reference": {
+                    "misc": [
+                        "Jet-Images: Computer Vision Inspired Techniques for Jet Tagging"
+                    ],
+                    "label": "4",
+                    "authors": [
+                        {
+                            "full_name": "Cogan, J."
+                        },
+                        {
+                            "full_name": "Kagan, M."
+                        },
+                        {
+                            "full_name": "Strauss, E."
+                        },
+                        {
+                            "full_name": "Schwarztman, A."
+                        }
+                    ],
+                    "arxiv_eprint": "1407.5675",
+                    "publication_info": {
+                        "year": 2015,
+                        "artid": "118",
+                        "page_start": "118",
+                        "journal_title": "JHEP",
+                        "journal_volume": "02"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1341037"
+                },
+                "reference": {
+                    "misc": [
+                        "Playing Tag with ANN: Boosted Top Identification with Pattern Recognition"
+                    ],
+                    "label": "5",
+                    "authors": [
+                        {
+                            "full_name": "Almeida, L.G."
+                        },
+                        {
+                            "full_name": "Backov\u00edc, M."
+                        },
+                        {
+                            "full_name": "Cliche, M."
+                        },
+                        {
+                            "full_name": "Lee, S.J."
+                        },
+                        {
+                            "full_name": "Perelstein, M."
+                        }
+                    ],
+                    "arxiv_eprint": "1501.05968",
+                    "publication_info": {
+                        "year": 2015,
+                        "artid": "086",
+                        "page_start": "086",
+                        "journal_title": "JHEP",
+                        "journal_volume": "07"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1852384"
+                },
+                "reference": {
+                    "misc": [
+                        "Very deep convolutional networks for large-scale image recognition, CoRR abs/"
+                    ],
+                    "label": "6",
+                    "authors": [
+                        {
+                            "full_name": "Simonyan, K."
+                        },
+                        {
+                            "full_name": "Zisserman, A."
+                        }
+                    ],
+                    "arxiv_eprint": "1409.1556",
+                    "publication_info": {
+                        "year": 2014
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "reference": {
+                    "misc": [
+                        "Maxout Networks, ArXiv e-prints (Feb.,)"
+                    ],
+                    "label": "7",
+                    "authors": [
+                        {
+                            "full_name": "Goodfellow, I.J."
+                        },
+                        {
+                            "full_name": "Warde-Farley, D."
+                        },
+                        {
+                            "full_name": "Mirza, M."
+                        },
+                        {
+                            "full_name": "Courville, A."
+                        },
+                        {
+                            "full_name": "Bengio, Y."
+                        }
+                    ],
+                    "arxiv_eprint": "1302.4389",
+                    "publication_info": {
+                        "year": 2013
+                    }
+                }
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/2727017"
+                },
+                "reference": {
+                    "misc": [
+                        "Improving neural networks by preventing co-adaptation of feature detectors, CoRR abs/"
+                    ],
+                    "label": "8",
+                    "authors": [
+                        {
+                            "full_name": "Hinton, G.E."
+                        },
+                        {
+                            "full_name": "Srivastava, N."
+                        },
+                        {
+                            "full_name": "Krizhevsky, A."
+                        },
+                        {
+                            "full_name": "Sutskever, I."
+                        },
+                        {
+                            "full_name": "Salakhutdinov, R."
+                        }
+                    ],
+                    "arxiv_eprint": "1207.0580",
+                    "publication_info": {
+                        "year": 2012
+                    }
+                }
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1322563"
+                },
+                "reference": {
+                    "misc": [
+                        "Identification techniques for highly boosted W bosons that decay into hadrons"
+                    ],
+                    "label": "9",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1410.4227",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ],
+                    "publication_info": {
+                        "year": 2014,
+                        "artid": "017",
+                        "page_start": "017",
+                        "journal_title": "JHEP",
+                        "journal_volume": "12"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1795375"
+                },
+                "reference": {
+                    "misc": [
+                        "Identification of boosted, hadronically-decaying W and Z bosons in \u221a s = 13 TeV Monte Carlo Simulations for ATLAS, Tech. Rep CERN, Geneva, Aug"
+                    ],
+                    "label": "10",
+                    "report_numbers": [
+                        "ATL-PHYS-PUB-2015-033"
+                    ],
+                    "publication_info": {
+                        "year": 2015
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1795405"
+                },
+                "reference": {
+                    "misc": [
+                        "Performance Boson Identification with the ATLAS Detector, Tech. Rep CERN, Geneva, March"
+                    ],
+                    "label": "11",
+                    "authors": [
+                        {
+                            "full_name": "W, of Boosted"
+                        }
+                    ],
+                    "report_numbers": [
+                        "ATL-PHYS-PUB-2014-004"
+                    ],
+                    "publication_info": {
+                        "year": 2014
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1374218"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for high-mass diboson resonances with boson-tagged jets in proton-proton collisions at \u221a s = 8 TeV with the ATLAS detector"
+                    ],
+                    "label": "12",
+                    "authors": [
+                        {
+                            "full_name": "Aad, G."
+                        }
+                    ],
+                    "arxiv_eprint": "1506.00962",
+                    "collaborations": [
+                        "ATLAS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1294937"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for massive resonances in dijet systems containing jets tagged as W or Z boson decays in pp collisions at \u221a s = 8 TeV"
+                    ],
+                    "label": "13",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1405.1994",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ],
+                    "publication_info": {
+                        "year": 2014,
+                        "artid": "173",
+                        "page_start": "173",
+                        "journal_title": "JHEP",
+                        "journal_volume": "08"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1395094"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for the production of an excited bottom quark decaying to tW in proton-proton collisions at \u221a s = 8 TeV"
+                    ],
+                    "label": "14",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1509.08141",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1393276"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for vector-like charge 2/3 T quarks in proton-proton collisions at \u221a s = 8 TeV"
+                    ],
+                    "label": "15",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1509.04177",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1385104"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for pair-produced vector-like B quarks in proton-proton collisions at \u221a s = 8 TeV"
+                    ],
+                    "label": "16",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1507.07129",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1374621"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for A Massive Resonance Decaying into a Higgs Boson and a W or Z Boson in Hadronic Final States in Proton-Proton Collisions at \u221a s = 8 TeV"
+                    ],
+                    "label": "17",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1506.01443",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1357982"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for a Higgs Boson in the Mass Range from 145 to 1000 GeV Decaying to a Pair of W or Z Bosons"
+                    ],
+                    "label": "18",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1504.00936",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1345160"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for Narrow High-Mass Resonances in Proton-Proton Collisions at \u221a s = 8 TeV Decaying to a Z and a Higgs Boson"
+                    ],
+                    "label": "19",
+                    "authors": [
+                        {
+                            "full_name": "Khachatryan, V."
+                        }
+                    ],
+                    "arxiv_eprint": "1502.04994",
+                    "collaborations": [
+                        "CMS Collaboration"
+                    ],
+                    "publication_info": {
+                        "year": 2015,
+                        "page_end": "277",
+                        "page_start": "255",
+                        "journal_title": "Phys.Lett.B",
+                        "journal_volume": "748"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1298722"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for squarks and gluinos with the ATLAS detector in final states with jets and missing transverse momentum using \u221a s = 8 TeV proton-proton collision data"
+                    ],
+                    "label": "20",
+                    "authors": [
+                        {
+                            "full_name": "Aad, G."
+                        }
+                    ],
+                    "arxiv_eprint": "1405.7875",
+                    "collaborations": [
+                        "ATLAS Collaboration"
+                    ],
+                    "publication_info": {
+                        "year": 2014,
+                        "artid": "176",
+                        "page_start": "176",
+                        "journal_title": "JHEP",
+                        "journal_volume": "09"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1391323"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for a high-mass Higgs boson decaying to a W boson pair in pp collisions at \u221a s = 8 TeV with the ATLAS detector"
+                    ],
+                    "label": "21",
+                    "authors": [
+                        {
+                            "full_name": "Aad, G."
+                        }
+                    ],
+                    "arxiv_eprint": "1509.00389",
+                    "collaborations": [
+                        "ATLAS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1384120"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for an additional, heavy Higgs boson in the H - ZZ decay channel at [?] s = 8 TeV in pp collision data with the ATLAS detector"
+                    ],
+                    "label": "22",
+                    "authors": [
+                        {
+                            "full_name": "Aad, G."
+                        }
+                    ],
+                    "arxiv_eprint": "1507.05930",
+                    "collaborations": [
+                        "ATLAS Collaboration"
+                    ]
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1352826"
+                },
+                "reference": {
+                    "misc": [
+                        "Search for production of WW/WZ resonances decaying to a lepton, neutrino and jets in pp collisions at \u221a s = 8 TeV with the ATLAS detector [Erratum:",
+                        "Additional pubnote: Eur.Phys.J.,C75,370"
+                    ],
+                    "label": "23",
+                    "authors": [
+                        {
+                            "full_name": "Aad, G."
+                        }
+                    ],
+                    "arxiv_eprint": "1503.04677",
+                    "collaborations": [
+                        "ATLAS Collaboration"
+                    ],
+                    "publication_info": {
+                        "year": 2015,
+                        "artid": "209",
+                        "page_start": "209",
+                        "journal_title": "Eur.Phys.J.C",
+                        "journal_volume": "75"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1304687"
+                },
+                "reference": {
+                    "misc": [
+                        "Measurement of the cross-section of high transverse momentum vector bosons reconstructed as single jets and studies of jet substructure in pp collisions at \u221a s = 7 TeV with the ATLAS detector"
+                    ],
+                    "label": "24",
+                    "authors": [
+                        {
+                            "full_name": "Aad, G."
+                        }
+                    ],
+                    "arxiv_eprint": "1407.0800",
+                    "collaborations": [
+                        "ATLAS Collaboration"
+                    ],
+                    "publication_info": {
+                        "year": 2014,
+                        "artid": "113013",
+                        "journal_title": "New J.Phys.",
+                        "journal_volume": "16"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/764903"
+                },
+                "reference": {
+                    "misc": [
+                        "A Brief Introduction to PYTHIA 8.1"
+                    ],
+                    "label": "25",
+                    "authors": [
+                        {
+                            "full_name": "Sjostrand, T."
+                        },
+                        {
+                            "full_name": "Mrenna, S."
+                        },
+                        {
+                            "full_name": "Skands, P.Z."
+                        }
+                    ],
+                    "arxiv_eprint": "0710.3820",
+                    "publication_info": {
+                        "year": 2008,
+                        "page_end": "867",
+                        "page_start": "852",
+                        "journal_title": "Comput.Phys.Commun.",
+                        "journal_volume": "178"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/712925"
+                },
+                "reference": {
+                    "misc": [
+                        "PYTHIA 6.4 Physics and Manual"
+                    ],
+                    "label": "26",
+                    "authors": [
+                        {
+                            "full_name": "Sjostrand, T."
+                        },
+                        {
+                            "full_name": "Mrenna, S."
+                        },
+                        {
+                            "full_name": "Skands, P.Z."
+                        }
+                    ],
+                    "arxiv_eprint": "hep-ph/0603175",
+                    "publication_info": {
+                        "year": 2006,
+                        "artid": "026",
+                        "page_start": "026",
+                        "journal_title": "JHEP",
+                        "journal_volume": "05"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/779080"
+                },
+                "reference": {
+                    "misc": [
+                        "The Anti-k(t) jet clustering algorithm"
+                    ],
+                    "label": "27",
+                    "authors": [
+                        {
+                            "full_name": "Cacciari, M."
+                        },
+                        {
+                            "full_name": "Salam, G.P."
+                        },
+                        {
+                            "full_name": "Soyez, G."
+                        }
+                    ],
+                    "publication_info": {
+                        "year": 2008,
+                        "artid": "063",
+                        "page_start": "063",
+                        "journal_title": "JHEP",
+                        "journal_volume": "04"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/955176"
+                },
+                "reference": {
+                    "misc": [
+                        "FastJet User Manual"
+                    ],
+                    "label": "28",
+                    "authors": [
+                        {
+                            "full_name": "Cacciari, M."
+                        },
+                        {
+                            "full_name": "Salam, G.P."
+                        },
+                        {
+                            "full_name": "Soyez, G."
+                        }
+                    ],
+                    "arxiv_eprint": "1111.6097",
+                    "publication_info": {
+                        "year": 2012,
+                        "artid": "1896",
+                        "page_start": "1896",
+                        "journal_title": "Eur.Phys.J.C",
+                        "journal_volume": "72"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/839188"
+                },
+                "reference": {
+                    "misc": [
+                        "Jet Trimming"
+                    ],
+                    "label": "29",
+                    "authors": [
+                        {
+                            "full_name": "Krohn, D."
+                        },
+                        {
+                            "full_name": "Thaler, J."
+                        },
+                        {
+                            "full_name": "Wang, L.-T."
+                        }
+                    ],
+                    "arxiv_eprint": "0912.1342",
+                    "publication_info": {
+                        "year": 2010,
+                        "artid": "084",
+                        "page_start": "084",
+                        "journal_title": "JHEP",
+                        "journal_volume": "02"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/876746"
+                },
+                "reference": {
+                    "misc": [
+                        "Identifying Boosted Objects with N-subjettiness"
+                    ],
+                    "label": "30",
+                    "authors": [
+                        {
+                            "full_name": "Thaler, J."
+                        },
+                        {
+                            "full_name": "Van Tilburg, K."
+                        }
+                    ],
+                    "arxiv_eprint": "1011.2268",
+                    "publication_info": {
+                        "year": 2011,
+                        "artid": "015",
+                        "page_start": "015",
+                        "journal_title": "JHEP",
+                        "journal_volume": "03"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1276724"
+                },
+                "reference": {
+                    "misc": [
+                        "Jet Shapes with the Broadening Axis"
+                    ],
+                    "label": "31",
+                    "authors": [
+                        {
+                            "full_name": "Larkoski, A.J."
+                        },
+                        {
+                            "full_name": "Neill, D."
+                        },
+                        {
+                            "full_name": "Thaler, J."
+                        }
+                    ],
+                    "arxiv_eprint": "1401.2158",
+                    "publication_info": {
+                        "year": 2014,
+                        "artid": "017",
+                        "page_start": "017",
+                        "journal_title": "JHEP",
+                        "journal_volume": "04"
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "reference": {
+                    "misc": [
+                        "Stacked denoising autoencoders: Learning useful representations in a deep network with a local denoising criterion, Journal of Machine Learning Research 11"
+                    ],
+                    "label": "32",
+                    "authors": [
+                        {
+                            "full_name": "Vincent, P."
+                        },
+                        {
+                            "full_name": "Larochelle, H."
+                        },
+                        {
+                            "full_name": "Lajoie, I."
+                        },
+                        {
+                            "full_name": "Bengio, Y."
+                        },
+                        {
+                            "full_name": "Manzagol, P.-A."
+                        }
+                    ],
+                    "publication_info": {
+                        "year": 2010
+                    }
+                }
+            },
+            {
+                "reference": {
+                    "misc": [
+                        "Deep sparse rectifier neural networks, Journal of Machine Learning Research 15"
+                    ],
+                    "label": "33",
+                    "authors": [
+                        {
+                            "full_name": "Glorot, X."
+                        },
+                        {
+                            "full_name": "Bordes, A."
+                        },
+                        {
+                            "full_name": "Bengio, Y."
+                        }
+                    ],
+                    "publication_info": {
+                        "year": 2011
+                    }
+                }
+            },
+            {
+                "reference": {
+                    "misc": [
+                        "Evaluation of pooling operations in convolutional architectures for object recognition, Proc. of the Intl. Conf. on Artificial Neural Networks"
+                    ],
+                    "label": "34",
+                    "authors": [
+                        {
+                            "full_name": "Scherer, D."
+                        },
+                        {
+                            "full_name": "Muller, A."
+                        },
+                        {
+                            "full_name": "Behnke, S."
+                        }
+                    ],
+                    "publication_info": {
+                        "year": 2010
+                    }
+                }
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1670741"
+                },
+                "reference": {
+                    "misc": [
+                        "Delving deep into rectifiers: Surpassing human-level performance on imagenet classification, CoRR abs/"
+                    ],
+                    "label": "35",
+                    "authors": [
+                        {
+                            "full_name": "He, K."
+                        },
+                        {
+                            "full_name": "Zhang, X."
+                        },
+                        {
+                            "full_name": "Ren, S."
+                        },
+                        {
+                            "full_name": "Sun, J."
+                        }
+                    ],
+                    "arxiv_eprint": "1502.01852",
+                    "publication_info": {
+                        "year": 2015
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "reference": {
+                    "urls": [
+                        {
+                            "value": "https://github.com/fchollet/keras"
+                        }
+                    ],
+                    "label": "36",
+                    "title": {
+                        "title": "Keras."
+                    },
+                    "authors": [
+                        {
+                            "full_name": "Chollet, F."
+                        }
+                    ],
+                    "publication_info": {
+                        "year": 2015
+                    }
+                }
+            },
+            {
+                "record": {
+                    "$ref": "https://inspirehep.net/api/literature/1670744"
+                },
+                "reference": {
+                    "misc": [
+                        "Adam: A method for stochastic optimization, CoRR abs/"
+                    ],
+                    "label": "37",
+                    "authors": [
+                        {
+                            "full_name": "Kingma, D.P."
+                        },
+                        {
+                            "full_name": "Ba, J."
+                        }
+                    ],
+                    "arxiv_eprint": "1412.6980",
+                    "publication_info": {
+                        "year": 2014
+                    }
+                },
+                "curated_relation": false
+            },
+            {
+                "reference": {
+                    "misc": [
+                        "A method of solving a convex programming problem with convergence rate O(1/sqr(k))"
+                    ],
+                    "label": "38",
+                    "authors": [
+                        {
+                            "full_name": "Nesterov, Y."
+                        }
+                    ],
+                    "publication_info": {
+                        "year": 1983,
+                        "page_end": "376",
+                        "page_start": "372",
+                        "journal_title": "Sov.Math.Dokl.",
+                        "journal_volume": "27"
+                    }
+                }
+            }
+        ],
+        "public_notes": [
+            {
+                "value": "32 pages, 24 figures. Version that is published in JHEP",
+                "source": "arXiv"
+            }
+        ],
+        "arxiv_eprints": [
+            {
+                "value": "1511.05190",
+                "categories": [
+                    "hep-ph",
+                    "physics.data-an",
+                    "stat.ML"
+                ]
+            }
+        ],
+        "document_type": [
+            "article"
+        ],
+        "energy_ranges": [
+            "> 10 TeV"
+        ],
+        "preprint_date": "2015-11-16",
+        "control_number": 1405106,
+        "legacy_version": "20190409124913.0",
+        "number_of_pages": 31,
+        "inspire_categories": [
+            {
+                "term": "Phenomenology-HEP"
+            },
+            {
+                "term": "Other"
+            },
+            {
+                "term": "Data Analysis and Statistics"
+            }
+        ],
+        "legacy_creation_date": "2015-11-18",
+        "external_system_identifiers": [
+            {
+                "value": "2016JHEP...07..069D",
+                "schema": "ADS"
+            },
+            {
+                "value": "1271300",
+                "schema": "OSTI"
+            }
+        ]
+    },
+    "uuid": "34996903-22c3-4947-aae5-15886e75672e",
+    "revision_id": 106
+}

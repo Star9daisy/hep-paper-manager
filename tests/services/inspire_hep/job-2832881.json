@@ -1,0 +1,72 @@
+{
+    "id": "2832881",
+    "created": "2024-09-25T12:53:19.701340+00:00",
+    "updated": "2024-09-25T16:07:43.349240+00:00",
+    "links": {
+        "json": "https://inspirehep.net/api/jobs/2832881?format=json"
+    },
+    "metadata": {
+        "accelerator_experiments": [
+            {
+                "name": "Applying HEP Data Analysis Techniques to Epidemiology"
+            }
+        ],
+        "self": {
+            "$ref": "https://inspirehep.net/api/jobs/2832881"
+        },
+        "urls": [
+            {
+                "value": "https://careers.umich.edu/job_detail/254848/research-fellow"
+            }
+        ],
+        "ranks": [
+            "POSTDOC"
+        ],
+        "status": "open",
+        "$schema": "https://inspirehep.net/api/schemas/records/jobs.json",
+        "regions": [
+            "North America"
+        ],
+        "position": "Postdoc Applying HEP Data Analysis Techniques to Epidemiology",
+        "description": "<div>The University of Michigan Physics Department and the Michigan Public Health Integrated Center for Outbreak Analytics and Modeling (MICOM) housed in the Department of Epidemiology at the University of Michigan School of Public Health are <strong>seeking postdoctoral research fellows with a background in advanced machine learning and data analysis</strong> (e.g. as used in high energy physics, data science, or applied mathematics).&nbsp;The Centers for Disease Control are funding the MICOM Center to develop an outbreak response network that uses data to support decision makers during public health emergencies. MICOM Co-Directors, Drs. Marisa Eisenberg and Emily Martin and their colleagues have an active research program to integrate mathematical modeling with community-based surveillance to understand the spread of influenza, SARS-CoV-2, and other infectious diseases.&nbsp;</div><div><br></div><div>The successful candidate will work with our team of data and computer scientists, epidemiologists and physicists on multiple ongoing research projects with a computational framework to answer policy, programmatic, and epidemiological questions related to infectious disease transmission.&nbsp;In particular, they are expected to make significant contributions to applying machine learning and data analysis techniques, particularly those in regular use in high energy physics and/or applied mathematics, towards the detection and modeling of infectious diseases.</div><div><br></div><div>For general information about this position, please contact <strong>Prof. Marisa Eisenberg (marisae@umich.edu) </strong>and <strong>Prof. Tom Schwarz (schwarzt@umich.edu)</strong>.</div><div><br></div><div>Candidates must submit the following materials to the link below as one document: cover letter, a CV, and a statement about research experience. Additionally, three (3) letters of recommendation must be submitted to&nbsp;MICOMRECRUITING@UMICH.EDU&nbsp;directly by the letter writer.</div><div><br></div><div><a href=\"https://careers.umich.edu/job_detail/254848/research-fellow\">https://careers.umich.edu/job_detail/254848/research-fellow</a></div>",
+        "_collections": [
+            "Jobs"
+        ],
+        "institutions": [
+            {
+                "value": "U. Michigan, Ann Arbor",
+                "record": {
+                    "$ref": "https://inspirehep.net/api/institutions/946081"
+                }
+            }
+        ],
+        "deadline_date": "2024-10-31",
+        "control_number": 2832881,
+        "contact_details": [
+            {
+                "name": "Profs Tom Schwarz",
+                "email": "schwarzt@umich.edu"
+            }
+        ],
+        "arxiv_categories": [
+            "hep-ex",
+            "cs"
+        ],
+        "reference_letters": {
+            "emails": [
+                "MICOMRECRUITING@UMICH.EDU"
+            ]
+        },
+        "acquisition_source": {
+            "email": "schwarzt@umich.edu",
+            "orcid": "0000-0001-5660-2690",
+            "method": "submitter",
+            "source": "submitter",
+            "datetime": "2024-09-25T12:53:19.675242",
+            "internal_uid": 80914,
+            "submission_number": "None"
+        }
+    },
+    "uuid": "af78631d-28d4-4503-9b08-304c51ef63e5",
+    "revision_id": 1
+}

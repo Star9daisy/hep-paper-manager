@@ -1,14 +1,16 @@
 database_id: <database_id>
 properties:
-  title: Title
-  authors: Authors
-  date: Date
-  journal: Published in
-  arxiv_id: ArXiv ID
-  doi: DOI
-  n_citations: Number of citations
-  n_references: Number of references
-  n_pages: Number of pages
-  abstract: Abstract
-  bibtex: Bibtex
+  id: null
   url: URL
+  type: null
+  source: null
+  title: Title
+  authors.name: Authors
+  created_date: Date
+  published_place: Published in
+  published_date: Published
+  eprint: ArXiv ID
+  citation_count: Citations
+  abstract: Abstract
+  doi: DOI
+  bibtex: BibTeX
