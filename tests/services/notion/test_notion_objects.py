@@ -1,46 +1,28 @@
-from tinydb import Query, TinyDB
+from tinydb import TinyDB
 from tinydb.storages import MemoryStorage
 
 from hpm.services.notion.client import Notion
 from hpm.services.notion.objects.database import Database
 from hpm.services.notion.objects.page import Page
-from hpm.services.notion.objects.page_properties import ALL_PAGE_PROPERTIES
 
 
-def test_empty_page():
+def test_page():
     page = Page()
 
-    assert page.as_dict() == {
-        "id": None,
-        "url": None,
-        "parent_id": None,
-        "properties": {},
-    }
+    # Test the page as a dict
+    assert page.as_dict() == {"id": None, "url": None, "title": None, "properties": {}}
 
+    # Test the page from cache
     cache = TinyDB(storage=MemoryStorage)
     cache.insert(page.as_dict())
-    cached_page = Page.from_cache(cache.get(Query().id == page.id))
+    cached_page = Page.from_cache(cache.all()[0])
 
-    assert cached_page.as_dict() == page.as_dict()
-
-
-def test_create_template():
-    client = Notion("secret_t8bapElugK3qKYqQhlub2N0eIwfKw4K69uqCBkhkD4A")
-    # Create template according to the database
-    database_id = "1261444c50e4808e83cde7c2fe05ded8"
-
-    response = client.retrieve_database(database_id)
-    template = Page(
-        properties={
-            k: ALL_PAGE_PROPERTIES[v["type"]]()
-            for k, v in response["properties"].items()
-            if v["type"] in ALL_PAGE_PROPERTIES
-        }
-    )
-    print(template)
+    assert page == cached_page
 
 
-def test_database():
-    client = Notion("secret_t8bapElugK3qKYqQhlub2N0eIwfKw4K69uqCBkhkD4A")
-    response = client.retrieve_database("1261444c50e4808e83cde7c2fe05ded8")
-    Database.from_response(response)
+def test_database(TEST_DATABASE_ID):
+    client = Notion()
+    response = client.retrieve_database(TEST_DATABASE_ID)
+    database = Database.from_response(response)
+
+    assert database.title == "HPM Test Database"
