@@ -82,7 +82,12 @@ class RichText(PageProperty):
         if self.value is None:
             return {"rich_text": []}
 
-        return {"rich_text": [{"type": "text", "text": {"content": self.value}}]}
+        if len(self.value) >= 2000:
+            value = self.value[:1997] + "..."
+        else:
+            value = self.value
+
+        return {"rich_text": [{"type": "text", "text": {"content": value}}]}
 
 
 @dataclass

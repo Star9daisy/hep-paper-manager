@@ -105,6 +105,14 @@ def test_rich_text(test_full_page, test_empty_page):
     assert property.value == expected.value
     assert property.as_dict() == expected.as_dict()
 
+    # Test long value
+    property = RichText("x" * 2000)
+
+    assert property.value == "x" * 2000
+    assert property.as_dict() == {
+        "rich_text": [{"type": "text", "text": {"content": "x" * 1997 + "..."}}]
+    }
+
 
 def test_select(test_full_page, test_empty_page):
     # Test full page

@@ -89,12 +89,7 @@ class Paper:
 
         paper.eprint = metadata["arxiv_eprints"][0]["value"]
         paper.citation_count = metadata["citation_count"]
-
-        abstract = metadata["abstracts"][0]["value"]
-        if len(abstract) > 2000:
-            abstract = abstract[:1997] + "..."
-        paper.abstract = abstract
-
+        paper.abstract = metadata["abstracts"][0]["value"]
         paper.doi = metadata.get("dois", [{}])[0].get("value")
 
         bibtex_link = data["links"]["bibtex"]
