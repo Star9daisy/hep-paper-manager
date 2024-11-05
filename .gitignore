@@ -1,7 +1,9 @@
-.venv/
+__pycache__
+
 .env
-dist/
-.coverage*
-demo_*
-playground/**
+
+*coverage*
+
 archive
+dist
+playground
