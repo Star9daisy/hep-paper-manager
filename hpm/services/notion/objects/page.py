@@ -6,29 +6,34 @@ from .page_properties import ALL_PAGE_PROPERTIES
 @dataclass
 class Page:
     id: str | None = None
+    title: str | None = None
     url: str | None = None
-    parent_id: str | None = None
     properties: dict = field(default_factory=dict)
 
     @classmethod
     def from_response(cls, data: dict):
+        title = None
+        properties = {}
+        for k, v in data["properties"].items():
+            if v["type"] in ALL_PAGE_PROPERTIES:
+                properties[k] = ALL_PAGE_PROPERTIES[v["type"]].from_dict(v)
+
+            if v["type"] == "title" and len(v["title"]) > 0:
+                title = v["title"][0]["text"]["content"]
+
         return cls(
             id=data["id"],
+            title=title,
             url=data["url"],
-            parent_id=data["parent"]["database_id"],
-            properties={
-                k: ALL_PAGE_PROPERTIES[v["type"]].from_dict(v)
-                for k, v in data["properties"].items()
-                if v["type"] in ALL_PAGE_PROPERTIES
-            },
+            properties=properties,
         )
 
     @classmethod
     def from_cache(cls, data: dict):
         return cls(
             id=data["id"],
+            title=data["title"],
             url=data["url"],
-            parent_id=data["parent_id"],
             properties={
                 k: ALL_PAGE_PROPERTIES[v["type"]](value=v["value"], id=v["id"])
                 for k, v in data["properties"].items()
@@ -39,6 +44,6 @@ class Page:
         return {
             "id": self.id,
             "url": self.url,
-            "parent_id": self.parent_id,
+            "title": self.title,
             "properties": {k: v.as_dict() for k, v in self.properties.items()},
         }
