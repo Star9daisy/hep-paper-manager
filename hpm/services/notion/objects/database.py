@@ -5,9 +5,9 @@ from .database_properties import ALL_DATABASE_PROPERTIES, DatabaseProperty
 
 @dataclass
 class Database:
-    id: str
-    title: str
-    url: str
+    id: str | None = None
+    title: str | None = None
+    url: str | None = None
     properties: dict[str, DatabaseProperty] = field(default_factory=dict)
 
     @classmethod
