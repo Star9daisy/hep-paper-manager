@@ -11,11 +11,11 @@ from .objects.page_properties import PageProperty
 
 @typechecked
 class Notion:
-    def __init__(self, api_key: str | None = None) -> None:
+    def __init__(self, token: str | None = None) -> None:
         self.base_url = "https://api.notion.com/v1"
-        self.api_key = api_key or os.getenv("NOTION_API_KEY")
+        self.token = token or os.getenv("NOTION_ACCESS_TOKEN_FOR_HPM")
         self.headers = {
-            "Authorization": f"Bearer {self.api_key}",
+            "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json",
             "Notion-Version": "2022-06-28",
         }
