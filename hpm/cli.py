@@ -22,7 +22,20 @@ app = typer.Typer(
 
 
 @app.command(help="Initialize with the Notion API token")
-def init():
+def init(
+    token: Annotated[
+        Optional[str],
+        typer.Option("--token", "-t", help="Notion API token"),
+    ] = None,
+    database_id: Annotated[
+        Optional[str],
+        typer.Option("--database-id", "-d", help="Notion database ID"),
+    ] = None,
+    force: Annotated[
+        bool,
+        typer.Option("--force", "-f", help="Force reinitialize"),
+    ] = False,
+):
     config = Config()
 
     # Print welcome message -------------------------------------------------- #
@@ -32,7 +45,10 @@ def init():
     print()
 
     # Check if hpm has already been initialized ------------------------------ #
-    if config.is_initialized():
+    if force:
+        config.clean()
+        config.initialize()
+    elif config.is_initialized():
         is_reinitialized = Prompt.ask(
             "[ques]?[/ques] Already been initialized. Overwrite token?",
             default="y",
@@ -47,39 +63,42 @@ def init():
         config.initialize()
     print()
 
-    # Ask for the token ---------------------------------------------------------- #
-    if config.token_file.exists():
-        token = config.load_token()
-    else:
-        token = Prompt.ask(
-            "[ques]?[/ques] Enter the integration token",
-            password=True,
+    # Ask for the token ------------------------------------------------------ #
+    if token is None:
+        if config.token_file.exists():
+            token = config.load_token()
+        else:
+            token = Prompt.ask(
+                "[ques]?[/ques] Enter the integration token",
+                password=True,
+                console=console,
+            )
+
+    config.save_token(token)
+    print("[green]✔[/green] Token saved")
+
+    if database_id is None:
+        # Search databases
+        notion = Notion(token)
+        response = notion.search_database()
+        n_databases = len(response["results"])
+
+        print(f"[num]{n_databases}[/num] databases found:")
+        for index, result in enumerate(response["results"], start=1):
+            title = result["title"][0]["plain_text"]
+            url = result["url"]
+            print(f"  [num]{index}[/num]: {title} -> ([url]{url}[/url])")
+        print()
+
+        # Choose one for papers
+        choice = Prompt.ask(
+            "[ques]?[/ques] Choose one as the paper database",
+            default="1",
             console=console,
         )
-        config.save_token(token)
-        print("[green]✔[/green] Token saved")
 
-    # Search databases ------------------------------------------------------- #
-    notion = Notion(token)
-    response = notion.search_database()
-    n_databases = len(response["results"])
-
-    print(f"[num]{n_databases}[/num] databases found:")
-    for index, result in enumerate(response["results"], start=1):
-        title = result["title"][0]["plain_text"]
-        url = result["url"]
-        print(f"  [num]{index}[/num]: {title} -> ([url]{url}[/url])")
-    print()
-
-    # Choose one for papers -------------------------------------------------- #
-    choice = Prompt.ask(
-        "[ques]?[/ques] Choose one as the paper database",
-        default="1",
-        console=console,
-    )
-
-    choice = int(choice) - 1
-    database_id = response["results"][choice]["id"]
+        choice = int(choice) - 1
+        database_id = response["results"][choice]["id"]
 
     # Modify database id in the template
     template = config.load_built_in_template("paper")

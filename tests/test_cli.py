@@ -65,6 +65,29 @@ def test_init():
         os.rename(config.app_dir.parent / ".hpm.backup", config.app_dir)
 
 
+def test_init_with_token_and_database_id(TEST_PAPERS_DATABASE_ID):
+    config = Config()
+
+    is_backed_up = False
+    if config.app_dir.exists():
+        os.rename(config.app_dir, config.app_dir.parent / ".hpm.backup")
+        is_backed_up = True
+
+    token = os.getenv("NOTION_ACCESS_TOKEN_FOR_HPM")
+    database_id = TEST_PAPERS_DATABASE_ID
+
+    result = runner.invoke(app, ["init", "-t", token, "-d", database_id, "-f"])
+    assert result.exit_code == 0
+    assert "Token saved" in result.stdout
+    assert "Choose database" in result.stdout
+
+    # Clean up
+    shutil.rmtree(config.app_dir)
+
+    if is_backed_up:
+        os.rename(config.app_dir.parent / ".hpm.backup", config.app_dir)
+
+
 def test_add_and_update():
     # Set the page size to 1 for testing
     config = Config()
