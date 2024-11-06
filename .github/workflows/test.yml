@@ -22,7 +22,7 @@ jobs:
 
     - name: Run tests
       run: |
-        hpm init -t ${{ secrets.NOTION_ACCESS_TOKEN_FOR_HPM }} -d ${{ secrets.TEST_PAPERS_DATABASE_ID }} -f
+        poetry run hpm init -t ${{ secrets.NOTION_ACCESS_TOKEN_FOR_HPM }} -d ${{ secrets.TEST_PAPERS_DATABASE_ID }} -f
         poetry run pytest tests
 
     - name: Upload coverage reports to Codecov
