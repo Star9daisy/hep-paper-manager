@@ -23,8 +23,8 @@ def test_init():
     with patch("hpm.cli.Prompt.ask") as mock_prompt:
         # First time
         mock_prompt.side_effect = [
-            "secret_t8bapElugK3qKYqQhlub2N0eIwfKw4K69uqCBkhkD4A",
-            "4",
+            os.getenv("NOTION_ACCESS_TOKEN_FOR_HPM"),
+            "2",
         ]
 
         result = runner.invoke(app, ["init"])
@@ -36,8 +36,8 @@ def test_init():
         # Reinitialize
         mock_prompt.side_effect = [
             "y",
-            "secret_t8bapElugK3qKYqQhlub2N0eIwfKw4K69uqCBkhkD4A",
-            "4",
+            os.getenv("NOTION_ACCESS_TOKEN_FOR_HPM"),
+            "2",
         ]
 
         result = runner.invoke(app, ["init"])
@@ -49,7 +49,7 @@ def test_init():
         # No overwrite token and re-choose the database
         mock_prompt.side_effect = [
             "n",
-            "4",
+            "2",
         ]
 
         result = runner.invoke(app, ["init"])
