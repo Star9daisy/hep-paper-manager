@@ -21,7 +21,9 @@ jobs:
       run: poetry install
 
     - name: Run tests
-      run: poetry run pytest tests
+      run: |
+        export NOTION_ACCESS_TOKEN_FOR_HPM=${{ secrets.NOTION_ACCESS_TOKEN_FOR_HPM }}
+        poetry run pytest tests
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
