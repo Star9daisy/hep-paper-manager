@@ -11,7 +11,7 @@ THEME = Theme(
         "error_msg": "red",  # error message
         "warn": "yellow",  # warning
         "hint": "italic yellow",  # hint
-        "path": "cyan underline",  # path
+        "path": "dim underline",  # path
         "url": "dim underline",  # url
         "num": "cyan",  # number
     },
