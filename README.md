@@ -1,11 +1,15 @@
 # HEP Paper Manager (HPM)
 
-![workflow](https://s2.loli.net/2024/08/13/8NGUdRiV7DFl5WH.png)
+![workflow](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/workflow.svg)
+[![PyPI - Version](https://img.shields.io/pypi/v/hep-paper-manager)](https://pypi.org/project/hep-paper-manager/)
+[![Downloads](https://static.pepy.tech/badge/hep-paper-manager)](https://pepy.tech/project/hep-paper-manager)
+[![codecov](https://codecov.io/gh/Star9daisy/hep-paper-manager/branch/main/graph/badge.svg?token=6VWJi5ct6c)](https://app.codecov.io/gh/Star9daisy/hep-paper-manager)
+[![GitHub](https://img.shields.io/github/license/star9daisy/hep-paper-manager)](https://github.com/Star9daisy/hep-paper-manager/blob/main/LICENSE)
 
-HPM is a command-line tool that helps adds literature from Inspire HEP to a
-Notion database according to its arXiv ID.
+HPM is a command-line tool that helps add papers from Inspire HEP to Notion
+database according to its ArXiv ID.
 
-It has features as following:
+Features:
 - Retrieve papers by arXiv ID.
 - Customizable paper template.
 - Interactive CLI for easy setup and usage.
@@ -15,155 +19,110 @@ It has features as following:
 pip install hep-paper-manager
 ```
 
-## Let's add a paper to a Notion database!
+## Try to add a paper to a demo database
+
+Before we start, please make sure you have installed this app successfully.
+
 In this step-by-step guide, we will together add "[1511.05190] Jet image -- deep
-learning edition"([link](https://inspirehep.net/literature/1405106)) to a Notion
+learning edition"([link](https://inspirehep.net/literature/1405106)) to a demo
 database.
 
-### Step 0: Create an integration in Notion
+### Step 1: Create an integration in Notion
 1. Open [My Integrations](https://www.notion.so/my-integrations).
 2. Click `+ New integration`.
 3. Enter a name for your integration.
 4. Select your workspace.
 4. Click `show` and `copy` the integration secret as your token.
 
-Check the official guide for integrations
+To learn more about integrations, please check the official guide
 [here](https://developers.notion.com/docs/create-a-notion-integration).
 
-![Create an integration](https://s2.loli.net/2024/08/13/zya7foBb9t4sdF1.gif)
+![Create an integration](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/1-create_an_integration.gif)
 
-### Step 1: Create a Notion database
-A database is the place where we'll put all papers. Each item (or page)
-represents a paper.
+### Step 2: Create a blank page and link the integration to it
+1. Click the `+` button next to your workspace name to create a new blank page.
+2. In the three-dot menu in the upper right, find `Connect to`.
+3. Select the integration you created in the previous step.
 
-1. Follow the gif to create a database.
+![Create a blank page and link the integration](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/2-create_a_blank_page.gif)
 
-   ![create a database](https://s2.loli.net/2024/08/13/1juSdLEIJhN64KW.gif)
+### Step 3: Create a demo database via `hpm`
+Open your terminal, and input:
+```bash
+hpm demo -t <token> -p <page_id>
+```
 
-2. Add the following properties by clicking `+` on the right:
+![Create a demo database](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/3-create_a_demo_database.gif)
 
-  | Property             | Type         |
-  | -------------------- | ------------ |
-  | Title                | Title        |
-  | Authors              | Multi-select |
-  | Date                 | Date         |
-  | Published in         | Select       |
-  | ArXiv ID             | Text         |
-  | DOI                  | Text         |
-  | Number of citations  | Number       |
-  | Number of references | Number       |
-  | Number of pages      | Number       |
-  | Abstract             | Text         |
-  | Bibtex               | Text         |
-  | URL                  | URL          |
+You should see a database is created and connected to the integration.
 
-   ![Add properties](https://s2.loli.net/2024/08/13/bcNFe3rWhfd4P1A.gif)
+![Check the demo database](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/4-check_the_demo_database.gif)
 
-After you finish it, open any page to check all properties, which should look
-like this:
+### Step 4: Initialize the `hpm` app
+Use the token to initialize the `hpm` app.
+```bash
+hpm init -t <token>
+```
 
-![An empty page](https://s2.loli.net/2024/08/13/A5ghwXqle6dDZma.png)
+![Initialize hpm](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/5-initialize_hpm.gif)
 
-! Remember to remove the first empty three pages after the properties are
-checked since we want to keep this database nice and clean.
+### Step 5: Add the paper to the database
+Use `hpm add` to add it into the demo database.
+```bash
+hpm add 1511.05190
+```
 
-![Remove empty pages](https://s2.loli.net/2024/08/14/Os47fTja6WbdFMx.gif)
-
-3. Connect to the integration.
-   ![Connect to integration](https://s2.loli.net/2024/08/13/kBcjlYVtd1eOyLo.gif)
-
-### Step 2: Set up `hpm`
-1. Install `hep-paper-manager`.
-   ```bash
-   pip install hep-paper-manager
-   ```
-   ![pip install](https://s2.loli.net/2024/08/14/PasNi7Rpn6mBt2u.gif)
-
-2. Initialize it to add the token.
-   ```bash
-   hpm init
-   ```
-   ![hpm init](https://s2.loli.net/2024/08/14/vwLU36dPgY7syoC.gif)
+![Add the paper to the database](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/6-add_paper_1511.05190.gif)
 
 
-### Step 3: Add the paper to the database
-1. Search Inspire for the paper "jet image -- deep learning edition" and copy the
-   arXiv ID:
-   ![search inspire](https://s2.loli.net/2024/08/14/fP5M8yQlz7NZEgX.gif)
+Go back and check the database page. The paper is right there!
 
-2. Use `hpm add` to add it to the database.
-   ```bash
-   hpm add 1511.05190
-   ```
-
-   ![hpm add](https://s2.loli.net/2024/08/14/O5dHaPDwBNC8MIF.gif)
-
-3. Go back and check the database page. The paper is right there!
-   ![new paper in database](https://s2.loli.net/2024/08/14/sD68Td791afcAJe.png)
-
+![Check the database page](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/7-check_the_paper.gif)
 
 Try to add more papers as you like!
 
-### Step 4: Update the paper
-After a while, the paper may have newer information like citation number. You
-can update the paper in the database by `hpm update`.
-```bash
-hpm update 1511.05190
+## Modify the default paper template
+You can use `hpm info` to find the app directory. The default paper template is
+located at `{app_dir}/templates/paper.yml`:
+
+```yaml
+database_id: <your database_id>
+properties:
+  id: null
+  url: URL
+  type: null
+  source: null
+  title: Title
+  authors.name: Authors
+  created_date: Date
+  published_place: Published in
+  published_date: Published
+  eprint: ArXiv ID
+  citation_count: Citations
+  abstract: Abstract
+  doi: DOI
+  bibtex: BibTeX
 ```
 
-Or update all the paper at once without any id.
-```bash
-hpm update
-```
-
-Note, the columns in the database but not in the template will not be updated.
-So you can add more columns to the database without worrying about `hpm`
-overwriting your data.
-
-## Engines
-- `Inspire`: It fetches papers from the [Inspire HEP](https://inspirehep.net/).
-   It serves the default engine for `hpm`. `InspirePaper` has the following
-   properties:
-    - `title`: str
-    - `authors`: list[str]
-    - `date`: str
-    - `journal`: str | None
-    - `arxiv_id`: str
-    - `doi`: str | None
-    - `n_citations`: int
-    - `n_references`: int
-    - `n_pages`: int | None
-    - `abstract`: str
-    - `bibtex`: str
-    - `url`: str
+The keys in the `properties` section are the paper information retrieved from
+Inspire HEP. Their values correspond to the Notion page properties. Modify them
+as you like. `null` means that information will not be recorded in the database.
 
 
-## Templates
-Template saves the mapping from paper properties to Notion database properties.
-You can adjust the properties within the template. The template file is at
-`$HOME/.hpm/paper.yml`.
+## Other commands
 
-Below is the default template for `Inspire` engine which holds all properties
-of `InspirePaper`:
-- `paper.yml`
-  ```yaml
-  database_id: <database_id>
-  properties:
-    title: Title
-    authors: Authors
-    date: Date
-    journal: Published in
-    arxiv_id: ArXiv ID
-    doi: DOI
-    n_citations: Number of citations
-    n_references: Number of references
-    n_pages: Number of pages
-    abstract: Abstract
-    bibtex: Bibtex
-    url: URL
-  ```
+- `hpm update [<arxiv_id>|all]`: Update one paper according to its ArXiv ID or all papers in the database.
+
+![Update the paper](https://raw.githubusercontent.com/Star9daisy/hep-paper-manager/refs/heads/main/assets/8-update_paper.gif)
+
+- `hpm info`: Show all file paths related to this app.
+- `hpm clean`: Remove all files related to this app.
+
 
 ## Updates
+### v0.4.0
+- Refactor the codebase and reorganize the file structure.
+
 ### v0.3.0
 - Refactor the codebase by only allowing adding papers by arXiv ID.
 
