@@ -345,6 +345,29 @@ def update(arxiv_id: str):
     print("[done]✔[/done] Updated!")
 
 
+@app.command(help="Show the app files information")
+def info():
+    print("[sect]>[/sect] Showing the app files information...")
+    print()
+
+    config = Config()
+    print(f"App directory: [path]{config.app_dir}[/path]")
+    print(f"Config file: [path]{config.config_file}[/path]")
+    print(f"Token file: [path]{config.token_file}[/path]")
+    print()
+
+    if not config.app_dir.exists():
+        print("[warn]App directory not created yet")
+
+
+@app.command(help="Remove all files related to the app")
+def clean():
+    config = Config()
+    config.clean()
+
+    print("[done]✔[/done] Cleaned!")
+
+
 def version_callback(value: bool):
     if value:
         print(

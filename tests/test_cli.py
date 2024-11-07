@@ -162,6 +162,44 @@ def test_add_and_update():
     config.save_config_for_notion_client({"page_size": original_page_size})
 
 
+def test_info_and_clean(TEST_PAPERS_DATABASE_ID):
+    config = Config()
+
+    is_backed_up = False
+    if config.app_dir.exists():
+        os.rename(config.app_dir, config.app_dir.parent / ".hpm.backup")
+        is_backed_up = True
+
+    result = runner.invoke(app, ["info"])
+    assert result.exit_code == 0
+    assert "App directory" in result.stdout
+    assert "Config file" in result.stdout
+    assert "Token file" in result.stdout
+    assert "App directory not created yet" in result.stdout
+
+    token = os.getenv("NOTION_ACCESS_TOKEN_FOR_HPM")
+    database_id = TEST_PAPERS_DATABASE_ID
+
+    result = runner.invoke(app, ["init", "-t", token, "-d", database_id, "-f"])
+    result = runner.invoke(app, ["info"])
+    assert result.exit_code == 0
+    assert "App directory" in result.stdout
+    assert "Config file" in result.stdout
+    assert "Token file" in result.stdout
+
+    result = runner.invoke(app, ["clean"])
+    assert result.exit_code == 0
+    assert "Cleaned!" in result.stdout
+
+    result = runner.invoke(app, ["info"])
+    assert result.exit_code == 0
+    assert "App directory not created yet" in result.stdout
+
+    # Clean up
+    if is_backed_up:
+        os.rename(config.app_dir.parent / ".hpm.backup", config.app_dir)
+
+
 def test_version():
     result = runner.invoke(app, ["-v"])
     assert result.exit_code == 0
