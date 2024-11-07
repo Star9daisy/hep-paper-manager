@@ -3,6 +3,7 @@ import typer
 from rich.prompt import Prompt
 from typing_extensions import Annotated, Optional
 
+import hpm.services.notion.objects.database_properties as db_props
 from hpm.services.inspire_hep.client import InspireHEP
 from hpm.services.inspire_hep.objects import Paper
 from hpm.services.notion.client import Notion
@@ -115,6 +116,42 @@ def init(
     # ------------------------------------------------------------------------ #
     print("[done]✔[/done] Done!")
     print()
+
+
+@app.command(help="Create a demo database")
+def demo(
+    token: Annotated[str, typer.Option("--token", "-t", help="Notion API token")],
+    page_id: Annotated[str, typer.Option("--page-id", "-p", help="Notion page ID")],
+):
+    # Clients
+    notion = Notion(token)
+
+    print("[sect]>[/sect] Creating a demo database...")
+
+    # Create a database
+    response = notion.create_database(
+        parent_id=page_id,
+        title="Demo Database",
+        properties={
+            "Title": db_props.Title(),
+            "Authors": db_props.MultiSelect(),
+            "Date": db_props.Date(),
+            "Published in": db_props.Select(),
+            "Published": db_props.Date(),
+            "ArXiv ID": db_props.RichText(),
+            "Citations": db_props.Number(),
+            "DOI": db_props.RichText(),
+            "URL": db_props.URL(),
+            "Abstract": db_props.RichText(),
+            "BibTeX": db_props.RichText(),
+        },
+    )
+    database = Database.from_response(response)
+
+    # ------------------------------------------------------------------------ #
+    print("[green]✔[/green] Created")
+    print()
+    print(f"[hint]Check it here: [url]{database.url}")
 
 
 @app.command(help="Add a paper via its ArXiv ID")

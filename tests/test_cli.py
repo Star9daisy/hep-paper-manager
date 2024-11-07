@@ -88,6 +88,31 @@ def test_init_with_token_and_database_id(TEST_PAPERS_DATABASE_ID):
         os.rename(config.app_dir.parent / ".hpm.backup", config.app_dir)
 
 
+def test_demo(TEST_PAGE_ID):
+    config = Config()
+
+    is_backed_up = False
+    if config.app_dir.exists():
+        os.rename(config.app_dir, config.app_dir.parent / ".hpm.backup")
+        is_backed_up = True
+
+    token = os.getenv("NOTION_ACCESS_TOKEN_FOR_HPM")
+    page_id = TEST_PAGE_ID
+
+    result = runner.invoke(app, ["demo", "-t", token, "-p", page_id])
+    assert result.exit_code == 0
+    assert "Creating a demo database" in result.stdout
+    assert "Created" in result.stdout
+
+    database_id = result.stdout.split("\n")[-2].split("/")[-1]
+    notion = Notion(token)
+    notion.archive_database(database_id)
+
+    # Clean up
+    if is_backed_up:
+        os.rename(config.app_dir.parent / ".hpm.backup", config.app_dir)
+
+
 def test_add_and_update():
     # Set the page size to 1 for testing
     config = Config()
